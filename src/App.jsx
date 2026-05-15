@@ -6,7 +6,7 @@ import Dashboard from './pages/Dashboard'
 import PrivateRoute from './components/PrivateRoute'
 import NuevoPiso from './pages/NuevoPiso'
 import Pisos from './pages/Pisos'
-import DetallePiso from './pages/DetallePiso';
+import DetallePiso from './pages/DetallePiso'
 
 export default function App() {
   return (
@@ -16,12 +16,12 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/registro" element={<Registro />} />
         <Route path="/pisos" element={<Pisos />} />
-        <Route path="/pisos/:id" element={<DetallePiso />} /> 
         <Route path="/pisos/nuevo" element={
           <PrivateRoute>
             <NuevoPiso />
           </PrivateRoute>
         } />
+        <Route path="/pisos/:id" element={<DetallePiso />} />
         <Route path="/dashboard" element={
           <PrivateRoute>
             <Dashboard />
