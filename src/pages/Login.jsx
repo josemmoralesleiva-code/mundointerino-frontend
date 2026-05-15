@@ -22,7 +22,7 @@ export default function Login() {
       const res = await axios.post(`${API}/api/auth/login`, form)
       localStorage.setItem('token', res.data.token)
       localStorage.setItem('usuario', JSON.stringify(res.data.usuario))
-      navigate('/')
+      navigate('/dashboard')
     } catch (err) {
       setError(err.response?.data?.error || 'Error al iniciar sesión')
     } finally {
