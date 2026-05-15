@@ -11,7 +11,6 @@ export default function Pisos() {
   const [cargando, setCargando] = useState(true)
   const [orden, setOrden] = useState('precio_asc')
 
-  // Filtros
   const [ciudad, setCiudad] = useState(searchParams.get('ciudad') || '')
   const [fecha, setFecha] = useState(searchParams.get('fecha') || '')
   const [tipoEstancia, setTipoEstancia] = useState(searchParams.get('tipo') || '')
@@ -53,24 +52,24 @@ export default function Pisos() {
           </a>
           <ul className="hidden md:flex items-center gap-6 list-none">
             <li>
-              <button onClick={() => navigate('/pisos')} className="text-blue-700 font-semibold">
+              <button onClick={() => navigate('/pisos')} className="text-primary-700 font-semibold">
                 Buscar piso
               </button>
             </li>
             <li>
-              <button onClick={() => navigate('/sobre-nosotros')} className="text-gray-700 hover:text-blue-700 font-medium">
+              <button onClick={() => navigate('/sobre-nosotros')} className="text-gray-700 hover:text-primary-700 font-medium">
                 Sobre nosotros
               </button>
             </li>
             <li>
-              <button onClick={() => navigate('/contacto')} className="text-gray-700 hover:text-blue-700 font-medium">
+              <button onClick={() => navigate('/contacto')} className="text-gray-700 hover:text-primary-700 font-medium">
                 Contacto
               </button>
             </li>
             <li>
               <button
                 onClick={() => navigate('/publicar')}
-                className="border border-blue-700 text-blue-700 px-4 py-2 rounded-lg hover:bg-blue-50 font-medium"
+                className="border border-primary-700 text-primary-700 px-4 py-2 rounded-lg hover:bg-primary-50 font-medium"
               >
                 Publicar piso
               </button>
@@ -78,7 +77,7 @@ export default function Pisos() {
             <li>
               <button
                 onClick={() => navigate('/login')}
-                className="bg-blue-700 text-white px-4 py-2 rounded-lg hover:bg-blue-800 font-medium"
+                className="bg-primary-700 text-white px-4 py-2 rounded-lg hover:bg-primary-800 font-medium"
               >
                 Entrar
               </button>
@@ -88,7 +87,7 @@ export default function Pisos() {
       </nav>
 
       {/* FILTROS DE BÚSQUEDA */}
-      <div className="bg-blue-700 py-8 px-6">
+      <div className="bg-primary-700 py-8 px-6">
         <div className="max-w-5xl mx-auto">
           <div className="bg-white rounded-2xl p-4 flex flex-col md:flex-row gap-3">
             <div className="flex-1 flex flex-col items-start px-2">
@@ -98,7 +97,7 @@ export default function Pisos() {
                 placeholder="Zaragoza, Huesca, Teruel…"
                 value={ciudad}
                 onChange={e => setCiudad(e.target.value)}
-                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-gray-700 focus:outline-none focus:border-blue-400"
+                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-gray-700 focus:outline-none focus:border-primary-500"
               />
             </div>
             <div className="flex flex-col items-start px-2">
@@ -107,7 +106,7 @@ export default function Pisos() {
                 type="date"
                 value={fecha}
                 onChange={e => setFecha(e.target.value)}
-                className="border border-gray-200 rounded-xl px-3 py-2 text-gray-700 focus:outline-none focus:border-blue-400"
+                className="border border-gray-200 rounded-xl px-3 py-2 text-gray-700 focus:outline-none focus:border-primary-500"
               />
             </div>
             <div className="flex flex-col items-start px-2">
@@ -115,7 +114,7 @@ export default function Pisos() {
               <select
                 value={tipoEstancia}
                 onChange={e => setTipoEstancia(e.target.value)}
-                className="border border-gray-200 rounded-xl px-3 py-2 text-gray-700 focus:outline-none focus:border-blue-400"
+                className="border border-gray-200 rounded-xl px-3 py-2 text-gray-700 focus:outline-none focus:border-primary-500"
               >
                 <option value="">Cualquiera</option>
                 <option value="corta">Corta (días/semanas)</option>
@@ -124,7 +123,7 @@ export default function Pisos() {
             </div>
             <button
               onClick={handleBuscar}
-              className="bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-800 self-end"
+              className="bg-accent-500 hover:bg-accent-600 text-white px-6 py-3 rounded-xl font-semibold self-end"
             >
               🔍 Buscar
             </button>
@@ -149,7 +148,7 @@ export default function Pisos() {
               <select
                 value={orden}
                 onChange={e => setOrden(e.target.value)}
-                className="border border-gray-200 rounded-xl px-3 py-2 text-gray-700 text-sm focus:outline-none focus:border-blue-400"
+                className="border border-gray-200 rounded-xl px-3 py-2 text-gray-700 text-sm focus:outline-none focus:border-primary-500"
               >
                 <option value="precio_asc">Precio: menor a mayor</option>
                 <option value="precio_desc">Precio: mayor a menor</option>
@@ -174,7 +173,7 @@ export default function Pisos() {
             <p className="text-gray-400 mb-6">Prueba con otra localidad o cambia el tipo de estancia.</p>
             <button
               onClick={() => navigate('/publicar')}
-              className="bg-blue-700 text-white px-6 py-3 rounded-xl hover:bg-blue-800 font-medium"
+              className="bg-primary-700 text-white px-6 py-3 rounded-xl hover:bg-primary-800 font-medium"
             >
               Publicar piso
             </button>
@@ -190,8 +189,7 @@ export default function Pisos() {
                 onClick={() => navigate(`/pisos/${piso._id}`)}
                 className="bg-white rounded-2xl shadow-sm hover:shadow-md cursor-pointer border border-gray-100 overflow-hidden transition-all"
               >
-                {/* Imagen o placeholder */}
-                <div className="h-48 bg-blue-50 overflow-hidden">
+                <div className="h-48 bg-primary-50 overflow-hidden">
                   {piso.fotos?.[0] ? (
                     <img
                       src={piso.fotos[0]}
@@ -199,12 +197,11 @@ export default function Pisos() {
                       className="w-full h-full object-cover hover:scale-105 transition-transform"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-5xl text-blue-200">🏠</div>
+                    <div className="w-full h-full flex items-center justify-center text-5xl text-primary-100">🏠</div>
                   )}
                 </div>
 
                 <div className="p-4">
-                  {/* Tipo estancia badge */}
                   <div className="mb-2">
                     <span className={`text-xs px-2 py-1 rounded-full font-medium ${
                       piso.tipoEstancia === 'corta'
@@ -219,13 +216,13 @@ export default function Pisos() {
                   <p className="text-gray-500 text-sm mb-3">📍 {piso.ciudad}</p>
 
                   <div className="flex justify-between items-center">
-                    <span className="text-blue-700 font-bold text-lg">
+                    <span className="text-primary-700 font-bold text-lg">
                       {piso.precio}€
                       <span className="text-sm font-normal text-gray-500">
                         {piso.tipoEstancia === 'corta' ? '/noche' : '/mes'}
                       </span>
                     </span>
-                    <span className="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded-full">
+                    <span className="text-xs bg-primary-50 text-primary-700 px-2 py-1 rounded-full">
                       {piso.habitaciones} hab.
                     </span>
                   </div>
@@ -237,10 +234,10 @@ export default function Pisos() {
       </div>
 
       {/* FOOTER */}
-      <footer className="bg-gray-800 text-white py-8 px-6 text-center mt-8">
+      <footer className="bg-primary-900 text-white py-8 px-6 text-center mt-8">
         <div className="max-w-5xl mx-auto">
           <img src="/img/logo.png" alt="Profinter" className="h-8 mx-auto mb-3 opacity-70 brightness-0 invert" />
-          <p className="text-gray-400 text-sm">© 2026 Profinter · Portal de alquiler para interinos en Aragón</p>
+          <p className="text-primary-100 text-sm">© 2026 Profinter · Portal de alquiler para interinos en Aragón</p>
         </div>
       </footer>
 
