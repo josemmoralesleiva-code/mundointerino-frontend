@@ -4,6 +4,8 @@ import Login from './pages/Login'
 import Registro from './pages/Registro'
 import Dashboard from './pages/Dashboard'
 import PrivateRoute from './components/PrivateRoute'
+import NuevoPiso from './pages/NuevoPiso'
+import Pisos from './pages/Pisos'
 
 export default function App() {
   return (
@@ -12,6 +14,12 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/registro" element={<Registro />} />
+        <Route path="/pisos" element={<Pisos />} />
+        <Route path="/pisos/nuevo" element={
+          <PrivateRoute>
+            <NuevoPiso />
+          </PrivateRoute>
+        } />
         <Route path="/dashboard" element={
           <PrivateRoute>
             <Dashboard />
