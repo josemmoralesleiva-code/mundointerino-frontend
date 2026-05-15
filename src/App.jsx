@@ -7,6 +7,7 @@ import PrivateRoute from './components/PrivateRoute'
 import NuevoPiso from './pages/NuevoPiso'
 import Pisos from './pages/Pisos'
 import DetallePiso from './pages/DetallePiso'
+import EditarPiso from './pages/EditarPiso'
 
 export default function App() {
   return (
@@ -22,6 +23,11 @@ export default function App() {
           </PrivateRoute>
         } />
         <Route path="/pisos/:id" element={<DetallePiso />} />
+        <Route path="/pisos/:id/editar" element={
+          <PrivateRoute>
+            <EditarPiso />
+          </PrivateRoute>
+        } />
         <Route path="/dashboard" element={
           <PrivateRoute>
             <Dashboard />
