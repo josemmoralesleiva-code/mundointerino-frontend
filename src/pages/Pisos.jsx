@@ -21,9 +21,10 @@ export default function Pisos() {
       const res = await axios.get(`${API}/api/pisos`, {
         params: { ciudad: c, fecha: f, tipo: t }
       })
-      setPisos(res.data.pisos)
+      setPisos(res.data.pisos || [])
     } catch (error) {
       console.error(error)
+      setPisos([])
     } finally {
       setCargando(false)
     }
@@ -43,106 +44,110 @@ export default function Pisos() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-
       {/* NAVBAR */}
-      <nav className="bg-white shadow-sm px-6 py-4">
-        <div className="max-w-6xl mx-auto flex justify-between items-center">
-          <a onClick={() => navigate('/')} className="flex items-center cursor-pointer">
-            <img src="/img/logo.png" alt="Profinter" className="h-9" />
-          </a>
-          <ul className="hidden md:flex items-center gap-6 list-none">
-            <li>
-              <button onClick={() => navigate('/pisos')} className="text-primary-700 font-semibold">
-                Buscar piso
-              </button>
-            </li>
-            <li>
-              <button onClick={() => navigate('/sobre-nosotros')} className="text-gray-700 hover:text-primary-700 font-medium">
-                Sobre nosotros
-              </button>
-            </li>
-            <li>
-              <button onClick={() => navigate('/contacto')} className="text-gray-700 hover:text-primary-700 font-medium">
-                Contacto
-              </button>
-            </li>
-            <li>
-              <button
-                onClick={() => navigate('/publicar')}
-                className="border border-primary-700 text-primary-700 px-4 py-2 rounded-lg hover:bg-primary-50 font-medium"
-              >
-                Publicar piso
-              </button>
-            </li>
-            <li>
-              <button
-                onClick={() => navigate('/login')}
-                className="bg-primary-700 text-white px-4 py-2 rounded-lg hover:bg-primary-800 font-medium"
-              >
-                Entrar
-              </button>
-            </li>
-          </ul>
+      <nav className="bg-white shadow-sm px-6 py-3 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto flex justify-between items-center">
+          <button onClick={() => navigate('/')} className="flex items-center">
+            <img src="/img/logo.png" alt="Profinter" className="h-10" />
+          </button>
+
+          <div className="hidden md:flex items-center gap-3">
+            <button
+              onClick={() => navigate('/pisos')}
+              className="text-primary-700 font-semibold text-sm border-b-2 border-primary-700 pb-1"
+            >
+              Buscar piso
+            </button>
+            <button
+              onClick={() => navigate('/publicar')}
+              className="border border-primary-700 text-primary-700 px-4 py-2 rounded-lg hover:bg-primary-50 font-medium transition-all text-sm"
+            >
+              Publicar piso
+            </button>
+            <button
+              onClick={() => navigate('/login')}
+              className="bg-primary-700 text-white px-4 py-2 rounded-lg hover:bg-primary-800 font-medium transition-all text-sm"
+            >
+              Entrar
+            </button>
+          </div>
         </div>
       </nav>
 
-      {/* FILTROS DE BÚSQUEDA */}
-      <div className="bg-primary-700 py-8 px-6">
-        <div className="max-w-5xl mx-auto">
-          <div className="bg-white rounded-2xl p-4 flex flex-col md:flex-row gap-3">
-            <div className="flex-1 flex flex-col items-start px-2">
-              <label className="text-xs text-gray-500 mb-1 font-medium">📍 Localidad o provincia</label>
-              <input
-                type="text"
-                placeholder="Zaragoza, Huesca, Teruel…"
-                value={ciudad}
-                onChange={e => setCiudad(e.target.value)}
-                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-gray-700 focus:outline-none focus:border-primary-500"
-              />
-            </div>
-            <div className="flex flex-col items-start px-2">
-              <label className="text-xs text-gray-500 mb-1 font-medium">📅 Disponible desde</label>
-              <input
-                type="date"
-                value={fecha}
-                onChange={e => setFecha(e.target.value)}
-                className="border border-gray-200 rounded-xl px-3 py-2 text-gray-700 focus:outline-none focus:border-primary-500"
-              />
-            </div>
-            <div className="flex flex-col items-start px-2">
-              <label className="text-xs text-gray-500 mb-1 font-medium">⏱️ Tipo de estancia</label>
-              <select
-                value={tipoEstancia}
-                onChange={e => setTipoEstancia(e.target.value)}
-                className="border border-gray-200 rounded-xl px-3 py-2 text-gray-700 focus:outline-none focus:border-primary-500"
-              >
-                <option value="">Cualquiera</option>
-                <option value="corta">Corta (días/semanas)</option>
-                <option value="larga">Larga (meses)</option>
-              </select>
-            </div>
-            <button
-              onClick={handleBuscar}
-              className="bg-accent-500 hover:bg-accent-600 text-white px-6 py-3 rounded-xl font-semibold self-end"
-            >
-              🔍 Buscar
-            </button>
+      {/* CABECERA */}
+      <section
+        className="relative py-14 px-6 text-white"
+        style={{
+          backgroundImage: 'url(https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=1600&q=80)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      >
+        <div className="absolute inset-0 bg-primary-900/80"></div>
+        <div className="relative max-w-7xl mx-auto">
+          <h1 className="text-3xl md:text-4xl font-bold mb-3">
+            Encuentra tu piso ideal
+          </h1>
+          <p className="text-primary-100 text-lg max-w-2xl">
+            Filtra por ciudad, fecha y tipo de estancia para encontrar alojamientos para docentes.
+          </p>
+        </div>
+      </section>
+
+      {/* FILTROS */}
+      <div className="max-w-7xl mx-auto px-6 -mt-8 relative z-10">
+        <div className="bg-white rounded-3xl p-4 md:p-5 shadow-xl border border-gray-100 flex flex-col md:flex-row gap-3">
+          <div className="flex-1 flex flex-col items-start px-2">
+            <label className="text-xs text-gray-500 mb-1 font-medium">📍 Localidad o provincia</label>
+            <input
+              type="text"
+              placeholder="Ciudad o provincia…"
+              value={ciudad}
+              onChange={e => setCiudad(e.target.value)}
+              className="w-full border border-gray-200 rounded-xl px-3 py-2 text-gray-700 focus:outline-none focus:border-primary-500"
+            />
           </div>
+          <div className="flex flex-col items-start px-2">
+            <label className="text-xs text-gray-500 mb-1 font-medium">📅 Disponible desde</label>
+            <input
+              type="date"
+              value={fecha}
+              onChange={e => setFecha(e.target.value)}
+              className="border border-gray-200 rounded-xl px-3 py-2 text-gray-700 focus:outline-none focus:border-primary-500"
+            />
+          </div>
+          <div className="flex flex-col items-start px-2">
+            <label className="text-xs text-gray-500 mb-1 font-medium">⏱️ Tipo de estancia</label>
+            <select
+              value={tipoEstancia}
+              onChange={e => setTipoEstancia(e.target.value)}
+              className="border border-gray-200 rounded-xl px-3 py-2 text-gray-700 focus:outline-none focus:border-primary-500"
+            >
+              <option value="">Cualquiera</option>
+              <option value="corta">Corta (días/semanas)</option>
+              <option value="larga">Larga (meses)</option>
+            </select>
+          </div>
+          <button
+            onClick={handleBuscar}
+            className="bg-accent-500 hover:bg-accent-600 text-white px-6 py-3 rounded-xl font-semibold self-end transition-all"
+          >
+            🔍 Buscar
+          </button>
         </div>
       </div>
 
       {/* RESULTADOS */}
-      <div className="max-w-5xl mx-auto px-6 py-8">
-
-        {/* Cabecera resultados + ordenación */}
+      <div className="max-w-7xl mx-auto px-6 py-10">
         {!cargando && pisos.length > 0 && (
-          <div className="flex justify-between items-center mb-6">
+          <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-4 mb-6">
             <div>
-              <h1 className="text-2xl font-bold text-gray-800">
+              <h2 className="text-2xl font-bold text-gray-800">
                 {ciudad ? `Pisos en ${ciudad}` : 'Todos los pisos'}
-              </h1>
+              </h2>
               <p className="text-gray-500 text-sm">{pisos.length} pisos encontrados</p>
             </div>
+
             <div className="flex items-center gap-2">
               <label className="text-sm text-gray-500">Ordenar por:</label>
               <select
@@ -157,7 +162,6 @@ export default function Pisos() {
           </div>
         )}
 
-        {/* Estado: cargando */}
         {cargando && (
           <div className="text-center py-20 text-gray-400">
             <div className="text-4xl mb-3 animate-pulse">🔍</div>
@@ -165,55 +169,54 @@ export default function Pisos() {
           </div>
         )}
 
-        {/* Estado: sin resultados */}
         {!cargando && pisos.length === 0 && (
-          <div className="text-center py-20">
+          <div className="text-center py-20 bg-white rounded-3xl border border-gray-100 shadow-sm">
             <div className="text-5xl mb-4">😕</div>
-            <p className="text-gray-500 text-lg font-medium">No se encontraron pisos con esos filtros.</p>
+            <p className="text-gray-700 text-lg font-medium">No se encontraron pisos con esos filtros.</p>
             <p className="text-gray-400 mb-6">Prueba con otra localidad o cambia el tipo de estancia.</p>
             <button
               onClick={() => navigate('/publicar')}
-              className="bg-primary-700 text-white px-6 py-3 rounded-xl hover:bg-primary-800 font-medium"
+              className="bg-primary-700 text-white px-6 py-3 rounded-xl hover:bg-primary-800 font-medium transition-all"
             >
               Publicar piso
             </button>
           </div>
         )}
 
-        {/* Grid de pisos */}
         {!cargando && pisosOrdenados.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             {pisosOrdenados.map(piso => (
               <div
                 key={piso._id}
                 onClick={() => navigate(`/pisos/${piso._id}`)}
-                className="bg-white rounded-2xl shadow-sm hover:shadow-md cursor-pointer border border-gray-100 overflow-hidden transition-all"
+                className="bg-white rounded-3xl shadow-sm hover:shadow-xl cursor-pointer border border-gray-100 overflow-hidden transition-all duration-300 hover:-translate-y-1 group"
               >
-                <div className="h-48 bg-primary-50 overflow-hidden">
+                <div className="h-52 bg-primary-50 overflow-hidden relative">
                   {piso.fotos?.[0] ? (
                     <img
                       src={piso.fotos[0]}
                       alt={piso.titulo}
-                      className="w-full h-full object-cover hover:scale-105 transition-transform"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-5xl text-primary-100">🏠</div>
                   )}
-                </div>
-
-                <div className="p-4">
-                  <div className="mb-2">
+                  <div className="absolute top-3 left-3">
                     <span className={`text-xs px-2 py-1 rounded-full font-medium ${
                       piso.tipoEstancia === 'corta'
-                        ? 'bg-yellow-50 text-yellow-700'
-                        : 'bg-green-50 text-green-700'
+                        ? 'bg-yellow-400 text-yellow-900'
+                        : 'bg-green-400 text-green-900'
                     }`}>
-                      {piso.tipoEstancia === 'corta' ? '⚡ Estancia corta' : '📅 Estancia larga'}
+                      {piso.tipoEstancia === 'corta' ? '⚡ Corta' : '📅 Larga'}
                     </span>
                   </div>
+                </div>
 
-                  <h3 className="font-semibold text-gray-800 mb-1 leading-snug">{piso.titulo}</h3>
-                  <p className="text-gray-500 text-sm mb-3">📍 {piso.ciudad}</p>
+                <div className="p-5">
+                  <h3 className="font-semibold text-gray-800 mb-1 leading-snug group-hover:text-primary-700 transition-colors">
+                    {piso.titulo}
+                  </h3>
+                  <p className="text-gray-500 text-sm mb-4">📍 {piso.ciudad}</p>
 
                   <div className="flex justify-between items-center">
                     <span className="text-primary-700 font-bold text-lg">
@@ -237,10 +240,9 @@ export default function Pisos() {
       <footer className="bg-primary-900 text-white py-8 px-6 text-center mt-8">
         <div className="max-w-5xl mx-auto">
           <img src="/img/logo.png" alt="Profinter" className="h-8 mx-auto mb-3 opacity-70 brightness-0 invert" />
-          <p className="text-primary-100 text-sm">© 2026 Profinter · Portal de alquiler para interinos en Aragón</p>
+          <p className="text-primary-100 text-sm">© 2026 Profinter · Portal de alquiler para docentes</p>
         </div>
       </footer>
-
     </div>
   )
 }
