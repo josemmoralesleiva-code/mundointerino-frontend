@@ -113,7 +113,7 @@ export default function Dashboard() {
                     <div className="flex flex-col gap-2 ml-4">
                       <button
                         onClick={() => toggleDisponibilidad(piso._id)}
-                        className="text-xs bg-blue-50 text-blue-700 hover:bg-blue-100 px-3 py-1.5 rounded-lg font-medium"
+                        className="text-xs bg-blue-50 text-blue-700 hover:bg-primary-100 px-3 py-1.5 rounded-lg font-medium"
                       >
                         Cambiar disponibilidad
                       </button>
