@@ -16,6 +16,7 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/registro" element={<Registro />} />
         <Route path="/pisos" element={<Pisos />} />
+        <Route path="/pisos/:id" element={<DetallePiso />} /> 
         <Route path="/pisos/nuevo" element={
           <PrivateRoute>
             <NuevoPiso />
