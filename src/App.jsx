@@ -6,6 +6,7 @@ import Dashboard from './pages/Dashboard'
 import PrivateRoute from './components/PrivateRoute'
 import NuevoPiso from './pages/NuevoPiso'
 import Pisos from './pages/Pisos'
+import DetallePiso from './pages/DetallePiso';
 
 export default function App() {
   return (
