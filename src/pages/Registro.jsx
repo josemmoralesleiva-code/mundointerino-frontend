@@ -36,109 +36,170 @@ export default function Registro() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 w-full max-w-md">
-
-        <div
-          onClick={() => navigate('/')}
-          className="text-2xl font-bold text-blue-700 text-center mb-8 cursor-pointer"
-        >
-          🏠 Profinter
-        </div>
-
-        <h1 className="text-xl font-bold text-gray-800 mb-2">Crear cuenta</h1>
-        <p className="text-gray-500 text-sm mb-6">Gratis para docentes y propietarios</p>
-
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-600 rounded-xl px-4 py-3 mb-4 text-sm">
-            {error}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-
-          {/* ROL */}
-          <div className="grid grid-cols-2 gap-3">
-            <button
-              type="button"
-              onClick={() => setForm({ ...form, rol: 'interino' })}
-              className={`py-3 rounded-xl border-2 font-medium text-sm transition-all ${
-                form.rol === 'interino'
-                  ? 'border-blue-700 bg-blue-50 text-blue-700'
-                  : 'border-gray-200 text-gray-500'
-              }`}
-            >
-              👨‍🏫 Soy docente
-            </button>
-            <button
-              type="button"
-              onClick={() => setForm({ ...form, rol: 'propietario' })}
-              className={`py-3 rounded-xl border-2 font-medium text-sm transition-all ${
-                form.rol === 'propietario'
-                  ? 'border-blue-700 bg-blue-50 text-blue-700'
-                  : 'border-gray-200 text-gray-500'
-              }`}
-            >
-              🏠 Soy propietario
-            </button>
-          </div>
-
-          <div>
-            <label className="text-sm text-gray-600 mb-1 block">Nombre completo</label>
-            <input
-              type="text"
-              name="nombre"
-              value={form.nombre}
-              onChange={handleChange}
-              required
-              placeholder="Tu nombre"
-              className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-400"
-            />
-          </div>
-          <div>
-            <label className="text-sm text-gray-600 mb-1 block">Email</label>
-            <input
-              type="email"
-              name="email"
-              value={form.email}
-              onChange={handleChange}
-              required
-              placeholder="tu@email.com"
-              className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-400"
-            />
-          </div>
-          <div>
-            <label className="text-sm text-gray-600 mb-1 block">Contraseña</label>
-            <input
-              type="password"
-              name="password"
-              value={form.password}
-              onChange={handleChange}
-              required
-              placeholder="Mínimo 6 caracteres"
-              className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-400"
-            />
-          </div>
-
-          <button
-            type="submit"
-            disabled={cargando}
-            className="bg-blue-700 text-white py-3 rounded-xl font-semibold hover:bg-blue-800 disabled:opacity-50 mt-2"
-          >
-            {cargando ? 'Creando cuenta...' : 'Crear cuenta gratis'}
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      {/* NAVBAR */}
+      <nav className="bg-white shadow-sm px-6 py-3">
+        <div className="max-w-7xl mx-auto flex justify-between items-center">
+          <button onClick={() => navigate('/')} className="flex items-center">
+            <img src="/img/logo.png" alt="Profinter" className="h-10" />
           </button>
-        </form>
 
-        <p className="text-center text-gray-500 text-sm mt-6">
-          ¿Ya tienes cuenta?{' '}
-          <span
-            onClick={() => navigate('/login')}
-            className="text-blue-700 font-medium cursor-pointer hover:underline"
-          >
-            Iniciar sesión
-          </span>
-        </p>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => navigate('/login')}
+              className="border border-primary-700 text-primary-700 px-4 py-2 rounded-lg hover:bg-primary-50 font-medium transition-all text-sm"
+            >
+              Iniciar sesión
+            </button>
+            <button
+              onClick={() => navigate('/publicar')}
+              className="bg-primary-700 text-white px-4 py-2 rounded-lg hover:bg-primary-800 font-medium transition-all text-sm"
+            >
+              Publicar piso
+            </button>
+          </div>
+        </div>
+      </nav>
 
+      {/* CONTENIDO */}
+      <div className="flex-1 flex items-center justify-center px-4 py-10">
+        <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+
+          {/* BLOQUE IZQUIERDO */}
+          <div className="hidden md:block">
+            <div
+              className="rounded-3xl overflow-hidden min-h-[540px] relative shadow-2xl"
+              style={{
+                backgroundImage: 'url(https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=1600&q=80)',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+              }}
+            >
+              <div className="absolute inset-0 bg-primary-900/80"></div>
+              <div className="relative h-full flex flex-col justify-end p-10 text-white">
+                <h1 className="text-4xl font-bold leading-tight mb-4">
+                  Crea tu cuenta
+                  <span className="text-accent-400 block">en Profinter</span>
+                </h1>
+                <p className="text-primary-100 text-lg max-w-md">
+                  Accede a favoritos, chats y gestión de anuncios en una sola plataforma.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* TARJETA REGISTRO */}
+          <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-8 md:p-10">
+            <div className="mb-8 text-center">
+              <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-primary-50 mb-4">
+                <span className="text-2xl">✨</span>
+              </div>
+              <h2 className="text-3xl font-bold text-gray-800">Crear cuenta</h2>
+              <p className="text-gray-500 mt-2">
+                Gratis para docentes y propietarios.
+              </p>
+            </div>
+
+            {error && (
+              <div className="bg-red-50 border border-red-200 text-red-600 rounded-xl px-4 py-3 mb-5 text-sm">
+                {error}
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+              {/* ROL */}
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={() => setForm({ ...form, rol: 'interino' })}
+                  className={`py-3 rounded-xl border-2 font-medium text-sm transition-all ${
+                    form.rol === 'interino'
+                      ? 'border-primary-700 bg-primary-50 text-primary-700'
+                      : 'border-gray-200 text-gray-500 hover:border-gray-300'
+                  }`}
+                >
+                  👨‍🏫 Soy docente
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setForm({ ...form, rol: 'propietario' })}
+                  className={`py-3 rounded-xl border-2 font-medium text-sm transition-all ${
+                    form.rol === 'propietario'
+                      ? 'border-primary-700 bg-primary-50 text-primary-700'
+                      : 'border-gray-200 text-gray-500 hover:border-gray-300'
+                  }`}
+                >
+                  🏠 Soy propietario
+                </button>
+              </div>
+
+              <div>
+                <label className="text-sm font-medium text-gray-700 mb-1 block">Nombre completo</label>
+                <input
+                  type="text"
+                  name="nombre"
+                  value={form.nombre}
+                  onChange={handleChange}
+                  required
+                  placeholder="Tu nombre"
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 transition-colors"
+                />
+              </div>
+
+              <div>
+                <label className="text-sm font-medium text-gray-700 mb-1 block">Email</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={form.email}
+                  onChange={handleChange}
+                  required
+                  placeholder="tu@email.com"
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 transition-colors"
+                />
+              </div>
+
+              <div>
+                <label className="text-sm font-medium text-gray-700 mb-1 block">Contraseña</label>
+                <input
+                  type="password"
+                  name="password"
+                  value={form.password}
+                  onChange={handleChange}
+                  required
+                  placeholder="Mínimo 6 caracteres"
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 transition-colors"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={cargando}
+                className="bg-primary-700 text-white py-3 rounded-xl font-semibold hover:bg-primary-800 disabled:opacity-50 mt-2 transition-all hover:scale-[1.01]"
+              >
+                {cargando ? 'Creando cuenta...' : 'Crear cuenta gratis'}
+              </button>
+            </form>
+
+            <div className="mt-6 text-center">
+              <p className="text-gray-500 text-sm">
+                ¿Ya tienes cuenta?{' '}
+                <button
+                  onClick={() => navigate('/login')}
+                  className="text-primary-700 font-medium hover:underline"
+                >
+                  Iniciar sesión
+                </button>
+              </p>
+            </div>
+
+            <div className="mt-8 grid grid-cols-3 gap-3 text-center text-xs text-gray-500">
+              <div className="bg-gray-50 rounded-xl py-3">Docentes</div>
+              <div className="bg-gray-50 rounded-xl py-3">Propietarios</div>
+              <div className="bg-gray-50 rounded-xl py-3">Sin comisiones</div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   )
