@@ -196,7 +196,8 @@ export default function DetallePiso() {
             {/* Mapa */}
             <div>
               <h2 className="text-base font-semibold text-gray-900 mb-3">Ubicación</h2>
-              
+              {/* ✅ CORREGIDO: añadido <a al inicio */}
+              <a
                 href={mapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -253,7 +254,8 @@ export default function DetallePiso() {
               <div className="border-t border-gray-100 mb-5" />
 
               {piso.propietario?.telefono && (
-                
+                // ✅ CORREGIDO: añadido <a al inicio
+                <a
                   href={`tel:${piso.propietario.telefono}`}
                   className="w-full flex items-center justify-center gap-2 bg-gray-900 hover:bg-gray-700 text-white py-3 rounded-xl font-medium text-sm transition-all mb-3"
                 >
@@ -262,7 +264,8 @@ export default function DetallePiso() {
               )}
 
               {piso.propietario?.email && (
-                
+                // ✅ CORREGIDO: añadido <a al inicio
+                <a
                   href={`mailto:${piso.propietario.email}?subject=Consulta sobre ${encodeURIComponent(piso.titulo)}`}
                   className="w-full flex items-center justify-center gap-2 border border-gray-200 hover:border-gray-400 text-gray-700 py-3 rounded-xl font-medium text-sm transition-all mb-3"
                 >
