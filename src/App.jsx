@@ -10,6 +10,7 @@ import DetallePiso from './pages/DetallePiso'
 import EditarPiso from './pages/EditarPiso'
 import VerificacionDocente from './pages/VerificacionDocente'
 import VerificacionPropietario from './pages/VerificacionPropietario'
+import Admin from './pages/Admin'
 
 export default function App() {
   return (
@@ -37,6 +38,11 @@ export default function App() {
         } />
         <Route path="/verificacion-docente" element={<VerificacionDocente />} />
         <Route path="/verificacion-propietario" element={<VerificacionPropietario />} />
+        <Route path="/admin" element={
+        <PrivateRoute>
+         <Admin />
+        </PrivateRoute>
+        } />
       </Routes>
     </BrowserRouter>
   )
