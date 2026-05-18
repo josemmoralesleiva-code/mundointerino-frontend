@@ -17,7 +17,7 @@ import Comunidad from './pages/Comunidad'
 import Provincia from './pages/Provincia'
 import ZonaDetalle from './pages/ZonaDetalle'
 import Contacto from './pages/Contacto'
-import NuevoPiso from './pages/NuevoPiso'
+import SobreNosotros from './pages/SobreNosotros'
 
 export default function App() {
   return (
@@ -27,34 +27,49 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/registro" element={<Registro />} />
         <Route path="/pisos" element={<Pisos />} />
-        <Route path="/pisos/nuevo" element={
-          <PrivateRoute>
-            <NuevoPiso />
-          </PrivateRoute>
-        } />
+        <Route
+          path="/pisos/nuevo"
+          element={
+            <PrivateRoute>
+              <NuevoPiso />
+            </PrivateRoute>
+          }
+        />
         <Route path="/pisos/:id" element={<DetallePiso />} />
-        <Route path="/pisos/:id/editar" element={
-          <PrivateRoute>
-            <EditarPiso />
-          </PrivateRoute>
-        } />
-        <Route path="/dashboard" element={
-          <PrivateRoute>
-            <Dashboard />
-          </PrivateRoute>
-        } />
-        <Route path="/perfil" element={
-          <PrivateRoute>
-            <Perfil />
-          </PrivateRoute>
-        } />
+        <Route
+          path="/pisos/:id/editar"
+          element={
+            <PrivateRoute>
+              <EditarPiso />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/dashboard"
+          element={
+            <PrivateRoute>
+              <Dashboard />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/perfil"
+          element={
+            <PrivateRoute>
+              <Perfil />
+            </PrivateRoute>
+          }
+        />
         <Route path="/verificacion-docente" element={<VerificacionDocente />} />
         <Route path="/verificacion-propietario" element={<VerificacionPropietario />} />
-        <Route path="/admin" element={
-          <PrivateRoute>
-            <Admin />
-          </PrivateRoute>
-        } />
+        <Route
+          path="/admin"
+          element={
+            <PrivateRoute>
+              <Admin />
+            </PrivateRoute>
+          }
+        />
         <Route path="/zonas" element={<Zonas />} />
         <Route path="/zonas/:comunidad" element={<Comunidad />} />
         <Route path="/zonas/:comunidad/:provincia" element={<Provincia />} />
