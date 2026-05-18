@@ -48,45 +48,50 @@ export default function NuevoPiso() {
       return
     }
     setImagenes(archivos)
-    const urls = archivos.map(f => URL.createObjectURL(f))
-    setPreviews(urls)
+    setPreviews(archivos.map(f => URL.createObjectURL(f)))
     setError('')
   }
 
   const eliminarImagen = (i) => {
-    const nuevas = imagenes.filter((_, idx) => idx !== i)
-    const nuevasPrev = previews.filter((_, idx) => idx !== i)
-    setImagenes(nuevas)
-    setPreviews(nuevasPrev)
+    setImagenes(prev => prev.filter((_, idx) => idx !== i))
+    setPreviews(prev => prev.filter((_, idx) => idx !== i))
   }
 
   const validarPaso = () => {
-    if (paso === 1) {
-      if (!form.titulo || !form.descripcion || !form.ciudad) {
-        setError('Por favor rellena título, descripción y ciudad.')
-        return false
-      }
+    if (paso === 1 && (!form.titulo || !form.descripcion || !form.ciudad)) {
+      setError('Por favor rellena título, descripción y ciudad.')
+      return false
     }
-    if (paso === 2) {
-      if (!form.precio || !form.tipoEstancia || !form.habitaciones || !form.disponible) {
-        setError('Por favor rellena precio, tipo de estancia, habitaciones y fecha.')
-        return false
-      }
+    if (paso === 2 && (!form.precio || !form.tipoEstancia || !form.habitaciones || !form.disponible)) {
+      setError('Por favor rellena precio, tipo de estancia, habitaciones y fecha.')
+      return false
     }
     setError('')
     return true
   }
 
-  const siguiente = () => { if (validarPaso()) setPaso(p => p + 1) }
-  const anterior = () => { setError(''); setPaso(p => p - 1) }
-
-  const handleSubmit = async e => {
+  // ✅ Navegación separada del submit — NO usan el form
+  const handleSiguiente = (e) => {
     e.preventDefault()
+    e.stopPropagation()
+    if (validarPaso()) setPaso(p => p + 1)
+  }
+
+  const handleAnterior = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setError('')
+    setPaso(p => p - 1)
+  }
+
+  // ✅ Solo se ejecuta en paso 3 con el botón de submit real
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    if (paso !== 3) return // 🔒 Guardia extra: solo publica en paso 3
     setCargando(true)
     setError('')
     try {
       const token = localStorage.getItem('token')
-
       const formData = new FormData()
       formData.append('titulo', form.titulo)
       formData.append('descripcion', form.descripcion)
@@ -120,7 +125,6 @@ export default function NuevoPiso() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-
       <Navbar />
 
       {/* HERO */}
@@ -129,7 +133,7 @@ export default function NuevoPiso() {
           backgroundImage: 'url(https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=1600&q=80)',
           backgroundSize: 'cover', backgroundPosition: 'center'
         }}>
-        <div className="absolute inset-0 bg-primary-900/80"></div>
+        <div className="absolute inset-0 bg-primary-900/80" />
         <div className="relative max-w-3xl mx-auto text-center">
           <h1 className="text-3xl md:text-4xl font-bold mb-3">Publicar piso</h1>
           <p className="text-primary-100 text-lg">Conecta con docentes interinos que necesitan alojamiento en Aragón.</p>
@@ -172,9 +176,10 @@ export default function NuevoPiso() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit}>
+        {/* ✅ onSubmit solo actúa en paso 3 */}
+        <form onSubmit={handleSubmit} noValidate>
 
-          {/* PASO 1 — Información básica */}
+          {/* PASO 1 */}
           {paso === 1 && (
             <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 md:p-8 space-y-5">
               <div>
@@ -216,7 +221,7 @@ export default function NuevoPiso() {
             </div>
           )}
 
-          {/* PASO 2 — Precio y detalles */}
+          {/* PASO 2 */}
           {paso === 2 && (
             <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 md:p-8 space-y-5">
               <div>
@@ -240,24 +245,20 @@ export default function NuevoPiso() {
                 </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-medium text-gray-700 mb-1 block">Precio mensual (€) *</label>
-                  <input type="number" name="precio" value={form.precio} onChange={handleChange}
-                    min={50} placeholder="450"
-                    className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 transition-colors" />
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-700 mb-1 block">Precio por día (€)</label>
-                  <input type="number" name="precioDia" value={form.precioDia} onChange={handleChange}
-                    min={10} placeholder="25"
-                    className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 transition-colors" />
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-700 mb-1 block">Fianza (€)</label>
-                  <input type="number" name="fianza" value={form.fianza} onChange={handleChange}
-                    min={0} placeholder="0"
-                    className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 transition-colors" />
-                </div>
+                {[
+                  { label: 'Precio mensual (€) *', name: 'precio', type: 'number', placeholder: '450', min: 50 },
+                  { label: 'Precio por día (€)', name: 'precioDia', type: 'number', placeholder: '25', min: 10 },
+                  { label: 'Fianza (€)', name: 'fianza', type: 'number', placeholder: '0', min: 0 },
+                  { label: 'Metros cuadrados', name: 'metros', type: 'number', placeholder: '70', min: 10 },
+                  { label: 'Planta', name: 'planta', type: 'text', placeholder: 'Ej: 3º, Bajo, Ático...' },
+                ].map(f => (
+                  <div key={f.name}>
+                    <label className="text-sm font-medium text-gray-700 mb-1 block">{f.label}</label>
+                    <input type={f.type} name={f.name} value={form[f.name]} onChange={handleChange}
+                      placeholder={f.placeholder} min={f.min}
+                      className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 transition-colors" />
+                  </div>
+                ))}
                 <div>
                   <label className="text-sm font-medium text-gray-700 mb-1 block">Habitaciones *</label>
                   <select name="habitaciones" value={form.habitaciones} onChange={handleChange}
@@ -275,18 +276,6 @@ export default function NuevoPiso() {
                   </select>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-700 mb-1 block">Metros cuadrados</label>
-                  <input type="number" name="metros" value={form.metros} onChange={handleChange}
-                    min={10} placeholder="70"
-                    className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 transition-colors" />
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-700 mb-1 block">Planta</label>
-                  <input type="text" name="planta" value={form.planta} onChange={handleChange}
-                    placeholder="Ej: 3º, Bajo, Ático..."
-                    className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 transition-colors" />
-                </div>
-                <div>
                   <label className="text-sm font-medium text-gray-700 mb-1 block">Disponible desde *</label>
                   <input type="date" name="disponible" value={form.disponible} onChange={handleChange}
                     className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 transition-colors" />
@@ -295,7 +284,7 @@ export default function NuevoPiso() {
             </div>
           )}
 
-          {/* PASO 3 — Fotos y servicios */}
+          {/* PASO 3 */}
           {paso === 3 && (
             <div className="space-y-5">
 
@@ -305,18 +294,21 @@ export default function NuevoPiso() {
                   <h2 className="text-xl font-bold text-gray-800 mb-1">📸 Fotos del piso</h2>
                   <p className="text-gray-400 text-sm">Sube hasta 8 fotos. Los pisos con fotos reciben 5x más contactos.</p>
                 </div>
-
-                {/* ZONA DE SUBIDA */}
                 <label className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-primary-200 rounded-2xl cursor-pointer bg-primary-50 hover:bg-primary-100 transition-colors">
-                  <div className="text-center">
+                  <div className="text-center pointer-events-none">
                     <div className="text-4xl mb-2">📷</div>
                     <p className="text-primary-700 font-semibold text-sm">Haz clic para seleccionar fotos</p>
                     <p className="text-gray-400 text-xs mt-1">JPG, PNG, WEBP · Máx. 5MB por foto · Hasta 8 fotos</p>
                   </div>
-                  <input type="file" accept="image/*" multiple onChange={handleImagenesChange} className="hidden" />
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    multiple
+                    onChange={handleImagenesChange}
+                    className="hidden"
+                  />
                 </label>
 
-                {/* PREVIEWS */}
                 {previews.length > 0 && (
                   <div>
                     <p className="text-sm font-medium text-gray-700 mb-3">
@@ -332,8 +324,11 @@ export default function NuevoPiso() {
                               Principal
                             </span>
                           )}
-                          <button type="button" onClick={() => eliminarImagen(i)}
-                            className="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full text-xs opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                          <button
+                            type="button"
+                            onClick={() => eliminarImagen(i)}
+                            className="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full text-xs opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+                          >
                             ✕
                           </button>
                         </div>
@@ -362,15 +357,15 @@ export default function NuevoPiso() {
                   ))}
                 </div>
                 {form.servicios.length > 0 && (
-                  <p className="text-sm text-primary-700 font-medium">✓ {form.servicios.length} servicio{form.servicios.length > 1 ? 's' : ''} seleccionado{form.servicios.length > 1 ? 's' : ''}</p>
+                  <p className="text-sm text-primary-700 font-medium">
+                    ✓ {form.servicios.length} servicio{form.servicios.length > 1 ? 's' : ''} seleccionado{form.servicios.length > 1 ? 's' : ''}
+                  </p>
                 )}
               </div>
 
-              {/* RESUMEN FINAL */}
+              {/* RESUMEN */}
               <div className="bg-gradient-to-br from-primary-50 to-blue-50 rounded-3xl border border-primary-100 p-6">
-                <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
-                  📝 <span>Resumen del anuncio</span>
-                </h3>
+                <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">📝 Resumen del anuncio</h3>
                 <div className="grid grid-cols-2 gap-3 text-sm">
                   {[
                     ['📍', `${form.ciudad}${form.barrio ? `, ${form.barrio}` : ''}`],
@@ -390,17 +385,17 @@ export default function NuevoPiso() {
             </div>
           )}
 
-          {/* BOTONES NAVEGACIÓN */}
+          {/* BOTONES — FUERA de los pasos pero DENTRO del form */}
           <div className="flex justify-between mt-6">
             {paso > 1 ? (
-              <button type="button" onClick={anterior}
+              <button type="button" onClick={handleAnterior}
                 className="px-6 py-3 rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 font-medium transition-all">
                 ← Anterior
               </button>
             ) : <div />}
 
             {paso < 3 ? (
-              <button type="button" onClick={siguiente}
+              <button type="button" onClick={handleSiguiente}
                 className="px-6 py-3 rounded-xl bg-primary-700 text-white hover:bg-primary-800 font-semibold transition-all">
                 Siguiente →
               </button>
@@ -416,6 +411,7 @@ export default function NuevoPiso() {
               </button>
             )}
           </div>
+
         </form>
       </div>
     </div>
