@@ -120,6 +120,10 @@ export default function Navbar() {
                 className="bg-primary-700 text-white px-4 py-2 rounded-lg hover:bg-primary-800 font-medium transition-all text-sm">
                 Registrarse
               </button>
+              <button onClick={() => { navigate('/perfil'); setMenuUsuario(false) }}
+                className="w-full text-left text-sm text-gray-700 hover:text-primary-700 py-2 px-3 rounded-lg hover:bg-gray-50">
+                 Mi perfil
+              </button>
             </>
           )}
         </div>

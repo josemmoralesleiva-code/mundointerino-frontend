@@ -11,6 +11,7 @@ import EditarPiso from './pages/EditarPiso'
 import VerificacionDocente from './pages/VerificacionDocente'
 import VerificacionPropietario from './pages/VerificacionPropietario'
 import Admin from './pages/Admin'
+import Perfil from './pages/Perfil'
 
 export default function App() {
   return (
@@ -36,12 +37,17 @@ export default function App() {
             <Dashboard />
           </PrivateRoute>
         } />
+        <Route path="/perfil" element={
+          <PrivateRoute>
+            <Perfil />
+          </PrivateRoute>
+        } />
         <Route path="/verificacion-docente" element={<VerificacionDocente />} />
         <Route path="/verificacion-propietario" element={<VerificacionPropietario />} />
         <Route path="/admin" element={
-        <PrivateRoute>
-         <Admin />
-        </PrivateRoute>
+          <PrivateRoute>
+            <Admin />
+          </PrivateRoute>
         } />
       </Routes>
     </BrowserRouter>
