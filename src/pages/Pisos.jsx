@@ -14,12 +14,14 @@ export default function Pisos() {
   const [ciudad, setCiudad] = useState(searchParams.get('ciudad') || '')
   const [fecha, setFecha] = useState(searchParams.get('fecha') || '')
   const [tipoEstancia, setTipoEstancia] = useState(searchParams.get('tipo') || '')
+  const [comunidad, setComunidad] = useState(searchParams.get('comunidad') || '')
+  const [provincia, setProvincia] = useState(searchParams.get('provincia') || '')
 
-  const fetchPisos = async (c, f, t) => {
+  const fetchPisos = async (c, f, t, co, pro) => {
     setCargando(true)
     try {
       const res = await axios.get(`${API}/api/pisos`, {
-        params: { ciudad: c, fecha: f, tipo: t }
+        params: { ciudad: c, fecha: f, tipo: t, comunidad: co, provincia: pro }
       })
       setPisos(res.data.pisos || [])
     } catch (error) {
@@ -31,11 +33,11 @@ export default function Pisos() {
   }
 
   useEffect(() => {
-    fetchPisos(ciudad, fecha, tipoEstancia)
+    fetchPisos(ciudad, fecha, tipoEstancia, comunidad, provincia)
   }, [])
 
   const handleBuscar = () => {
-    fetchPisos(ciudad, fecha, tipoEstancia)
+    fetchPisos(ciudad, fecha, tipoEstancia, comunidad, provincia)
   }
 
   const pisosOrdenados = [...pisos].sort((a, b) =>
@@ -53,10 +55,10 @@ export default function Pisos() {
 
           <div className="hidden md:flex items-center gap-3">
             <button
-              onClick={() => navigate('/pisos')}
+              onClick={() => navigate('/zonas')}
               className="text-primary-700 font-semibold text-sm border-b-2 border-primary-700 pb-1"
             >
-              Buscar piso
+              Buscar por zonas
             </button>
             <button
               onClick={() => navigate('/publicar')}
@@ -89,7 +91,7 @@ export default function Pisos() {
             Encuentra tu piso ideal
           </h1>
           <p className="text-primary-100 text-lg max-w-2xl">
-            Filtra por ciudad, fecha y tipo de estancia para encontrar alojamientos para docentes.
+            Filtra por comunidad, provincia, ciudad, fecha y tipo de estancia para encontrar alojamientos para docentes.
           </p>
         </div>
       </section>
@@ -98,10 +100,10 @@ export default function Pisos() {
       <div className="max-w-7xl mx-auto px-6 -mt-8 relative z-10">
         <div className="bg-white rounded-3xl p-4 md:p-5 shadow-xl border border-gray-100 flex flex-col md:flex-row gap-3">
           <div className="flex-1 flex flex-col items-start px-2">
-            <label className="text-xs text-gray-500 mb-1 font-medium">📍 Localidad o provincia</label>
+            <label className="text-xs text-gray-500 mb-1 font-medium">📍 Comunidad / provincia / ciudad</label>
             <input
               type="text"
-              placeholder="Ciudad o provincia…"
+              placeholder="Ej: Andalucía, Sevilla, Málaga..."
               value={ciudad}
               onChange={e => setCiudad(e.target.value)}
               className="w-full border border-gray-200 rounded-xl px-3 py-2 text-gray-700 focus:outline-none focus:border-primary-500"
@@ -127,6 +129,28 @@ export default function Pisos() {
               <option value="corta">Corta (días/semanas)</option>
               <option value="larga">Larga (meses)</option>
             </select>
+          </div>
+          <div className="flex flex-col items-start px-2">
+            <label className="text-xs text-gray-500 mb-1 font-medium">🏞 Comunidad</label>
+            <select
+              value={comunidad}
+              onChange={e => setComunidad(e.target.value)}
+              className="border border-gray-200 rounded-xl px-3 py-2 text-gray-700 focus:outline-none focus:border-primary-500"
+            >
+              <option value="">Cualquiera</option>
+              <option value="aragon">Aragón</option>
+              <option value="andalucia">Andalucía</option>
+            </select>
+          </div>
+          <div className="flex flex-col items-start px-2">
+            <label className="text-xs text-gray-500 mb-1 font-medium">🏙 Provincia</label>
+            <input
+              type="text"
+              placeholder="Ej: Zaragoza"
+              value={provincia}
+              onChange={e => setProvincia(e.target.value)}
+              className="border border-gray-200 rounded-xl px-3 py-2 text-gray-700 focus:outline-none focus:border-primary-500"
+            />
           </div>
           <button
             onClick={handleBuscar}
