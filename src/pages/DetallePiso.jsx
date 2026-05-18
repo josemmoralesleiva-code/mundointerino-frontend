@@ -13,42 +13,65 @@ export default function DetallePiso() {
   const [fotoActiva, setFotoActiva] = useState(0)
 
   useEffect(() => {
-    axios.get(`${API_URL}/api/pisos/${id}`)
-      .then(res => setPiso(res.data))
-      .catch(() => setError(true))
+    const cargar = async () => {
+      try {
+        const res = await axios.get(`${API_URL}/api/pisos/${id}`)
+        setPiso(res.data)
+        setError(false)
+        setFotoActiva(0)
+      } catch (err) {
+        setError(true)
+      }
+    }
+
+    if (id) cargar()
   }, [id])
 
-  if (error) return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-      <div className="text-center p-10 max-w-sm bg-white rounded-3xl shadow-sm border border-gray-100">
-        <div className="text-6xl mb-5">😕</div>
-        <h1 className="text-xl font-semibold text-gray-900 mb-2">Piso no encontrado</h1>
-        <p className="text-gray-400 text-sm mb-6">No hemos podido localizar este anuncio.</p>
-        <button onClick={() => navigate('/pisos')}
-          className="bg-primary-700 text-white px-6 py-3 rounded-xl hover:bg-primary-800 transition-all font-medium text-sm">
-          Volver al listado
-        </button>
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+        <div className="text-center p-10 max-w-sm bg-white rounded-3xl shadow-sm border border-gray-100">
+          <div className="text-6xl mb-5">😕</div>
+          <h1 className="text-xl font-semibold text-gray-900 mb-2">Piso no encontrado</h1>
+          <p className="text-gray-400 text-sm mb-6">No hemos podido localizar este anuncio.</p>
+          <button
+            onClick={() => navigate('/pisos')}
+            className="bg-primary-700 text-white px-6 py-3 rounded-xl hover:bg-primary-800 transition-all font-medium text-sm"
+          >
+            Volver al listado
+          </button>
+        </div>
       </div>
-    </div>
-  )
+    )
+  }
 
-  if (!piso) return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-      <div className="flex flex-col items-center gap-3">
-        <div className="w-10 h-10 border-3 border-primary-200 border-t-primary-700 rounded-full animate-spin" />
-        <p className="text-sm text-gray-400">Cargando piso...</p>
+  if (!piso) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-10 h-10 border-3 border-primary-200 border-t-primary-700 rounded-full animate-spin" />
+          <p className="text-sm text-gray-400">Cargando piso...</p>
+        </div>
       </div>
-    </div>
-  )
+    )
+  }
 
   const fotos = piso.fotos?.length > 0 ? piso.fotos : null
   const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((piso.ciudad || '') + ' ' + (piso.barrio || ''))}`
 
   const serviciosIconos = {
-    'WiFi': '📶', 'Calefacción': '🔥', 'Aire acondicionado': '❄️',
-    'Lavadora': '🫧', 'Cocina equipada': '🍳', 'Parking': '🅿️',
-    'Terraza': '🌿', 'Ascensor': '🛗', 'Amueblado': '🛋️',
-    'Agua incluida': '💧', 'Luz incluida': '💡', 'Mascotas': '🐾',
+    WiFi: '📶',
+    Calefacción: '🔥',
+    'Aire acondicionado': '❄️',
+    Lavadora: '🫧',
+    'Cocina equipada': '🍳',
+    Parking: '🅿️',
+    Terraza: '🌿',
+    Ascensor: '🛗',
+    Amueblado: '🛋️',
+    'Agua incluida': '💧',
+    'Luz incluida': '💡',
+    Mascotas: '🐾',
   }
 
   return (
@@ -62,10 +85,10 @@ export default function DetallePiso() {
       <Navbar />
 
       <div className="max-w-6xl mx-auto px-4 md:px-6 py-8 fade-in">
-
-        {/* Breadcrumb */}
-        <button onClick={() => navigate('/pisos')}
-          className="flex items-center gap-1.5 text-gray-400 hover:text-primary-700 text-sm mb-6 transition-colors group">
+        <button
+          onClick={() => navigate('/pisos')}
+          className="flex items-center gap-1.5 text-gray-400 hover:text-primary-700 text-sm mb-6 transition-colors group"
+        >
           <span className="group-hover:-translate-x-0.5 transition-transform">←</span>
           <span>Volver al listado</span>
         </button>
@@ -75,9 +98,12 @@ export default function DetallePiso() {
           {fotos ? (
             <div className="grid grid-cols-1 gap-3">
               <div className="w-full h-72 md:h-[500px] rounded-3xl overflow-hidden bg-gray-100 relative">
-                <img key={fotoActiva} src={fotos[fotoActiva]} alt={piso.titulo}
-                  className="w-full h-full object-cover fade-in" />
-                {/* Badge tipo estancia sobre la foto */}
+                <img
+                  key={fotoActiva}
+                  src={fotos[fotoActiva]}
+                  alt={piso.titulo}
+                  className="w-full h-full object-cover fade-in"
+                />
                 <div className="absolute top-4 left-4 flex gap-2">
                   <span className={`px-3 py-1.5 rounded-full text-xs font-bold shadow-lg backdrop-blur-sm ${
                     piso.tipoEstancia === 'corta'
@@ -94,20 +120,23 @@ export default function DetallePiso() {
                     </span>
                   )}
                 </div>
-                {/* Contador fotos */}
                 {fotos.length > 1 && (
                   <div className="absolute bottom-4 right-4 bg-black/50 text-white text-xs px-3 py-1 rounded-full backdrop-blur-sm">
                     {fotoActiva + 1} / {fotos.length}
                   </div>
                 )}
               </div>
+
               {fotos.length > 1 && (
                 <div className="flex gap-2 overflow-x-auto pb-1">
                   {fotos.map((foto, i) => (
-                    <button key={i} onClick={() => setFotoActiva(i)}
+                    <button
+                      key={i}
+                      onClick={() => setFotoActiva(i)}
                       className={`flex-shrink-0 w-20 h-16 rounded-xl overflow-hidden transition-all border-2 ${
                         fotoActiva === i ? 'border-primary-700 opacity-100' : 'border-transparent opacity-50 hover:opacity-80'
-                      }`}>
+                      }`}
+                    >
                       <img src={foto} alt="" className="w-full h-full object-cover" />
                     </button>
                   ))}
@@ -121,13 +150,9 @@ export default function DetallePiso() {
           )}
         </div>
 
-        {/* CONTENIDO PRINCIPAL */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
           {/* COLUMNA PRINCIPAL */}
           <div className="lg:col-span-2 space-y-6">
-
-            {/* TÍTULO Y UBICACIÓN */}
             <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
               <h1 style={{ fontFamily: "'DM Serif Display', serif" }}
                 className="text-3xl md:text-4xl text-gray-900 mb-3 leading-tight">
@@ -138,7 +163,6 @@ export default function DetallePiso() {
                 <span className="font-medium">{piso.ciudad}{piso.barrio ? ` · ${piso.barrio}` : ''}</span>
               </p>
 
-              {/* STATS DEL PISO */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 <div className="bg-primary-50 rounded-2xl p-4 text-center border border-primary-100">
                   <div className="text-2xl mb-1">🛏</div>
@@ -163,7 +187,6 @@ export default function DetallePiso() {
               </div>
             </div>
 
-            {/* DESCRIPCIÓN */}
             {piso.descripcion && (
               <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
                 <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
@@ -173,7 +196,6 @@ export default function DetallePiso() {
               </div>
             )}
 
-            {/* DETALLES ADICIONALES */}
             <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
               <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
                 🏠 <span>Detalles del piso</span>
@@ -189,7 +211,7 @@ export default function DetallePiso() {
                   { label: 'Planta', valor: piso.planta, icono: '🏢' },
                   { label: 'Precio', valor: `${piso.precio}€ ${piso.tipoEstancia === 'corta' ? '/noche' : '/mes'}`, icono: '💶' },
                   { label: 'Disponibilidad', valor: piso.activo ? 'Disponible' : 'No disponible', icono: piso.activo ? '✅' : '❌' },
-                  { label: 'Publicado', valor: new Date(piso.createdAt).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' }), icono: '📆' },
+                  { label: 'Publicado', valor: piso.createdAt ? new Date(piso.createdAt).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' }) : '—', icono: '📆' },
                 ].filter(d => d.valor !== null && d.valor !== undefined && d.valor !== '').map(d => (
                   <div key={d.label} className="flex items-center gap-3 bg-gray-50 rounded-xl px-4 py-3 border border-gray-100">
                     <span className="text-lg">{d.icono}</span>
@@ -202,7 +224,6 @@ export default function DetallePiso() {
               </div>
             </div>
 
-            {/* SERVICIOS */}
             {piso.servicios?.length > 0 && (
               <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
                 <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
@@ -210,8 +231,10 @@ export default function DetallePiso() {
                 </h2>
                 <div className="flex flex-wrap gap-2">
                   {piso.servicios.map(servicio => (
-                    <span key={servicio}
-                      className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary-50 border border-primary-100 text-sm text-primary-800 font-medium">
+                    <span
+                      key={servicio}
+                      className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary-50 border border-primary-100 text-sm text-primary-800 font-medium"
+                    >
                       <span>{serviciosIconos[servicio] || '✅'}</span>
                       {servicio}
                     </span>
@@ -220,13 +243,16 @@ export default function DetallePiso() {
               </div>
             )}
 
-            {/* UBICACIÓN */}
             <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
               <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
                 🗺️ <span>Ubicación</span>
               </h2>
-              <a href={mapsUrl} target="_blank" rel="noopener noreferrer"
-                className="group flex items-center justify-between bg-gradient-to-r from-primary-50 to-blue-50 hover:from-primary-100 hover:to-blue-100 border border-primary-100 rounded-2xl p-5 transition-all">
+              <a
+                href={mapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex items-center justify-between bg-gradient-to-r from-primary-50 to-blue-50 hover:from-primary-100 hover:to-blue-100 border border-primary-100 rounded-2xl p-5 transition-all"
+              >
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm text-2xl">
                     🗺️
@@ -240,7 +266,6 @@ export default function DetallePiso() {
               </a>
             </div>
 
-            {/* PROPIETARIO */}
             {piso.propietario && (
               <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
                 <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
@@ -270,8 +295,6 @@ export default function DetallePiso() {
           {/* SIDEBAR */}
           <div className="lg:col-span-1">
             <div className="sticky top-24 space-y-4">
-
-              {/* PRECIO */}
               <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
                 <div className="mb-4">
                   <div className="flex items-baseline gap-1">
@@ -289,33 +312,41 @@ export default function DetallePiso() {
 
                 <div className="space-y-3">
                   {piso.propietario?.telefono && (
-                    <a href={`tel:${piso.propietario.telefono}`}
-                      className="w-full flex items-center justify-center gap-2 bg-primary-700 hover:bg-primary-800 text-white py-3.5 rounded-xl font-semibold text-sm transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5">
+                    <a
+                      href={`tel:${piso.propietario.telefono}`}
+                      className="w-full flex items-center justify-center gap-2 bg-primary-700 hover:bg-primary-800 text-white py-3.5 rounded-xl font-semibold text-sm transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5"
+                    >
                       📞 Llamar al propietario
                     </a>
                   )}
                   {piso.propietario?.email && (
-                    <a href={`mailto:${piso.propietario.email}?subject=Consulta sobre ${encodeURIComponent(piso.titulo)}`}
-                      className="w-full flex items-center justify-center gap-2 border-2 border-primary-200 hover:border-primary-700 text-primary-700 py-3.5 rounded-xl font-semibold text-sm transition-all hover:-translate-y-0.5">
+                    <a
+                      href={`mailto:${piso.propietario.email}?subject=Consulta sobre ${encodeURIComponent(piso.titulo)}`}
+                      className="w-full flex items-center justify-center gap-2 border-2 border-primary-200 hover:border-primary-700 text-primary-700 py-3.5 rounded-xl font-semibold text-sm transition-all hover:-translate-y-0.5"
+                    >
                       ✉️ Enviar email
                     </a>
                   )}
                   {piso.propietario?.telefono && (
-                    <a href={`https://wa.me/${piso.propietario.telefono.replace(/\s/g, '')}?text=Hola, me interesa el piso: ${encodeURIComponent(piso.titulo)}`}
-                      target="_blank" rel="noopener noreferrer"
-                      className="w-full flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white py-3.5 rounded-xl font-semibold text-sm transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5">
+                    <a
+                      href={`https://wa.me/${piso.propietario.telefono.replace(/\s/g, '')}?text=Hola, me interesa el piso: ${encodeURIComponent(piso.titulo)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white py-3.5 rounded-xl font-semibold text-sm transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5"
+                    >
                       💬 WhatsApp
                     </a>
                   )}
                 </div>
 
-                <button onClick={() => navigate('/pisos')}
-                  className="w-full text-gray-400 hover:text-primary-700 py-3 text-sm transition-colors mt-3">
+                <button
+                  onClick={() => navigate('/pisos')}
+                  className="w-full text-gray-400 hover:text-primary-700 py-3 text-sm transition-colors mt-3"
+                >
                   ← Ver más pisos
                 </button>
               </div>
 
-              {/* GARANTÍAS */}
               <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
                 <h3 className="font-bold text-gray-800 mb-4 text-sm">¿Por qué Profinter?</h3>
                 <div className="space-y-4">
@@ -335,13 +366,11 @@ export default function DetallePiso() {
                   ))}
                 </div>
               </div>
-
             </div>
           </div>
         </div>
       </div>
 
-      {/* FOOTER */}
       <footer className="bg-primary-900 text-white py-10 px-6 mt-16">
         <div className="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-3">
