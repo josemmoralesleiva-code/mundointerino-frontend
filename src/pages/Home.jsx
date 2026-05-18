@@ -272,10 +272,10 @@ export default function Home() {
           </p>
           <div className="flex flex-col md:flex-row gap-4 justify-center">
             <Link
-              to="/nuevopiso"
-              className="bg-accent-500 hover:bg-accent-600 text-white font-bold px-10 py-4 rounded-xl text-lg transition-all hover:scale-105 shadow-lg inline-flex items-center justify-center"
+          to="/pisos/nuevo"
+          className="bg-accent-500 hover:bg-accent-600 text-white font-bold px-10 py-4 rounded-xl text-lg transition-all hover:scale-105 shadow-lg inline-flex items-center justify-center"
             >
-              Publicar mi piso gratis
+            Publicar mi piso gratis
             </Link>
             <Link
               to="/sobre-nosotros"
@@ -297,7 +297,7 @@ export default function Home() {
           <div className="flex gap-6 text-sm text-primary-100">
             <Link to="/sobre-nosotros" className="hover:text-white transition-colors">Sobre nosotros</Link>
             <Link to="/contacto" className="hover:text-white transition-colors">Contacto</Link>
-            <Link to="/nuevopiso" className="hover:text-white transition-colors">Publicar piso</Link>
+            <Link to="/pisos/nuevo" className="hover:text-white transition-colors">Publicar piso</Link>
           </div>
         </div>
       </footer>
