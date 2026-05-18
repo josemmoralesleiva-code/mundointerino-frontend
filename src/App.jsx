@@ -16,6 +16,8 @@ import Zonas from './pages/Zonas'
 import Comunidad from './pages/Comunidad'
 import Provincia from './pages/Provincia'
 import ZonaDetalle from './pages/ZonaDetalle'
+import Contacto from './pages/Contacto'
+import NuevoPiso from './pages/NuevoPiso'
 
 export default function App() {
   return (
