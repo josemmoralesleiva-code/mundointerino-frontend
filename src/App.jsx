@@ -12,6 +12,10 @@ import VerificacionDocente from './pages/VerificacionDocente'
 import VerificacionPropietario from './pages/VerificacionPropietario'
 import Admin from './pages/Admin'
 import Perfil from './pages/Perfil'
+import Zonas from './pages/Zonas'
+import Comunidad from './pages/Comunidad'
+import Provincia from './pages/Provincia'
+import ZonaDetalle from './pages/ZonaDetalle'
 
 export default function App() {
   return (
@@ -49,6 +53,10 @@ export default function App() {
             <Admin />
           </PrivateRoute>
         } />
+        <Route path="/zonas" element={<Zonas />} />
+        <Route path="/zonas/:comunidad" element={<Comunidad />} />
+        <Route path="/zonas/:comunidad/:provincia" element={<Provincia />} />
+        <Route path="/zonas/:comunidad/:provincia/:ciudad" element={<ZonaDetalle />} />
       </Routes>
     </BrowserRouter>
   )

@@ -5,6 +5,39 @@ import Navbar from '../components/Navbar'
 
 const API = import.meta.env.VITE_API_URL
 
+const ZONAS = [
+  {
+    nombre: 'Aragón',
+    slug: 'aragon',
+    emoji: '🏔️',
+    desc: 'Tu zona principal: Zaragoza, Huesca y Teruel',
+    color: 'from-blue-500 to-primary-700'
+  },
+  {
+    nombre: 'Andalucía',
+    slug: 'andalucia',
+    emoji: '🌞',
+    desc: 'Sevilla, Málaga, Granada y más provincias',
+    color: 'from-orange-500 to-red-600'
+  },
+  {
+    nombre: 'Más comunidades',
+    slug: 'zonas',
+    emoji: '🗺️',
+    desc: 'Explora todas las zonas disponibles',
+    color: 'from-green-500 to-emerald-700'
+  },
+]
+
+const DESTACADOS = [
+  { nombre: 'Zaragoza', comunidad: 'aragon', provincia: 'zaragoza', ciudad: 'Zaragoza', emoji: '🏛️' },
+  { nombre: 'Huesca', comunidad: 'aragon', provincia: 'huesca', ciudad: 'Huesca', emoji: '🏔️' },
+  { nombre: 'Teruel', comunidad: 'aragon', provincia: 'teruel', ciudad: 'Teruel', emoji: '🌟' },
+  { nombre: 'Sevilla', comunidad: 'andalucia', provincia: 'sevilla', ciudad: 'Sevilla', emoji: '🌇' },
+  { nombre: 'Málaga', comunidad: 'andalucia', provincia: 'malaga', ciudad: 'Málaga', emoji: '🏖️' },
+  { nombre: 'Granada', comunidad: 'andalucia', provincia: 'granada', ciudad: 'Granada', emoji: '⛰️' },
+]
+
 export default function Home() {
   const navigate = useNavigate()
   const [ciudad, setCiudad] = useState('')
@@ -13,23 +46,22 @@ export default function Home() {
   const [pisosDestacados, setPisosDestacados] = useState([])
 
   useEffect(() => {
-    axios.get(`${API}/api/pisos?limit=6`)
+    axios.get(`${API}/api/pisos?limite=6`)
       .then(res => setPisosDestacados(res.data.pisos || []))
       .catch(() => {})
   }, [])
 
   const handleBuscar = () => {
-    navigate(`/pisos?ciudad=${ciudad}&fecha=${fecha}&tipo=${tipoEstancia}`)
+    navigate(`/pisos?ciudad=${encodeURIComponent(ciudad)}&fecha=${fecha}&tipo=${tipoEstancia}`)
   }
 
   return (
     <div className="min-h-screen bg-gray-50">
-
       <Navbar />
 
       {/* HERO */}
       <section
-        className="relative text-white py-24 px-6 text-center"
+        className="relative text-white py-24 px-6 text-center overflow-hidden"
         style={{
           backgroundImage: 'url(https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=1600&q=80)',
           backgroundSize: 'cover',
@@ -87,7 +119,7 @@ export default function Home() {
             </button>
           </div>
 
-          <div className="flex justify-center gap-8 mt-8 text-sm text-primary-100">
+          <div className="flex justify-center gap-8 mt-8 text-sm text-primary-100 flex-wrap">
             <span>✅ +200 pisos publicados</span>
             <span>👨‍🏫 Solo para docentes</span>
             <span>💶 Sin comisiones</span>
@@ -104,7 +136,7 @@ export default function Home() {
             { icon: '👨‍🏫', titulo: 'Solo para docentes', texto: 'Propietarios que entienden tus necesidades: contratos flexibles y sin burocracia.', color: 'bg-blue-50' },
             { icon: '💶', titulo: 'Precios justos', texto: 'Más económico que Booking. Sin comisiones ocultas. Negociación directa.', color: 'bg-green-50' },
             { icon: '📅', titulo: 'Estancia flexible', texto: 'Desde un fin de semana hasta todo el curso escolar. Tú decides cuánto tiempo.', color: 'bg-yellow-50' },
-            { icon: '🗺️', titulo: 'Cobertura amplia', texto: 'Encuentra pisos en distintas ciudades y zonas para tu destino docente.', color: 'bg-purple-50' },
+            { icon: '🗺️', titulo: 'Cobertura amplia', texto: 'Encuentra pisos en distintas comunidades, provincias y pueblos.', color: 'bg-purple-50' },
           ].map(v => (
             <div key={v.titulo} className={`${v.color} rounded-2xl p-6 border border-gray-100 text-center hover:shadow-lg hover:-translate-y-1 transition-all duration-300`}>
               <div className="text-4xl mb-3">{v.icon}</div>
@@ -115,9 +147,56 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ZONAS */}
+      <section className="bg-white py-16 px-6 border-t border-gray-100">
+        <div className="max-w-5xl mx-auto">
+          <div className="flex items-end justify-between gap-4 mb-10 flex-wrap">
+            <div>
+              <h2 className="text-2xl font-bold text-gray-800 mb-2">Busca por zona</h2>
+              <p className="text-gray-400">Empieza por comunidad autónoma y baja hasta ciudad o pueblo.</p>
+            </div>
+            <button
+              onClick={() => navigate('/zonas')}
+              className="text-primary-700 font-semibold hover:underline text-sm"
+            >
+              Ver todas las zonas →
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {ZONAS.map(z => (
+              <button
+                key={z.slug}
+                onClick={() => navigate(z.slug === 'zonas' ? '/zonas' : `/zonas/${z.slug}`)}
+                className={`bg-gradient-to-br ${z.color} rounded-2xl p-8 text-white cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all duration-300 text-left`}
+              >
+                <div className="text-5xl mb-3">{z.emoji}</div>
+                <h3 className="text-xl font-bold mb-1">{z.nombre}</h3>
+                <p className="text-white/80 text-sm">{z.desc}</p>
+                <div className="mt-4 text-white/90 text-sm font-medium">Explorar →</div>
+              </button>
+            ))}
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-6">
+            {DESTACADOS.map(z => (
+              <button
+                key={z.nombre}
+                onClick={() => navigate(`/zonas/${z.comunidad}/${z.provincia}/${encodeURIComponent(z.ciudad)}`)}
+                className="bg-gray-50 hover:bg-gray-100 rounded-xl p-4 text-left border border-gray-100 transition-all"
+              >
+                <div className="text-2xl mb-2">{z.emoji}</div>
+                <div className="font-semibold text-gray-800">{z.nombre}</div>
+                <div className="text-xs text-gray-500 mt-1">Ver pisos en {z.ciudad}</div>
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* PISOS DESTACADOS */}
-      <section className="max-w-5xl mx-auto px-6 pb-16">
-        <div className="flex justify-between items-center mb-8">
+      <section className="max-w-5xl mx-auto px-6 pb-16 pt-8">
+        <div className="flex justify-between items-center mb-8 gap-4">
           <div>
             <h2 className="text-2xl font-bold text-gray-800">Pisos disponibles ahora</h2>
             <p className="text-gray-400 text-sm mt-1">Los más recientes</p>
@@ -177,32 +256,12 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ZONAS */}
-      <section className="bg-white py-16 px-6 border-t border-gray-100">
-        <div className="max-w-5xl mx-auto">
-          <h2 className="text-2xl font-bold text-gray-800 mb-2 text-center">Busca por zona</h2>
-          <p className="text-gray-400 text-center mb-10">Filtra por la ciudad o provincia que te interese</p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[
-              { nombre: 'Zaragoza', emoji: '🏛️', desc: 'Capital y principal zona de demanda', color: 'from-blue-500 to-primary-700' },
-              { nombre: 'Huesca', emoji: '🏔️', desc: 'Pirineos y ciudades del norte', color: 'from-green-500 to-green-700' },
-              { nombre: 'Teruel', emoji: '🌟', desc: 'Tranquilidad y precios bajos', color: 'from-orange-400 to-orange-600' },
-            ].map(c => (
-              <div key={c.nombre} onClick={() => navigate(`/pisos?ciudad=${c.nombre}`)}
-                className={`bg-gradient-to-br ${c.color} rounded-2xl p-8 text-white cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all duration-300`}>
-                <div className="text-5xl mb-3">{c.emoji}</div>
-                <h3 className="text-xl font-bold mb-1">{c.nombre}</h3>
-                <p className="text-white/80 text-sm">{c.desc}</p>
-                <div className="mt-4 text-white/90 text-sm font-medium">Ver pisos →</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* CTA */}
       <section className="bg-primary-700 py-16 px-6 text-center text-white relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=1600&q=80)', backgroundSize: 'cover' }}></div>
+        <div
+          className="absolute inset-0 opacity-10"
+          style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=1600&q=80)', backgroundSize: 'cover' }}
+        />
         <div className="relative max-w-3xl mx-auto">
           <h2 className="text-3xl font-bold mb-3">¿Tienes un piso para docentes?</h2>
           <p className="text-primary-100 mb-8 text-lg">Únete a los propietarios que ya publican en Profinter. Publicación gratuita, inquilinos responsables.</p>
@@ -231,7 +290,6 @@ export default function Home() {
           </div>
         </div>
       </footer>
-
     </div>
   )
 }
