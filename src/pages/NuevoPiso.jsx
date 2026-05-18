@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import Navbar from '../components/Navbar'
 
 const API = import.meta.env.VITE_API_URL
 
@@ -13,7 +14,7 @@ const SERVICIOS_OPCIONES = [
 const PASOS = [
   { numero: 1, titulo: 'Información básica', icono: '📋' },
   { numero: 2, titulo: 'Precio y detalles', icono: '💶' },
-  { numero: 3, titulo: 'Servicios y fotos', icono: '🛎️' },
+  { numero: 3, titulo: 'Fotos y servicios', icono: '📸' },
 ]
 
 export default function NuevoPiso() {
@@ -21,10 +22,12 @@ export default function NuevoPiso() {
   const [paso, setPaso] = useState(1)
   const [cargando, setCargando] = useState(false)
   const [error, setError] = useState('')
+  const [imagenes, setImagenes] = useState([])
+  const [previews, setPreviews] = useState([])
   const [form, setForm] = useState({
     titulo: '', descripcion: '', ciudad: '', barrio: '',
     precio: '', precioDia: '', tipoEstancia: '', habitaciones: '',
-    fianza: '', disponible: '', servicios: []
+    banos: '', metros: '', planta: '', fianza: '', disponible: '', servicios: []
   })
 
   const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value })
@@ -36,6 +39,25 @@ export default function NuevoPiso() {
         ? prev.servicios.filter(s => s !== servicio)
         : [...prev.servicios, servicio]
     }))
+  }
+
+  const handleImagenesChange = (e) => {
+    const archivos = Array.from(e.target.files || [])
+    if (archivos.length > 8) {
+      setError('Máximo 8 fotos permitidas.')
+      return
+    }
+    setImagenes(archivos)
+    const urls = archivos.map(f => URL.createObjectURL(f))
+    setPreviews(urls)
+    setError('')
+  }
+
+  const eliminarImagen = (i) => {
+    const nuevas = imagenes.filter((_, idx) => idx !== i)
+    const nuevasPrev = previews.filter((_, idx) => idx !== i)
+    setImagenes(nuevas)
+    setPreviews(nuevasPrev)
   }
 
   const validarPaso = () => {
@@ -64,8 +86,29 @@ export default function NuevoPiso() {
     setError('')
     try {
       const token = localStorage.getItem('token')
-      await axios.post(`${API}/api/pisos`, form, {
-        headers: { Authorization: `Bearer ${token}` }
+
+      const formData = new FormData()
+      formData.append('titulo', form.titulo)
+      formData.append('descripcion', form.descripcion)
+      formData.append('ciudad', form.ciudad)
+      formData.append('barrio', form.barrio || '')
+      formData.append('precio', form.precio)
+      formData.append('precioDia', form.precioDia || '')
+      formData.append('tipoEstancia', form.tipoEstancia)
+      formData.append('habitaciones', form.habitaciones)
+      formData.append('banos', form.banos || '')
+      formData.append('metros', form.metros || '')
+      formData.append('planta', form.planta || '')
+      formData.append('fianza', form.fianza || '')
+      formData.append('disponible', form.disponible)
+      form.servicios.forEach(s => formData.append('servicios', s))
+      imagenes.forEach(img => formData.append('imagenes', img))
+
+      await axios.post(`${API}/api/pisos`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
+        },
       })
       navigate('/dashboard')
     } catch (err) {
@@ -77,17 +120,8 @@ export default function NuevoPiso() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* NAVBAR */}
-      <nav className="bg-white shadow-sm px-6 py-3 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <button onClick={() => navigate('/')} className="flex items-center">
-            <img src="/img/logo.png" alt="Profinter" className="h-10" />
-          </button>
-          <button onClick={() => navigate('/dashboard')} className="text-sm text-gray-600 hover:text-primary-700 font-medium">
-            ← Volver al panel
-          </button>
-        </div>
-      </nav>
+
+      <Navbar />
 
       {/* HERO */}
       <section className="relative py-14 px-6 text-white"
@@ -125,10 +159,8 @@ export default function NuevoPiso() {
             ))}
           </div>
           <div className="w-full bg-gray-100 rounded-full h-1.5">
-            <div
-              className="bg-primary-700 h-1.5 rounded-full transition-all duration-500"
-              style={{ width: `${((paso - 1) / (PASOS.length - 1)) * 100}%` }}
-            />
+            <div className="bg-primary-700 h-1.5 rounded-full transition-all duration-500"
+              style={{ width: `${((paso - 1) / (PASOS.length - 1)) * 100}%` }} />
           </div>
         </div>
       </div>
@@ -141,6 +173,7 @@ export default function NuevoPiso() {
         )}
 
         <form onSubmit={handleSubmit}>
+
           {/* PASO 1 — Información básica */}
           {paso === 1 && (
             <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 md:p-8 space-y-5">
@@ -193,7 +226,7 @@ export default function NuevoPiso() {
               <div>
                 <label className="text-sm font-medium text-gray-700 mb-1 block">Tipo de estancia *</label>
                 <div className="grid grid-cols-3 gap-3">
-                  {[['larga','📅 Larga estancia'],['corta','🌙 Corta estancia'],['ambas','✅ Ambas']].map(([val, label]) => (
+                  {[['larga','📅 Larga'],['corta','🌙 Corta'],['ambas','✅ Ambas']].map(([val, label]) => (
                     <button key={val} type="button"
                       onClick={() => setForm(prev => ({ ...prev, tipoEstancia: val }))}
                       className={`py-3 px-2 rounded-xl border-2 text-sm font-medium transition-all ${
@@ -226,59 +259,138 @@ export default function NuevoPiso() {
                     className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 transition-colors" />
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-700 mb-1 block">Nº de habitaciones *</label>
+                  <label className="text-sm font-medium text-gray-700 mb-1 block">Habitaciones *</label>
                   <select name="habitaciones" value={form.habitaciones} onChange={handleChange}
                     className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 transition-colors">
                     <option value="">Selecciona</option>
                     {[1,2,3,4,5,6].map(n => <option key={n} value={n}>{n} habitación{n > 1 ? 'es' : ''}</option>)}
                   </select>
                 </div>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-gray-700 mb-1 block">Disponible desde *</label>
-                <input type="date" name="disponible" value={form.disponible} onChange={handleChange}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 transition-colors" />
-              </div>
-            </div>
-          )}
-
-          {/* PASO 3 — Servicios */}
-          {paso === 3 && (
-            <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 md:p-8 space-y-5">
-              <div>
-                <h2 className="text-xl font-bold text-gray-800 mb-1">🛎️ Servicios incluidos</h2>
-                <p className="text-gray-400 text-sm">Marca todo lo que incluye el alojamiento.</p>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {SERVICIOS_OPCIONES.map(s => (
-                  <button key={s} type="button" onClick={() => toggleServicio(s)}
-                    className={`px-4 py-2 rounded-full text-sm font-medium border-2 transition-all ${
-                      form.servicios.includes(s)
-                        ? 'border-primary-700 bg-primary-50 text-primary-700'
-                        : 'border-gray-200 text-gray-500 hover:border-gray-300'
-                    }`}>
-                    {s}
-                  </button>
-                ))}
-              </div>
-              {form.servicios.length > 0 && (
-                <p className="text-sm text-primary-700 font-medium">✓ {form.servicios.length} servicio{form.servicios.length > 1 ? 's' : ''} seleccionado{form.servicios.length > 1 ? 's' : ''}</p>
-              )}
-
-              {/* RESUMEN FINAL */}
-              <div className="bg-gray-50 rounded-2xl border border-gray-100 p-5 mt-4">
-                <h3 className="font-semibold text-gray-700 mb-3">📝 Resumen del anuncio</h3>
-                <div className="grid grid-cols-2 gap-2 text-sm text-gray-600">
-                  <span>📍 {form.ciudad}{form.barrio ? `, ${form.barrio}` : ''}</span>
-                  <span>💶 {form.precio}€/mes{form.precioDia ? ` · ${form.precioDia}€/día` : ''}</span>
-                  <span>🛏 {form.habitaciones} hab.</span>
-                  <span>📅 Desde {form.disponible}</span>
+                <div>
+                  <label className="text-sm font-medium text-gray-700 mb-1 block">Baños</label>
+                  <select name="banos" value={form.banos} onChange={handleChange}
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 transition-colors">
+                    <option value="">Selecciona</option>
+                    {[1,2,3].map(n => <option key={n} value={n}>{n} baño{n > 1 ? 's' : ''}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700 mb-1 block">Metros cuadrados</label>
+                  <input type="number" name="metros" value={form.metros} onChange={handleChange}
+                    min={10} placeholder="70"
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 transition-colors" />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700 mb-1 block">Planta</label>
+                  <input type="text" name="planta" value={form.planta} onChange={handleChange}
+                    placeholder="Ej: 3º, Bajo, Ático..."
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 transition-colors" />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700 mb-1 block">Disponible desde *</label>
+                  <input type="date" name="disponible" value={form.disponible} onChange={handleChange}
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 transition-colors" />
                 </div>
               </div>
             </div>
           )}
 
-          {/* BOTONES DE NAVEGACIÓN */}
+          {/* PASO 3 — Fotos y servicios */}
+          {paso === 3 && (
+            <div className="space-y-5">
+
+              {/* FOTOS */}
+              <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 md:p-8 space-y-4">
+                <div>
+                  <h2 className="text-xl font-bold text-gray-800 mb-1">📸 Fotos del piso</h2>
+                  <p className="text-gray-400 text-sm">Sube hasta 8 fotos. Los pisos con fotos reciben 5x más contactos.</p>
+                </div>
+
+                {/* ZONA DE SUBIDA */}
+                <label className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed border-primary-200 rounded-2xl cursor-pointer bg-primary-50 hover:bg-primary-100 transition-colors">
+                  <div className="text-center">
+                    <div className="text-4xl mb-2">📷</div>
+                    <p className="text-primary-700 font-semibold text-sm">Haz clic para seleccionar fotos</p>
+                    <p className="text-gray-400 text-xs mt-1">JPG, PNG, WEBP · Máx. 5MB por foto · Hasta 8 fotos</p>
+                  </div>
+                  <input type="file" accept="image/*" multiple onChange={handleImagenesChange} className="hidden" />
+                </label>
+
+                {/* PREVIEWS */}
+                {previews.length > 0 && (
+                  <div>
+                    <p className="text-sm font-medium text-gray-700 mb-3">
+                      {previews.length} foto{previews.length > 1 ? 's' : ''} seleccionada{previews.length > 1 ? 's' : ''}
+                    </p>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                      {previews.map((url, i) => (
+                        <div key={i} className="relative group">
+                          <img src={url} alt={`preview-${i}`}
+                            className="w-full h-28 object-cover rounded-xl border border-gray-200" />
+                          {i === 0 && (
+                            <span className="absolute top-1 left-1 bg-primary-700 text-white text-xs px-2 py-0.5 rounded-full font-medium">
+                              Principal
+                            </span>
+                          )}
+                          <button type="button" onClick={() => eliminarImagen(i)}
+                            className="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full text-xs opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            ✕
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* SERVICIOS */}
+              <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 md:p-8 space-y-4">
+                <div>
+                  <h2 className="text-xl font-bold text-gray-800 mb-1">🛎️ Servicios incluidos</h2>
+                  <p className="text-gray-400 text-sm">Marca todo lo que incluye el alojamiento.</p>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {SERVICIOS_OPCIONES.map(s => (
+                    <button key={s} type="button" onClick={() => toggleServicio(s)}
+                      className={`px-4 py-2 rounded-full text-sm font-medium border-2 transition-all ${
+                        form.servicios.includes(s)
+                          ? 'border-primary-700 bg-primary-50 text-primary-700'
+                          : 'border-gray-200 text-gray-500 hover:border-gray-300'
+                      }`}>
+                      {s}
+                    </button>
+                  ))}
+                </div>
+                {form.servicios.length > 0 && (
+                  <p className="text-sm text-primary-700 font-medium">✓ {form.servicios.length} servicio{form.servicios.length > 1 ? 's' : ''} seleccionado{form.servicios.length > 1 ? 's' : ''}</p>
+                )}
+              </div>
+
+              {/* RESUMEN FINAL */}
+              <div className="bg-gradient-to-br from-primary-50 to-blue-50 rounded-3xl border border-primary-100 p-6">
+                <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
+                  📝 <span>Resumen del anuncio</span>
+                </h3>
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  {[
+                    ['📍', `${form.ciudad}${form.barrio ? `, ${form.barrio}` : ''}`],
+                    ['💶', `${form.precio}€/mes${form.precioDia ? ` · ${form.precioDia}€/día` : ''}`],
+                    ['🛏', `${form.habitaciones} hab.${form.banos ? ` · ${form.banos} baños` : ''}`],
+                    ['📅', `Desde ${form.disponible}`],
+                    ['📐', form.metros ? `${form.metros} m²` : '—'],
+                    ['📸', `${previews.length} foto${previews.length !== 1 ? 's' : ''}`],
+                  ].map(([icono, valor]) => (
+                    <div key={icono} className="flex items-center gap-2 bg-white rounded-xl px-3 py-2 border border-primary-100">
+                      <span>{icono}</span>
+                      <span className="text-gray-700 font-medium truncate">{valor}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* BOTONES NAVEGACIÓN */}
           <div className="flex justify-between mt-6">
             {paso > 1 ? (
               <button type="button" onClick={anterior}
@@ -294,8 +406,13 @@ export default function NuevoPiso() {
               </button>
             ) : (
               <button type="submit" disabled={cargando}
-                className="px-8 py-3 rounded-xl bg-accent-500 hover:bg-accent-600 text-white font-semibold disabled:opacity-50 transition-all">
-                {cargando ? 'Publicando...' : '🚀 Publicar anuncio'}
+                className="px-8 py-3 rounded-xl bg-accent-500 hover:bg-accent-600 text-white font-semibold disabled:opacity-50 transition-all flex items-center gap-2">
+                {cargando ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Publicando...
+                  </>
+                ) : '🚀 Publicar anuncio'}
               </button>
             )}
           </div>
