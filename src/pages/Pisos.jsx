@@ -18,19 +18,19 @@ export default function Pisos() {
   const [provincia, setProvincia] = useState(searchParams.get('provincia') || '')
 
   const fetchPisos = async (c, f, t, co, pro) => {
-    setCargando(true)
-    try {
-      const res = await axios.get(`${API}/api/pisos`, {
-        params: { ciudad: c, fecha: f, tipo: t, comunidad: co, provincia: pro }
-      })
-      setPisos(res.data.pisos || [])
-    } catch (error) {
-      console.error(error)
-      setPisos([])
-    } finally {
-      setCargando(false)
-    }
+  setCargando(true)
+  try {
+    const res = await axios.get(`${API}/api/pisos`, {
+      params: { ciudad: c, fecha: f, tipo: t, comunidad: co, provincia: pro }
+    })
+    setPisos(res.data.pisos || [])
+  } catch (error) {
+    console.error(error)
+    setPisos([])
+  } finally {
+    setCargando(false)
   }
+}
 
   useEffect(() => {
     fetchPisos(ciudad, fecha, tipoEstancia, comunidad, provincia)
