@@ -57,6 +57,8 @@ export default function App() {
         <Route path="/zonas/:comunidad" element={<Comunidad />} />
         <Route path="/zonas/:comunidad/:provincia" element={<Provincia />} />
         <Route path="/zonas/:comunidad/:provincia/:ciudad" element={<ZonaDetalle />} />
+        <Route path="/sobre-nosotros" element={<SobreNosotros />} />
+        <Route path="/contacto" element={<Contacto />} />
       </Routes>
     </BrowserRouter>
   )

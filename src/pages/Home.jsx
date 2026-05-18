@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import axios from 'axios'
 import Navbar from '../components/Navbar'
 
@@ -250,7 +250,10 @@ export default function Home() {
         )}
 
         <div className="text-center mt-10">
-          <button onClick={() => navigate('/pisos')} className="bg-primary-700 text-white px-10 py-4 rounded-xl font-bold hover:bg-primary-800 text-lg transition-all hover:scale-105 shadow-md">
+          <button
+            onClick={() => navigate('/pisos')}
+            className="bg-primary-700 text-white px-10 py-4 rounded-xl font-bold hover:bg-primary-800 text-lg transition-all hover:scale-105 shadow-md"
+          >
             Ver todos los pisos
           </button>
         </div>
@@ -264,14 +267,22 @@ export default function Home() {
         />
         <div className="relative max-w-3xl mx-auto">
           <h2 className="text-3xl font-bold mb-3">¿Tienes un piso para docentes?</h2>
-          <p className="text-primary-100 mb-8 text-lg">Únete a los propietarios que ya publican en Profinter. Publicación gratuita, inquilinos responsables.</p>
+          <p className="text-primary-100 mb-8 text-lg">
+            Únete a los propietarios que ya publican en Profinter. Publicación gratuita, inquilinos responsables.
+          </p>
           <div className="flex flex-col md:flex-row gap-4 justify-center">
-            <button onClick={() => navigate('/publicar')} className="bg-accent-500 hover:bg-accent-600 text-white font-bold px-10 py-4 rounded-xl text-lg transition-all hover:scale-105 shadow-lg">
+            <Link
+              to="/nuevopiso"
+              className="bg-accent-500 hover:bg-accent-600 text-white font-bold px-10 py-4 rounded-xl text-lg transition-all hover:scale-105 shadow-lg inline-flex items-center justify-center"
+            >
               Publicar mi piso gratis
-            </button>
-            <button onClick={() => navigate('/sobre-nosotros')} className="bg-white/20 hover:bg-white/30 text-white font-bold px-10 py-4 rounded-xl text-lg transition-all border border-white/30">
+            </Link>
+            <Link
+              to="/sobre-nosotros"
+              className="bg-white/20 hover:bg-white/30 text-white font-bold px-10 py-4 rounded-xl text-lg transition-all border border-white/30 inline-flex items-center justify-center"
+            >
               Saber más
-            </button>
+            </Link>
           </div>
         </div>
       </section>
@@ -284,9 +295,9 @@ export default function Home() {
             <p className="text-primary-100 text-sm">© 2026 Profinter · Portal de alquiler para docentes</p>
           </div>
           <div className="flex gap-6 text-sm text-primary-100">
-            <button onClick={() => navigate('/sobre-nosotros')} className="hover:text-white transition-colors">Sobre nosotros</button>
-            <button onClick={() => navigate('/contacto')} className="hover:text-white transition-colors">Contacto</button>
-            <button onClick={() => navigate('/publicar')} className="hover:text-white transition-colors">Publicar piso</button>
+            <Link to="/sobre-nosotros" className="hover:text-white transition-colors">Sobre nosotros</Link>
+            <Link to="/contacto" className="hover:text-white transition-colors">Contacto</Link>
+            <Link to="/nuevopiso" className="hover:text-white transition-colors">Publicar piso</Link>
           </div>
         </div>
       </footer>
