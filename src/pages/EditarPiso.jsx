@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import Navbar from '../components/Navbar'
 
 const API_URL = import.meta.env.VITE_API_URL
 
@@ -13,7 +14,7 @@ const SERVICIOS_OPCIONES = [
 const PASOS = [
   { numero: 1, titulo: 'Información básica', icono: '📋' },
   { numero: 2, titulo: 'Precio y detalles',  icono: '💶' },
-  { numero: 3, titulo: 'Servicios',          icono: '🛎️' },
+  { numero: 3, titulo: 'Fotos y servicios',  icono: '📸' },
 ]
 
 export default function EditarPiso() {
@@ -28,16 +29,22 @@ export default function EditarPiso() {
   const [cargando, setCargando] = useState(false)
   const [guardando, setGuardando] = useState(false)
 
+  // ✅ Fotos nuevas que el usuario selecciona
+  const [imagenesNuevas, setImagenesNuevas] = useState([])
+  const [previews, setPreviews] = useState([])
+
+  // ✅ Solo carga datos — NUNCA guarda automáticamente
   useEffect(() => {
     setCargando(true)
     axios.get(`${API_URL}/api/pisos/${id}`)
       .then(res => setForm({
         ...res.data,
-        servicios: res.data.servicios || []
+        servicios: res.data.servicios || [],
+        fotosActuales: res.data.fotos || [],
       }))
       .catch(() => setError('No se pudo cargar el piso'))
       .finally(() => setCargando(false))
-  }, [id])
+  }, [id]) // ← SOLO depende de id, nunca de form
 
   const handleChange = e => {
     const { name, value } = e.target
@@ -50,6 +57,29 @@ export default function EditarPiso() {
       servicios: prev.servicios.includes(servicio)
         ? prev.servicios.filter(s => s !== servicio)
         : [...prev.servicios, servicio]
+    }))
+  }
+
+  const handleImagenesChange = (e) => {
+    const archivos = Array.from(e.target.files || [])
+    if (archivos.length > 8) {
+      setError('Máximo 8 fotos permitidas.')
+      return
+    }
+    setImagenesNuevas(archivos)
+    setPreviews(archivos.map(f => URL.createObjectURL(f)))
+    setError('')
+  }
+
+  const eliminarPreview = (i) => {
+    setImagenesNuevas(prev => prev.filter((_, idx) => idx !== i))
+    setPreviews(prev => prev.filter((_, idx) => idx !== i))
+  }
+
+  const eliminarFotoActual = (i) => {
+    setForm(prev => ({
+      ...prev,
+      fotosActuales: prev.fotosActuales.filter((_, idx) => idx !== i)
     }))
   }
 
@@ -66,16 +96,60 @@ export default function EditarPiso() {
     return true
   }
 
-  const siguiente = () => { if (validarPaso()) setPaso(p => p + 1) }
-  const anterior  = () => { setError(''); setPaso(p => p - 1) }
-
-  const handleSubmit = async e => {
+  // ✅ Navegación entre pasos — NO dispara submit
+  const handleSiguiente = (e) => {
     e.preventDefault()
+    e.stopPropagation()
+    if (validarPaso()) setPaso(p => p + 1)
+  }
+
+  const handleAnterior = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setError('')
+    setPaso(p => p - 1)
+  }
+
+  // ✅ Solo se ejecuta al pulsar "Guardar cambios" en paso 3
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    if (paso !== 3) return // 🔒 Guardia extra
     setGuardando(true)
     setError('')
     try {
-      await axios.put(`${API_URL}/api/pisos/${id}`, form, {
-        headers: { Authorization: `Bearer ${token}` }
+      const formData = new FormData()
+
+      // Campos de texto
+      formData.append('titulo', form.titulo || '')
+      formData.append('descripcion', form.descripcion || '')
+      formData.append('ciudad', form.ciudad || '')
+      formData.append('barrio', form.barrio || '')
+      formData.append('contacto', form.contacto || '')
+      formData.append('precio', form.precio || '')
+      formData.append('precioDia', form.precioDia || '')
+      formData.append('fianza', form.fianza || '')
+      formData.append('habitaciones', form.habitaciones || '')
+      formData.append('banos', form.banos || '')
+      formData.append('metros', form.metros || '')
+      formData.append('planta', form.planta || '')
+      formData.append('tipoEstancia', form.tipoEstancia || '')
+      formData.append('disponible', form.disponible?.substring(0, 10) || '')
+      formData.append('activo', form.activo !== false ? 'true' : 'false')
+
+      // Servicios
+      form.servicios.forEach(s => formData.append('servicios', s))
+
+      // Fotos actuales que NO se han eliminado
+      form.fotosActuales.forEach(url => formData.append('fotosActuales', url))
+
+      // Fotos nuevas (si ha seleccionado)
+      imagenesNuevas.forEach(img => formData.append('imagenes', img))
+
+      await axios.put(`${API_URL}/api/pisos/${id}`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
+        },
       })
       setExito(true)
       setTimeout(() => navigate('/dashboard'), 1800)
@@ -86,7 +160,6 @@ export default function EditarPiso() {
     }
   }
 
-  // ── Estados de carga / error ──────────────────────────────────────────────
   if (cargando) return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center">
       <div className="text-center">
@@ -101,8 +174,7 @@ export default function EditarPiso() {
       <div className="text-center">
         <div className="text-4xl mb-3">⚠️</div>
         <p className="text-red-500 font-medium mb-4">{error}</p>
-        <button onClick={() => navigate('/dashboard')}
-          className="text-primary-700 hover:underline text-sm">
+        <button onClick={() => navigate('/dashboard')} className="text-primary-700 hover:underline text-sm">
           ← Volver al panel
         </button>
       </div>
@@ -114,18 +186,7 @@ export default function EditarPiso() {
   return (
     <div className="min-h-screen bg-gray-50">
 
-      {/* NAVBAR */}
-      <nav className="bg-white shadow-sm px-6 py-3 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <button onClick={() => navigate('/')} className="flex items-center">
-            <img src="/img/logo.png" alt="Profinter" className="h-10" />
-          </button>
-          <button onClick={() => navigate('/dashboard')}
-            className="text-sm text-gray-600 hover:text-primary-700 font-medium transition-colors">
-            ← Volver al panel
-          </button>
-        </div>
-      </nav>
+      <Navbar />
 
       {/* HERO */}
       <section className="relative py-14 px-6 text-white"
@@ -149,11 +210,9 @@ export default function EditarPiso() {
           <div className="flex items-center justify-between mb-3">
             {PASOS.map((p, i) => (
               <div key={p.numero} className="flex items-center flex-1">
-                <button
-                  type="button"
+                <button type="button"
                   onClick={() => { if (p.numero < paso) { setError(''); setPaso(p.numero) } }}
-                  className={`flex items-center gap-2 ${paso >= p.numero ? 'text-primary-700' : 'text-gray-400'} ${p.numero < paso ? 'cursor-pointer' : 'cursor-default'}`}
-                >
+                  className={`flex items-center gap-2 ${paso >= p.numero ? 'text-primary-700' : 'text-gray-400'} ${p.numero < paso ? 'cursor-pointer' : 'cursor-default'}`}>
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold border-2 transition-all ${
                     paso > p.numero  ? 'bg-primary-700 border-primary-700 text-white'
                     : paso === p.numero ? 'border-primary-700 text-primary-700 bg-primary-50'
@@ -170,55 +229,49 @@ export default function EditarPiso() {
             ))}
           </div>
           <div className="w-full bg-gray-100 rounded-full h-1.5">
-            <div
-              className="bg-primary-700 h-1.5 rounded-full transition-all duration-500"
-              style={{ width: `${((paso - 1) / (PASOS.length - 1)) * 100}%` }}
-            />
+            <div className="bg-primary-700 h-1.5 rounded-full transition-all duration-500"
+              style={{ width: `${((paso - 1) / (PASOS.length - 1)) * 100}%` }} />
           </div>
         </div>
       </div>
 
       <div className="max-w-3xl mx-auto px-6 py-10">
 
-        {/* BANNER ÉXITO */}
         {exito && (
           <div className="bg-green-50 border border-green-200 text-green-700 rounded-xl px-4 py-3 mb-6 text-sm flex items-center gap-2">
             <span>✅</span> Cambios guardados correctamente. Volviendo al panel...
           </div>
         )}
 
-        {/* BANNER ERROR */}
         {error && (
           <div className="bg-red-50 border border-red-200 text-red-600 rounded-xl px-4 py-3 mb-6 text-sm flex items-center gap-2">
             <span>⚠️</span> {error}
           </div>
         )}
 
-        <form onSubmit={handleSubmit}>
+        {/* ✅ noValidate evita submit nativo del navegador */}
+        <form onSubmit={handleSubmit} noValidate>
 
-          {/* ── PASO 1 — Información básica ────────────────────────────── */}
+          {/* PASO 1 */}
           {paso === 1 && (
             <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 md:p-8 space-y-5">
               <div>
                 <h2 className="text-xl font-bold text-gray-800 mb-1">📋 Información básica</h2>
                 <p className="text-gray-400 text-sm">Título, descripción y ubicación del piso.</p>
               </div>
-
               <div>
                 <label className="text-sm font-medium text-gray-700 mb-1 block">Título del anuncio *</label>
                 <input type="text" name="titulo" value={form.titulo || ''} onChange={handleChange}
                   maxLength={100}
                   className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 transition-colors" />
               </div>
-
               <div>
                 <label className="text-sm font-medium text-gray-700 mb-1 block">Descripción *</label>
                 <textarea name="descripcion" value={form.descripcion || ''} onChange={handleChange}
-                  maxLength={1000} rows={5} placeholder="Describe el piso, el entorno, condiciones..."
+                  maxLength={1000} rows={5}
                   className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 transition-colors resize-none" />
                 <p className="text-xs text-gray-400 mt-1 text-right">{(form.descripcion || '').length}/1000</p>
               </div>
-
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm font-medium text-gray-700 mb-1 block">Ciudad *</label>
@@ -238,7 +291,6 @@ export default function EditarPiso() {
                     className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 transition-colors" />
                 </div>
               </div>
-
               <div>
                 <label className="text-sm font-medium text-gray-700 mb-1 block">Contacto (teléfono o email)</label>
                 <input type="text" name="contacto" value={form.contacto || ''} onChange={handleChange}
@@ -248,18 +300,17 @@ export default function EditarPiso() {
             </div>
           )}
 
-          {/* ── PASO 2 — Precio y detalles ─────────────────────────────── */}
+          {/* PASO 2 */}
           {paso === 2 && (
             <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 md:p-8 space-y-5">
               <div>
                 <h2 className="text-xl font-bold text-gray-800 mb-1">💶 Precio y detalles</h2>
                 <p className="text-gray-400 text-sm">Actualiza precios, tipo de estancia y características.</p>
               </div>
-
               <div>
                 <label className="text-sm font-medium text-gray-700 mb-2 block">Tipo de estancia *</label>
                 <div className="grid grid-cols-3 gap-3">
-                  {[['larga','📅 Larga estancia'],['corta','🌙 Corta estancia'],['ambas','✅ Ambas']].map(([val, label]) => (
+                  {[['larga','📅 Larga'],['corta','🌙 Corta'],['ambas','✅ Ambas']].map(([val, label]) => (
                     <button key={val} type="button"
                       onClick={() => setForm(prev => ({ ...prev, tipoEstancia: val }))}
                       className={`py-3 px-2 rounded-xl border-2 text-sm font-medium transition-all ${
@@ -272,101 +323,190 @@ export default function EditarPiso() {
                   ))}
                 </div>
               </div>
-
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {[
+                  { label: 'Precio mensual (€) *', name: 'precio', placeholder: '450', min: 50 },
+                  { label: 'Precio por día (€)', name: 'precioDia', placeholder: '25', min: 10 },
+                  { label: 'Fianza (€)', name: 'fianza', placeholder: '0', min: 0 },
+                  { label: 'Metros cuadrados', name: 'metros', placeholder: '70', min: 10 },
+                ].map(f => (
+                  <div key={f.name}>
+                    <label className="text-sm font-medium text-gray-700 mb-1 block">{f.label}</label>
+                    <input type="number" name={f.name} value={form[f.name] || ''} onChange={handleChange}
+                      min={f.min} placeholder={f.placeholder}
+                      className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 transition-colors" />
+                  </div>
+                ))}
                 <div>
-                  <label className="text-sm font-medium text-gray-700 mb-1 block">Precio mensual (€) *</label>
-                  <input type="number" name="precio" value={form.precio || ''} onChange={handleChange}
-                    min={50} placeholder="450"
-                    className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 transition-colors" />
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-700 mb-1 block">Precio por día (€)</label>
-                  <input type="number" name="precioDia" value={form.precioDia || ''} onChange={handleChange}
-                    min={10} placeholder="25"
-                    className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 transition-colors" />
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-700 mb-1 block">Fianza (€)</label>
-                  <input type="number" name="fianza" value={form.fianza || ''} onChange={handleChange}
-                    min={0} placeholder="0"
-                    className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 transition-colors" />
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-700 mb-1 block">Nº de habitaciones *</label>
+                  <label className="text-sm font-medium text-gray-700 mb-1 block">Habitaciones *</label>
                   <select name="habitaciones" value={form.habitaciones || ''} onChange={handleChange}
                     className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 transition-colors">
                     <option value="">Selecciona</option>
-                    {[1,2,3,4,5,6].map(n => (
-                      <option key={n} value={n}>{n} habitación{n > 1 ? 'es' : ''}</option>
-                    ))}
+                    {[1,2,3,4,5,6].map(n => <option key={n} value={n}>{n} habitación{n > 1 ? 'es' : ''}</option>)}
                   </select>
                 </div>
-              </div>
-
-              <div>
-                <label className="text-sm font-medium text-gray-700 mb-1 block">Disponible desde</label>
-                <input type="date" name="disponible" value={form.disponible?.substring(0,10) || ''} onChange={handleChange}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 transition-colors" />
+                <div>
+                  <label className="text-sm font-medium text-gray-700 mb-1 block">Baños</label>
+                  <select name="banos" value={form.banos || ''} onChange={handleChange}
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 transition-colors">
+                    <option value="">Selecciona</option>
+                    {[1,2,3].map(n => <option key={n} value={n}>{n} baño{n > 1 ? 's' : ''}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700 mb-1 block">Planta</label>
+                  <input type="text" name="planta" value={form.planta || ''} onChange={handleChange}
+                    placeholder="Ej: 3º, Bajo, Ático..."
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 transition-colors" />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-700 mb-1 block">Disponible desde</label>
+                  <input type="date" name="disponible" value={form.disponible?.substring(0,10) || ''} onChange={handleChange}
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 transition-colors" />
+                </div>
               </div>
 
               {/* Toggle disponibilidad */}
               <div className={`flex items-center justify-between p-4 rounded-xl border-2 cursor-pointer transition-all ${
-                form.disponible_estado !== false ? 'border-green-200 bg-green-50' : 'border-orange-200 bg-orange-50'
+                form.activo !== false ? 'border-green-200 bg-green-50' : 'border-orange-200 bg-orange-50'
               }`}
-                onClick={() => setForm(prev => ({ ...prev, disponible_estado: !prev.disponible_estado }))}>
+                onClick={() => setForm(prev => ({ ...prev, activo: !prev.activo }))}>
                 <div>
                   <p className="font-medium text-sm text-gray-800">Estado del anuncio</p>
                   <p className="text-xs text-gray-500 mt-0.5">
-                    {form.disponible_estado !== false ? 'El piso aparece como disponible' : 'El piso está pausado'}
+                    {form.activo !== false ? '✅ El piso aparece como disponible' : '⏸️ El piso está pausado'}
                   </p>
                 </div>
                 <div className={`relative w-12 h-6 rounded-full transition-colors ${
-                  form.disponible_estado !== false ? 'bg-green-500' : 'bg-gray-300'
+                  form.activo !== false ? 'bg-green-500' : 'bg-gray-300'
                 }`}>
                   <div className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-all ${
-                    form.disponible_estado !== false ? 'left-7' : 'left-1'
+                    form.activo !== false ? 'left-7' : 'left-1'
                   }`} />
                 </div>
               </div>
             </div>
           )}
 
-          {/* ── PASO 3 — Servicios ─────────────────────────────────────── */}
+          {/* PASO 3 — Fotos + Servicios */}
           {paso === 3 && (
-            <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 md:p-8 space-y-5">
-              <div>
-                <h2 className="text-xl font-bold text-gray-800 mb-1">🛎️ Servicios incluidos</h2>
-                <p className="text-gray-400 text-sm">Actualiza los servicios que ofrece el alojamiento.</p>
-              </div>
+            <div className="space-y-5">
 
-              <div className="flex flex-wrap gap-2">
-                {SERVICIOS_OPCIONES.map(s => (
-                  <button key={s} type="button" onClick={() => toggleServicio(s)}
-                    className={`px-4 py-2 rounded-full text-sm font-medium border-2 transition-all ${
-                      form.servicios.includes(s)
-                        ? 'border-primary-700 bg-primary-50 text-primary-700'
-                        : 'border-gray-200 text-gray-500 hover:border-gray-300'
-                    }`}>
-                    {s}
-                  </button>
-                ))}
-              </div>
-
-              {form.servicios.length > 0 && (
-                <p className="text-sm text-primary-700 font-medium">
-                  ✓ {form.servicios.length} servicio{form.servicios.length > 1 ? 's' : ''} seleccionado{form.servicios.length > 1 ? 's' : ''}
-                </p>
+              {/* FOTOS ACTUALES */}
+              {form.fotosActuales?.length > 0 && (
+                <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 md:p-8 space-y-4">
+                  <div>
+                    <h2 className="text-xl font-bold text-gray-800 mb-1">🖼️ Fotos actuales</h2>
+                    <p className="text-gray-400 text-sm">Pulsa la ✕ para eliminar una foto existente.</p>
+                  </div>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    {form.fotosActuales.map((url, i) => (
+                      <div key={i} className="relative group">
+                        <img src={url} alt={`foto-${i}`}
+                          className="w-full h-28 object-cover rounded-xl border border-gray-200" />
+                        {i === 0 && (
+                          <span className="absolute top-1 left-1 bg-primary-700 text-white text-xs px-2 py-0.5 rounded-full font-medium">
+                            Principal
+                          </span>
+                        )}
+                        <button type="button" onClick={() => eliminarFotoActual(i)}
+                          className="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full text-xs opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                          ✕
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               )}
 
-              {/* RESUMEN FINAL */}
-              <div className="bg-gray-50 rounded-2xl border border-gray-100 p-5 mt-2">
-                <h3 className="font-semibold text-gray-700 mb-3 text-sm">📝 Resumen de cambios</h3>
-                <div className="grid grid-cols-2 gap-2 text-sm text-gray-600">
-                  <span>📍 {form.ciudad}{form.barrio ? `, ${form.barrio}` : ''}</span>
-                  <span>💶 {form.precio}€/mes{form.precioDia ? ` · ${form.precioDia}€/día` : ''}</span>
-                  <span>🛏 {form.habitaciones} hab.</span>
-                  <span>📅 {form.tipoEstancia === 'larga' ? 'Larga estancia' : form.tipoEstancia === 'corta' ? 'Corta estancia' : 'Ambas'}</span>
+              {/* SUBIR FOTOS NUEVAS */}
+              <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 md:p-8 space-y-4">
+                <div>
+                  <h2 className="text-xl font-bold text-gray-800 mb-1">📸 Añadir fotos nuevas</h2>
+                  <p className="text-gray-400 text-sm">Las fotos nuevas se añadirán a las existentes. Máximo 8 en total.</p>
+                </div>
+
+                <label className="flex flex-col items-center justify-center w-full h-36 border-2 border-dashed border-primary-200 rounded-2xl cursor-pointer bg-primary-50 hover:bg-primary-100 transition-colors">
+                  <div className="text-center pointer-events-none">
+                    <div className="text-3xl mb-2">📷</div>
+                    <p className="text-primary-700 font-semibold text-sm">Haz clic para seleccionar fotos</p>
+                    <p className="text-gray-400 text-xs mt-1">JPG, PNG, WEBP · Máx. 5MB por foto</p>
+                  </div>
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    multiple
+                    onChange={handleImagenesChange}
+                    className="hidden"
+                  />
+                </label>
+
+                {previews.length > 0 && (
+                  <div>
+                    <p className="text-sm font-medium text-gray-700 mb-3">
+                      {previews.length} foto{previews.length > 1 ? 's' : ''} nueva{previews.length > 1 ? 's' : ''} seleccionada{previews.length > 1 ? 's' : ''}
+                    </p>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                      {previews.map((url, i) => (
+                        <div key={i} className="relative group">
+                          <img src={url} alt={`nueva-${i}`}
+                            className="w-full h-28 object-cover rounded-xl border-2 border-primary-200" />
+                          <span className="absolute top-1 left-1 bg-accent-500 text-white text-xs px-2 py-0.5 rounded-full font-medium">
+                            Nueva
+                          </span>
+                          <button type="button" onClick={() => eliminarPreview(i)}
+                            className="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full text-xs opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            ✕
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* SERVICIOS */}
+              <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 md:p-8 space-y-4">
+                <div>
+                  <h2 className="text-xl font-bold text-gray-800 mb-1">🛎️ Servicios incluidos</h2>
+                  <p className="text-gray-400 text-sm">Actualiza los servicios que ofrece el alojamiento.</p>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {SERVICIOS_OPCIONES.map(s => (
+                    <button key={s} type="button" onClick={() => toggleServicio(s)}
+                      className={`px-4 py-2 rounded-full text-sm font-medium border-2 transition-all ${
+                        form.servicios.includes(s)
+                          ? 'border-primary-700 bg-primary-50 text-primary-700'
+                          : 'border-gray-200 text-gray-500 hover:border-gray-300'
+                      }`}>
+                      {s}
+                    </button>
+                  ))}
+                </div>
+                {form.servicios.length > 0 && (
+                  <p className="text-sm text-primary-700 font-medium">
+                    ✓ {form.servicios.length} servicio{form.servicios.length > 1 ? 's' : ''} seleccionado{form.servicios.length > 1 ? 's' : ''}
+                  </p>
+                )}
+              </div>
+
+              {/* RESUMEN */}
+              <div className="bg-gradient-to-br from-primary-50 to-blue-50 rounded-3xl border border-primary-100 p-6">
+                <h3 className="font-bold text-gray-800 mb-4">📝 Resumen de cambios</h3>
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  {[
+                    ['📍', `${form.ciudad}${form.barrio ? `, ${form.barrio}` : ''}`],
+                    ['💶', `${form.precio}€/mes${form.precioDia ? ` · ${form.precioDia}€/día` : ''}`],
+                    ['🛏', `${form.habitaciones} hab.${form.banos ? ` · ${form.banos} baños` : ''}`],
+                    ['📅', form.tipoEstancia === 'larga' ? 'Larga estancia' : form.tipoEstancia === 'corta' ? 'Corta estancia' : 'Ambas'],
+                    ['🖼️', `${form.fotosActuales?.length || 0} actuales + ${previews.length} nuevas`],
+                    ['🔘', form.activo !== false ? 'Disponible' : 'Pausado'],
+                  ].map(([icono, valor]) => (
+                    <div key={icono} className="flex items-center gap-2 bg-white rounded-xl px-3 py-2 border border-primary-100">
+                      <span>{icono}</span>
+                      <span className="text-gray-700 font-medium truncate">{valor}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
@@ -375,24 +515,30 @@ export default function EditarPiso() {
           {/* BOTONES NAVEGACIÓN */}
           <div className="flex justify-between mt-6">
             {paso > 1 ? (
-              <button type="button" onClick={anterior}
+              <button type="button" onClick={handleAnterior}
                 className="px-6 py-3 rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 font-medium transition-all">
                 ← Anterior
               </button>
             ) : <div />}
 
             {paso < 3 ? (
-              <button type="button" onClick={siguiente}
+              <button type="button" onClick={handleSiguiente}
                 className="px-6 py-3 rounded-xl bg-primary-700 text-white hover:bg-primary-800 font-semibold transition-all">
                 Siguiente →
               </button>
             ) : (
               <button type="submit" disabled={guardando || exito}
-                className="px-8 py-3 rounded-xl bg-accent-500 hover:bg-accent-600 text-white font-semibold disabled:opacity-50 transition-all">
-                {guardando ? 'Guardando...' : '💾 Guardar cambios'}
+                className="px-8 py-3 rounded-xl bg-accent-500 hover:bg-accent-600 text-white font-semibold disabled:opacity-50 transition-all flex items-center gap-2">
+                {guardando ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Guardando...
+                  </>
+                ) : '💾 Guardar cambios'}
               </button>
             )}
           </div>
+
         </form>
       </div>
     </div>
