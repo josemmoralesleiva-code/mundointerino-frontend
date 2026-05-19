@@ -318,7 +318,7 @@ export default function Home() {
         <div className="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-3">
             {/* ✏️ CAMBIO: alt y texto del footer */}
-            <img src="/img/logo.png" alt="Repla" className="h-8 brightness-0 invert opacity-70" />
+            <img src="/img/logo.png" alt="Repla" className="h-12 brightness-0 invert opacity-70" />
             <p className="text-primary-100 text-sm">© 2026 Repla · Tu hogar donde te necesiten</p>
           </div>
           <div className="flex gap-6 text-sm text-primary-100">

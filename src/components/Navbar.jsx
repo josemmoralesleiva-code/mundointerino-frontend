@@ -34,7 +34,7 @@ export default function Navbar() {
         <div className="flex items-center gap-8">
           <a href="/" className="flex items-center">
             {/* ✏️ CAMBIO: alt actualizado a Repla */}
-            <img src="/img/logo.png" alt="Repla" className="h-10" />
+            <img src="/img/logo.png" alt="Repla" className="h-14" />
           </a>
 
           <div className="hidden md:flex items-center gap-6">
