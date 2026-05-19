@@ -3,26 +3,26 @@ import Navbar from '../components/Navbar'
 
 const PANELES = [
   {
-    titulo: 'Foro de Educación',
+    titulo: 'Foro de Justicia',
     icono: '💬',
-    descripcion: 'Dudas sobre destinos, plazas, sustituciones, vivienda y experiencia por provincias.',
-    ruta: '/mundointerino/educacion/foro',
+    descripcion: 'Dudas sobre destinos, juzgados, vivienda, movilidad y cambios de sede.',
+    ruta: '/mundointerino/justicia/foro',
     color: 'from-blue-50 to-blue-100',
     texto: 'text-blue-700',
   },
   {
     titulo: 'Chat general',
     icono: '⚡',
-    descripcion: 'Conversación rápida para interinos de educación en tiempo real.',
-    ruta: '/mundointerino/educacion/chat',
+    descripcion: 'Conversación rápida para personal de justicia en tiempo real.',
+    ruta: '/mundointerino/justicia/chat',
     color: 'from-green-50 to-green-100',
     texto: 'text-green-700',
   },
   {
     titulo: 'Permutas',
     icono: '🔁',
-    descripcion: 'Intercambia destino, alojamiento o información con otros docentes.',
-    ruta: '/mundointerino/educacion/permutas',
+    descripcion: 'Intercambia destino, alojamiento o información con otros compañeros.',
+    ruta: '/mundointerino/justicia/permutas',
     color: 'from-amber-50 to-amber-100',
     texto: 'text-amber-700',
   },
@@ -30,36 +30,36 @@ const PANELES = [
     titulo: 'Compartir coche',
     icono: '🚗',
     descripcion: 'Encuentra compañeros para rutas, gasolina y desplazamientos.',
-    ruta: '/mundointerino/educacion/coche',
+    ruta: '/mundointerino/justicia/coche',
     color: 'from-purple-50 to-purple-100',
     texto: 'text-purple-700',
   },
   {
     titulo: 'Recursos',
     icono: '📚',
-    descripcion: 'Guías, checklist, modelos de documentos y consejos prácticos.',
-    ruta: '/mundointerino/educacion/recursos',
+    descripcion: 'Guías, checklist, modelos de documentos y consejos útiles.',
+    ruta: '/mundointerino/justicia/recursos',
     color: 'from-slate-50 to-slate-100',
     texto: 'text-slate-700',
   },
   {
     titulo: 'Avisos',
     icono: '📢',
-    descripcion: 'Novedades, alertas y publicaciones destacadas para educación.',
-    ruta: '/mundointerino/educacion/avisos',
+    descripcion: 'Novedades, alertas y publicaciones destacadas para justicia.',
+    ruta: '/mundointerino/justicia/avisos',
     color: 'from-red-50 to-red-100',
     texto: 'text-red-700',
   },
 ]
 
 const DESTACADOS = [
-  'Destinos por provincia y ciudad.',
-  'Vivienda temporal para estancias cortas y largas.',
-  'Comunidad útil para compartir información real.',
-  'Espacio pensado para docentes interinos y desplazados.',
+  'Destinos por ciudad, partido judicial o sede.',
+  'Vivienda temporal para traslados y estancias cortas.',
+  'Comunidad útil para compartir experiencias reales.',
+  'Espacio pensado para movilidad profesional en justicia.',
 ]
 
-export default function Educacion() {
+export default function Justicia() {
   const navigate = useNavigate()
 
   return (
@@ -76,15 +76,15 @@ export default function Educacion() {
           </button>
 
           <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-sm mb-4">
-            🎓 Administración
+            ⚖️ Administración
           </span>
 
           <h1 className="text-4xl md:text-5xl font-bold leading-tight">
-            Educación
+            Justicia
           </h1>
 
           <p className="mt-5 text-primary-100 text-lg max-w-2xl">
-            Un espacio para interinos de educación que necesitan alojamiento, apoyo, conversación y recursos útiles.
+            Un espacio para profesionales de justicia que necesitan alojamiento, apoyo, conversación y recursos útiles.
           </p>
         </div>
       </section>

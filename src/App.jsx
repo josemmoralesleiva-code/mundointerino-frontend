@@ -18,6 +18,10 @@ import Provincia from './pages/Provincia'
 import ZonaDetalle from './pages/ZonaDetalle'
 import Contacto from './pages/Contacto'
 import SobreNosotros from './pages/SobreNosotros'
+import MundoInterino from './pages/MundoInterino'
+import Educacion from './pages/Educacion'
+import Sanidad from './pages/Sanidad'
+import Justicia from './pages/Justicia'
 
 export default function App() {
   return (
@@ -76,6 +80,40 @@ export default function App() {
         <Route path="/zonas/:comunidad/:provincia/:ciudad" element={<ZonaDetalle />} />
         <Route path="/sobre-nosotros" element={<SobreNosotros />} />
         <Route path="/contacto" element={<Contacto />} />
+
+        {/* MundoInterino */}
+        <Route
+          path="/mundointerino"
+          element={
+            <PrivateRoute>
+              <MundoInterino />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/mundointerino/educacion"
+          element={
+            <PrivateRoute>
+              <Educacion />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/mundointerino/sanidad"
+          element={
+            <PrivateRoute>
+              <Sanidad />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/mundointerino/justicia"
+          element={
+            <PrivateRoute>
+              <Justicia />
+            </PrivateRoute>
+          }
+        />
       </Routes>
     </BrowserRouter>
   )
