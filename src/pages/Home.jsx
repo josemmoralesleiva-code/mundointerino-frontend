@@ -132,10 +132,10 @@ export default function Home() {
               🔍 Buscar piso
             </button>
             <button
-              onClick={() => navigate('/mundointerino')}
+              onClick={() => navigate('/mundo')}
               className="bg-white hover:bg-gray-50 text-primary-800 font-bold px-6 py-3 rounded-xl transition-all shadow-md border border-gray-200"
             >
-              🌍 MundoInterino
+              🌍 Mundo
             </button>
           </div>
 
