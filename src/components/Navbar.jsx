@@ -27,7 +27,7 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="sticky top-0 z-50 bg-[#111827]/95 backdrop-blur-xl text-white shadow-[0_10px_30px_rgba(0,0,0,0.18)]">
+    <nav className="sticky top-0 z-50 bg-[#111827]/95 backdrop-blur-xl text-white">
       <div className="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center">
         <div className="flex items-center gap-8">
           <button
@@ -39,14 +39,6 @@ export default function Navbar() {
     alt="MundoInterino"
     className="h-10 w-auto object-contain"
   />
-  <div className="hidden sm:block text-left">
-    <div className="text-sm font-semibold leading-none tracking-wide text-white">
-      MundoInterino
-    </div>
-    <div className="text-[11px] text-slate-300 mt-1">
-      Alquiler elegante para interinos
-    </div>
-  </div>
 </button>
 
           <div className="hidden md:flex items-center gap-2">
