@@ -72,10 +72,12 @@ export default function Home() {
         <div className="relative max-w-4xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight drop-shadow-lg">
             El portal de alquiler<br />
-            <span className="text-accent-400">para docentes</span>
+            {/* ✏️ CAMBIO: ampliado a toda la administración */}
+            <span className="text-accent-400">para interinos de la administración</span>
           </h1>
+          {/* ✏️ CAMBIO: descripción más inclusiva */}
           <p className="text-primary-100 text-lg mb-10 drop-shadow">
-            Encuentra piso cerca de tu destino rápidamente. Precios justos, estancias cortas o largas.
+            Educación, sanidad, justicia y más. Encuentra piso cerca de tu destino rápidamente. Precios justos, estancias cortas o largas.
           </p>
 
           <div className="bg-white rounded-2xl p-3 max-w-4xl mx-auto flex flex-col md:flex-row gap-2 shadow-2xl">
@@ -119,9 +121,10 @@ export default function Home() {
             </button>
           </div>
 
+          {/* ✏️ CAMBIO: estadísticas actualizadas y público ampliado */}
           <div className="flex justify-center gap-8 mt-8 text-sm text-primary-100 flex-wrap">
             <span>✅ +200 pisos publicados</span>
-            <span>👨‍🏫 Solo para docentes</span>
+            <span>🏥 Educación · Sanidad · Justicia</span>
             <span>💶 Sin comisiones</span>
           </div>
         </div>
@@ -129,14 +132,36 @@ export default function Home() {
 
       {/* VENTAJAS */}
       <section className="max-w-5xl mx-auto px-6 py-16">
-        <h2 className="text-2xl font-bold text-gray-800 mb-2 text-center">¿Por qué Profinter?</h2>
-        <p className="text-gray-400 text-center mb-10">El portal pensado exclusivamente para docentes</p>
+        {/* ✏️ CAMBIO: título y subtítulo */}
+        <h2 className="text-2xl font-bold text-gray-800 mb-2 text-center">¿Por qué Repla?</h2>
+        <p className="text-gray-400 text-center mb-10">El portal pensado para interinos de toda la administración pública</p>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {[
-            { icon: '👨‍🏫', titulo: 'Solo para docentes', texto: 'Propietarios que entienden tus necesidades: contratos flexibles y sin burocracia.', color: 'bg-blue-50' },
-            { icon: '💶', titulo: 'Precios justos', texto: 'Más económico que Booking. Sin comisiones ocultas. Negociación directa.', color: 'bg-green-50' },
-            { icon: '📅', titulo: 'Estancia flexible', texto: 'Desde un fin de semana hasta todo el curso escolar. Tú decides cuánto tiempo.', color: 'bg-yellow-50' },
-            { icon: '🗺️', titulo: 'Cobertura amplia', texto: 'Encuentra pisos en distintas comunidades, provincias y pueblos.', color: 'bg-purple-50' },
+            {
+              icon: '🏥',
+              // ✏️ CAMBIO: de "Solo para docentes" a todos los sectores
+              titulo: 'Todos los sectores',
+              texto: 'Educación, sanidad, justicia y concertada. Propietarios que entienden tus necesidades: contratos flexibles.',
+              color: 'bg-blue-50'
+            },
+            {
+              icon: '💶',
+              titulo: 'Precios justos',
+              texto: 'Más económico que Booking. Sin comisiones ocultas. Negociación directa.',
+              color: 'bg-green-50'
+            },
+            {
+              icon: '📅',
+              titulo: 'Estancia flexible',
+              texto: 'Desde un fin de semana hasta todo el curso o contrato. Tú decides cuánto tiempo.',
+              color: 'bg-yellow-50'
+            },
+            {
+              icon: '🗺️',
+              titulo: 'Cobertura amplia',
+              texto: 'Encuentra pisos en distintas comunidades, provincias y pueblos.',
+              color: 'bg-purple-50'
+            },
           ].map(v => (
             <div key={v.titulo} className={`${v.color} rounded-2xl p-6 border border-gray-100 text-center hover:shadow-lg hover:-translate-y-1 transition-all duration-300`}>
               <div className="text-4xl mb-3">{v.icon}</div>
@@ -266,16 +291,17 @@ export default function Home() {
           style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=1600&q=80)', backgroundSize: 'cover' }}
         />
         <div className="relative max-w-3xl mx-auto">
-          <h2 className="text-3xl font-bold mb-3">¿Tienes un piso para docentes?</h2>
+          {/* ✏️ CAMBIO: CTA más inclusivo */}
+          <h2 className="text-3xl font-bold mb-3">¿Tienes un piso cerca de un hospital, colegio o juzgado?</h2>
           <p className="text-primary-100 mb-8 text-lg">
-            Únete a los propietarios que ya publican en Profinter. Publicación gratuita, inquilinos responsables.
+            Únete a los propietarios que ya publican en Repla. Publicación gratuita, inquilinos con nómina pública garantizada.
           </p>
           <div className="flex flex-col md:flex-row gap-4 justify-center">
             <Link
-          to="/pisos/nuevo"
-          className="bg-accent-500 hover:bg-accent-600 text-white font-bold px-10 py-4 rounded-xl text-lg transition-all hover:scale-105 shadow-lg inline-flex items-center justify-center"
+              to="/pisos/nuevo"
+              className="bg-accent-500 hover:bg-accent-600 text-white font-bold px-10 py-4 rounded-xl text-lg transition-all hover:scale-105 shadow-lg inline-flex items-center justify-center"
             >
-            Publicar mi piso gratis
+              Publicar mi piso gratis
             </Link>
             <Link
               to="/sobre-nosotros"
@@ -291,8 +317,9 @@ export default function Home() {
       <footer className="bg-primary-900 text-white py-10 px-6">
         <div className="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-3">
-            <img src="/img/logo.png" alt="Profinter" className="h-8 brightness-0 invert opacity-70" />
-            <p className="text-primary-100 text-sm">© 2026 Profinter · Portal de alquiler para docentes</p>
+            {/* ✏️ CAMBIO: alt y texto del footer */}
+            <img src="/img/logo.png" alt="Repla" className="h-8 brightness-0 invert opacity-70" />
+            <p className="text-primary-100 text-sm">© 2026 Repla · Tu hogar donde te necesiten</p>
           </div>
           <div className="flex gap-6 text-sm text-primary-100">
             <Link to="/sobre-nosotros" className="hover:text-white transition-colors">Sobre nosotros</Link>
