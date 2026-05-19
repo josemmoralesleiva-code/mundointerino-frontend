@@ -27,20 +27,18 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="sticky top-0 z-50 bg-[#0B1220]/95 backdrop-blur-xl text-white shadow-[0_10px_30px_rgba(0,0,0,0.18)]">
+    <nav className="sticky top-0 z-50 bg-[#111827]/95 backdrop-blur-xl text-white shadow-[0_10px_30px_rgba(0,0,0,0.18)]">
       <div className="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center">
         <div className="flex items-center gap-8">
           <button
   onClick={() => navigate('/')}
   className="flex items-center gap-3 group"
 >
-  <div className="h-11 w-11 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center overflow-hidden shadow-sm group-hover:bg-white/15 transition-colors">
-    <img
-      src="/img/logo.png"
-      alt="MundoInterino"
-      className="h-8 w-auto object-contain"
-    />
-  </div>
+  <img
+    src="/img/logo.png"
+    alt="MundoInterino"
+    className="h-10 w-auto object-contain"
+  />
   <div className="hidden sm:block text-left">
     <div className="text-sm font-semibold leading-none tracking-wide text-white">
       MundoInterino
