@@ -32,45 +32,61 @@ export default function Navbar() {
 
         {/* LOGO + LINKS */}
         <div className="flex items-center gap-8">
-          <a href="/" className="flex items-center">
-            {/* ✏️ CAMBIO: alt actualizado a Repla */}
+          <button onClick={() => navigate('/')} className="flex items-center">
             <img src="/img/logo.png" alt="Repla" className="h-14" />
-          </a>
+          </button>
 
           <div className="hidden md:flex items-center gap-6">
-            <button onClick={() => navigate('/pisos')}
-              className="text-gray-700 hover:text-primary-700 font-medium transition-colors text-sm border-b-2 border-transparent hover:border-primary-700 pb-1">
+            <button
+              onClick={() => navigate('/pisos')}
+              className="text-gray-700 hover:text-primary-700 font-medium transition-colors text-sm border-b-2 border-transparent hover:border-primary-700 pb-1"
+            >
               Buscar piso
             </button>
 
+            <button
+              onClick={() => navigate('/mundointerino')}
+              className="text-gray-700 hover:text-primary-700 font-medium transition-colors text-sm border-b-2 border-transparent hover:border-primary-700 pb-1"
+            >
+              MundoInterino
+            </button>
+
             <div className="relative" ref={refProp}>
-              <button onClick={() => { setMenuPropietarios(!menuPropietarios); setMenuUsuario(false) }}
+              <button
+                onClick={() => { setMenuPropietarios(!menuPropietarios); setMenuUsuario(false) }}
                 className={`flex items-center gap-1 font-medium transition-colors text-sm pb-1 border-b-2 ${
                   menuPropietarios ? 'text-primary-700 border-primary-700' : 'text-gray-700 hover:text-primary-700 border-transparent hover:border-primary-700'
-                }`}>
+                }`}
+              >
                 Propietarios
                 <svg className={`w-4 h-4 transition-transform ${menuPropietarios ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
+
               {menuPropietarios && (
                 <div className="absolute top-10 left-0 bg-white rounded-2xl shadow-2xl border border-gray-100 p-4 w-48 z-50">
-                  <button onClick={() => { navigate('/pisos/nuevo'); setMenuPropietarios(false) }}
-                    className="w-full text-left text-sm text-gray-700 hover:text-primary-700 py-2 px-2 rounded-lg hover:bg-gray-50">
+                  <button
+                    onClick={() => { navigate('/pisos/nuevo'); setMenuPropietarios(false) }}
+                    className="w-full text-left text-sm text-gray-700 hover:text-primary-700 py-2 px-2 rounded-lg hover:bg-gray-50"
+                  >
                     Publicar mi piso
                   </button>
-                  <button onClick={() => { navigate('/dashboard'); setMenuPropietarios(false) }}
-                    className="w-full text-left text-sm text-gray-700 hover:text-primary-700 py-2 px-2 rounded-lg hover:bg-gray-50">
+                  <button
+                    onClick={() => { navigate('/dashboard'); setMenuPropietarios(false) }}
+                    className="w-full text-left text-sm text-gray-700 hover:text-primary-700 py-2 px-2 rounded-lg hover:bg-gray-50"
+                  >
                     Gestionar anuncios
                   </button>
                 </div>
               )}
             </div>
 
-            {/* BOTÓN ADMIN — solo visible si rol === 'admin' */}
             {usuario?.rol === 'admin' && (
-              <button onClick={() => navigate('/admin')}
-                className="flex items-center gap-1 bg-red-50 text-red-700 hover:bg-red-100 px-3 py-1.5 rounded-lg text-sm font-bold transition-colors">
+              <button
+                onClick={() => navigate('/admin')}
+                className="flex items-center gap-1 bg-red-50 text-red-700 hover:bg-red-100 px-3 py-1.5 rounded-lg text-sm font-bold transition-colors"
+              >
                 🛡️ Admin
               </button>
             )}
@@ -81,8 +97,10 @@ export default function Navbar() {
         <div className="flex items-center gap-3">
           {token ? (
             <div className="relative" ref={refUser}>
-              <button onClick={() => setMenuUsuario(!menuUsuario)}
-                className="flex items-center gap-2 bg-gray-50 hover:bg-gray-100 border border-gray-200 px-3 py-2 rounded-xl transition-colors">
+              <button
+                onClick={() => setMenuUsuario(!menuUsuario)}
+                className="flex items-center gap-2 bg-gray-50 hover:bg-gray-100 border border-gray-200 px-3 py-2 rounded-xl transition-colors"
+              >
                 <div className="w-7 h-7 bg-primary-700 rounded-full flex items-center justify-center text-white text-xs font-bold">
                   {usuario?.nombre?.charAt(0)?.toUpperCase() || 'U'}
                 </div>
@@ -91,26 +109,40 @@ export default function Navbar() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
+
               {menuUsuario && (
                 <div className="absolute right-0 top-12 bg-white rounded-2xl shadow-2xl border border-gray-100 p-2 w-48 z-50">
-                  <button onClick={() => { navigate('/dashboard'); setMenuUsuario(false) }}
-                    className="w-full text-left text-sm text-gray-700 hover:text-primary-700 py-2 px-3 rounded-lg hover:bg-gray-50">
+                  <button
+                    onClick={() => { navigate('/dashboard'); setMenuUsuario(false) }}
+                    className="w-full text-left text-sm text-gray-700 hover:text-primary-700 py-2 px-3 rounded-lg hover:bg-gray-50"
+                  >
                     Mi panel
                   </button>
-                  {/* ✏️ FIX: "Mi perfil" movido aquí dentro, donde tiene sentido */}
-                  <button onClick={() => { navigate('/perfil'); setMenuUsuario(false) }}
-                    className="w-full text-left text-sm text-gray-700 hover:text-primary-700 py-2 px-3 rounded-lg hover:bg-gray-50">
+                  <button
+                    onClick={() => { navigate('/perfil'); setMenuUsuario(false) }}
+                    className="w-full text-left text-sm text-gray-700 hover:text-primary-700 py-2 px-3 rounded-lg hover:bg-gray-50"
+                  >
                     Mi perfil
                   </button>
+                  <button
+                    onClick={() => { navigate('/mundointerino'); setMenuUsuario(false) }}
+                    className="w-full text-left text-sm text-gray-700 hover:text-primary-700 py-2 px-3 rounded-lg hover:bg-gray-50"
+                  >
+                    MundoInterino
+                  </button>
                   {usuario?.rol === 'admin' && (
-                    <button onClick={() => { navigate('/admin'); setMenuUsuario(false) }}
-                      className="w-full text-left text-sm text-red-600 hover:text-red-700 py-2 px-3 rounded-lg hover:bg-red-50 font-semibold">
+                    <button
+                      onClick={() => { navigate('/admin'); setMenuUsuario(false) }}
+                      className="w-full text-left text-sm text-red-600 hover:text-red-700 py-2 px-3 rounded-lg hover:bg-red-50 font-semibold"
+                    >
                       🛡️ Panel admin
                     </button>
                   )}
                   <hr className="my-1 border-gray-100" />
-                  <button onClick={cerrarSesion}
-                    className="w-full text-left text-sm text-red-500 hover:text-red-700 py-2 px-3 rounded-lg hover:bg-red-50">
+                  <button
+                    onClick={cerrarSesion}
+                    className="w-full text-left text-sm text-red-500 hover:text-red-700 py-2 px-3 rounded-lg hover:bg-red-50"
+                  >
                     Cerrar sesión
                   </button>
                 </div>
@@ -118,12 +150,16 @@ export default function Navbar() {
             </div>
           ) : (
             <>
-              <button onClick={() => navigate('/login')}
-                className="border border-primary-700 text-primary-700 px-4 py-2 rounded-lg hover:bg-primary-50 font-medium transition-all text-sm">
+              <button
+                onClick={() => navigate('/login')}
+                className="border border-primary-700 text-primary-700 px-4 py-2 rounded-lg hover:bg-primary-50 font-medium transition-all text-sm"
+              >
                 Iniciar sesión
               </button>
-              <button onClick={() => navigate('/registro')}
-                className="bg-primary-700 text-white px-4 py-2 rounded-lg hover:bg-primary-800 font-medium transition-all text-sm">
+              <button
+                onClick={() => navigate('/registro')}
+                className="bg-primary-700 text-white px-4 py-2 rounded-lg hover:bg-primary-800 font-medium transition-all text-sm"
+              >
                 Registrarse
               </button>
             </>
