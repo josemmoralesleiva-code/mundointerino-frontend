@@ -27,53 +27,81 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="bg-white shadow-sm px-6 py-3 sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto flex justify-between items-center">
-
+    <nav className="sticky top-0 z-50 border-b border-white/10 bg-[#0B1220]/95 backdrop-blur-xl text-white shadow-[0_10px_30px_rgba(0,0,0,0.18)]">
+      <div className="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center">
         <div className="flex items-center gap-8">
-          <button onClick={() => navigate('/')} className="flex items-center">
-            <img src="/img/logo.png" alt="MundoInterino" className="h-14" />
+          <button
+            onClick={() => navigate('/')}
+            className="flex items-center gap-3 group"
+          >
+            <div className="h-11 w-11 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center overflow-hidden shadow-sm group-hover:bg-white/15 transition-colors">
+              <img src="/img/logo.png" alt="MundoInterino" className="h-8 w-auto brightness-0 invert opacity-90" />
+            </div>
+            <div className="hidden sm:block text-left">
+              <div className="text-sm font-semibold leading-none tracking-wide text-white">
+                MundoInterino
+              </div>
+              <div className="text-[11px] text-slate-300 mt-1">
+                Alquiler elegante para interinos
+              </div>
+            </div>
           </button>
 
-          <div className="hidden md:flex items-center gap-6">
+          <div className="hidden md:flex items-center gap-2">
             <button
               onClick={() => navigate('/pisos')}
-              className="text-gray-700 hover:text-primary-700 font-medium transition-colors text-sm border-b-2 border-transparent hover:border-primary-700 pb-1"
+              className="px-4 py-2 rounded-xl text-sm font-medium text-slate-200 hover:text-white hover:bg-white/10 transition-all"
             >
               Buscar piso
             </button>
 
             <button
-              onClick={() => navigate('/mundo')}
-              className="text-gray-700 hover:text-primary-700 font-medium transition-colors text-sm border-b-2 border-transparent hover:border-primary-700 pb-1"
+              onClick={() => navigate('/mundointerino')}
+              className="px-4 py-2 rounded-xl text-sm font-medium text-slate-200 hover:text-white hover:bg-white/10 transition-all"
             >
               Mundo
             </button>
 
             <div className="relative" ref={refProp}>
               <button
-                onClick={() => { setMenuPropietarios(!menuPropietarios); setMenuUsuario(false) }}
-                className={`flex items-center gap-1 font-medium transition-colors text-sm pb-1 border-b-2 ${
-                  menuPropietarios ? 'text-primary-700 border-primary-700' : 'text-gray-700 hover:text-primary-700 border-transparent hover:border-primary-700'
+                onClick={() => {
+                  setMenuPropietarios(!menuPropietarios)
+                  setMenuUsuario(false)
+                }}
+                className={`flex items-center gap-1 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
+                  menuPropietarios
+                    ? 'bg-white/10 text-white'
+                    : 'text-slate-200 hover:text-white hover:bg-white/10'
                 }`}
               >
                 Propietarios
-                <svg className={`w-4 h-4 transition-transform ${menuPropietarios ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg
+                  className={`w-4 h-4 transition-transform ${menuPropietarios ? 'rotate-180' : ''}`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
 
               {menuPropietarios && (
-                <div className="absolute top-10 left-0 bg-white rounded-2xl shadow-2xl border border-gray-100 p-4 w-48 z-50">
+                <div className="absolute top-12 left-0 bg-white rounded-2xl shadow-2xl border border-slate-200 p-2 w-56 z-50 text-slate-900 overflow-hidden">
                   <button
-                    onClick={() => { navigate('/pisos/nuevo'); setMenuPropietarios(false) }}
-                    className="w-full text-left text-sm text-gray-700 hover:text-primary-700 py-2 px-2 rounded-lg hover:bg-gray-50"
+                    onClick={() => {
+                      navigate('/pisos/nuevo')
+                      setMenuPropietarios(false)
+                    }}
+                    className="w-full text-left text-sm text-slate-700 hover:text-[#0F172A] py-3 px-3 rounded-xl hover:bg-slate-50 transition-colors"
                   >
                     Publicar mi piso
                   </button>
                   <button
-                    onClick={() => { navigate('/dashboard'); setMenuPropietarios(false) }}
-                    className="w-full text-left text-sm text-gray-700 hover:text-primary-700 py-2 px-2 rounded-lg hover:bg-gray-50"
+                    onClick={() => {
+                      navigate('/dashboard')
+                      setMenuPropietarios(false)
+                    }}
+                    className="w-full text-left text-sm text-slate-700 hover:text-[#0F172A] py-3 px-3 rounded-xl hover:bg-slate-50 transition-colors"
                   >
                     Gestionar anuncios
                   </button>
@@ -84,7 +112,7 @@ export default function Navbar() {
             {usuario?.rol === 'admin' && (
               <button
                 onClick={() => navigate('/admin')}
-                className="flex items-center gap-1 bg-red-50 text-red-700 hover:bg-red-100 px-3 py-1.5 rounded-lg text-sm font-bold transition-colors"
+                className="flex items-center gap-1 bg-[#D4AF37]/15 text-[#F5D97A] hover:bg-[#D4AF37]/20 px-3 py-2 rounded-xl text-sm font-semibold transition-colors border border-[#D4AF37]/20"
               >
                 🛡️ Admin
               </button>
@@ -96,50 +124,72 @@ export default function Navbar() {
           {token ? (
             <div className="relative" ref={refUser}>
               <button
-                onClick={() => setMenuUsuario(!menuUsuario)}
-                className="flex items-center gap-2 bg-gray-50 hover:bg-gray-100 border border-gray-200 px-3 py-2 rounded-xl transition-colors"
+                onClick={() => {
+                  setMenuUsuario(!menuUsuario)
+                  setMenuPropietarios(false)
+                }}
+                className="flex items-center gap-3 bg-white/10 hover:bg-white/15 border border-white/10 px-3 py-2 rounded-2xl transition-all"
               >
-                <div className="w-7 h-7 bg-primary-700 rounded-full flex items-center justify-center text-white text-xs font-bold">
+                <div className="w-8 h-8 bg-[#D4AF37] rounded-full flex items-center justify-center text-[#0F172A] text-xs font-bold shadow-sm">
                   {usuario?.nombre?.charAt(0)?.toUpperCase() || 'U'}
                 </div>
-                <span className="text-sm font-medium text-gray-700 hidden md:block">{usuario?.nombre}</span>
-                <svg className={`w-4 h-4 text-gray-400 transition-transform ${menuUsuario ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <span className="text-sm font-medium text-white hidden md:block">
+                  {usuario?.nombre}
+                </span>
+                <svg
+                  className={`w-4 h-4 text-slate-300 transition-transform ${menuUsuario ? 'rotate-180' : ''}`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
 
               {menuUsuario && (
-                <div className="absolute right-0 top-12 bg-white rounded-2xl shadow-2xl border border-gray-100 p-2 w-48 z-50">
+                <div className="absolute right-0 top-12 bg-white rounded-2xl shadow-2xl border border-slate-200 p-2 w-56 z-50 text-slate-900 overflow-hidden">
                   <button
-                    onClick={() => { navigate('/dashboard'); setMenuUsuario(false) }}
-                    className="w-full text-left text-sm text-gray-700 hover:text-primary-700 py-2 px-3 rounded-lg hover:bg-gray-50"
+                    onClick={() => {
+                      navigate('/dashboard')
+                      setMenuUsuario(false)
+                    }}
+                    className="w-full text-left text-sm text-slate-700 hover:text-[#0F172A] py-3 px-3 rounded-xl hover:bg-slate-50 transition-colors"
                   >
                     Mi panel
                   </button>
                   <button
-                    onClick={() => { navigate('/perfil'); setMenuUsuario(false) }}
-                    className="w-full text-left text-sm text-gray-700 hover:text-primary-700 py-2 px-3 rounded-lg hover:bg-gray-50"
+                    onClick={() => {
+                      navigate('/perfil')
+                      setMenuUsuario(false)
+                    }}
+                    className="w-full text-left text-sm text-slate-700 hover:text-[#0F172A] py-3 px-3 rounded-xl hover:bg-slate-50 transition-colors"
                   >
                     Mi perfil
                   </button>
                   <button
-                    onClick={() => { navigate('/mundo'); setMenuUsuario(false) }}
-                    className="w-full text-left text-sm text-gray-700 hover:text-primary-700 py-2 px-3 rounded-lg hover:bg-gray-50"
+                    onClick={() => {
+                      navigate('/mundointerino')
+                      setMenuUsuario(false)
+                    }}
+                    className="w-full text-left text-sm text-slate-700 hover:text-[#0F172A] py-3 px-3 rounded-xl hover:bg-slate-50 transition-colors"
                   >
                     Mundo
                   </button>
                   {usuario?.rol === 'admin' && (
                     <button
-                      onClick={() => { navigate('/admin'); setMenuUsuario(false) }}
-                      className="w-full text-left text-sm text-red-600 hover:text-red-700 py-2 px-3 rounded-lg hover:bg-red-50 font-semibold"
+                      onClick={() => {
+                        navigate('/admin')
+                        setMenuUsuario(false)
+                      }}
+                      className="w-full text-left text-sm text-[#b45309] hover:text-[#92400e] py-3 px-3 rounded-xl hover:bg-amber-50 transition-colors font-semibold"
                     >
                       🛡️ Panel admin
                     </button>
                   )}
-                  <hr className="my-1 border-gray-100" />
+                  <div className="my-1 border-t border-slate-100" />
                   <button
                     onClick={cerrarSesion}
-                    className="w-full text-left text-sm text-red-500 hover:text-red-700 py-2 px-3 rounded-lg hover:bg-red-50"
+                    className="w-full text-left text-sm text-rose-600 hover:text-rose-700 py-3 px-3 rounded-xl hover:bg-rose-50 transition-colors"
                   >
                     Cerrar sesión
                   </button>
@@ -150,13 +200,13 @@ export default function Navbar() {
             <>
               <button
                 onClick={() => navigate('/login')}
-                className="border border-primary-700 text-primary-700 px-4 py-2 rounded-lg hover:bg-primary-50 font-medium transition-all text-sm"
+                className="border border-white/15 text-slate-100 px-4 py-2 rounded-xl hover:bg-white/10 font-medium transition-all text-sm"
               >
                 Iniciar sesión
               </button>
               <button
                 onClick={() => navigate('/registro')}
-                className="bg-primary-700 text-white px-4 py-2 rounded-lg hover:bg-primary-800 font-medium transition-all text-sm"
+                className="bg-[#D4AF37] text-[#0F172A] px-4 py-2 rounded-xl hover:bg-[#B8860B] font-semibold transition-all text-sm shadow-lg"
               >
                 Registrarse
               </button>
