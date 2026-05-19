@@ -62,7 +62,8 @@ export default function Registro() {
       <nav className="bg-white shadow-sm px-6 py-3">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <button onClick={() => navigate('/')} className="flex items-center">
-            <img src="/img/logo.png" alt="Profinter" className="h-10" />
+            {/* ✏️ CAMBIO: alt + tamaño */}
+            <img src="/img/logo.png" alt="Repla" className="h-14" />
           </button>
 
           <div className="flex items-center gap-3">
@@ -98,7 +99,8 @@ export default function Registro() {
               <div className="relative h-full flex flex-col justify-end p-10 text-white">
                 <h1 className="text-4xl font-bold leading-tight mb-4">
                   Crea tu cuenta
-                  <span className="text-accent-400 block">en Profinter</span>
+                  {/* ✏️ CAMBIO: marca */}
+                  <span className="text-accent-400 block">en Repla</span>
                 </h1>
                 <p className="text-primary-100 text-lg max-w-md">
                   Accede a favoritos, chats, anuncios y verificación en una sola plataforma.
@@ -113,8 +115,9 @@ export default function Registro() {
                 <span className="text-2xl">✨</span>
               </div>
               <h2 className="text-3xl font-bold text-gray-800">Crear cuenta</h2>
+              {/* ✏️ CAMBIO: texto más alineado con el proyecto */}
               <p className="text-gray-500 mt-2">
-                Gratis para docentes y propietarios.
+                Gratis para interinos y propietarios.
               </p>
             </div>
 
@@ -135,7 +138,7 @@ export default function Registro() {
                       : 'border-gray-200 text-gray-500 hover:border-gray-300'
                   }`}
                 >
-                  👨‍🏫 Soy docente
+                  🧑‍💼 Soy interino
                 </button>
                 <button
                   type="button"
@@ -235,7 +238,7 @@ export default function Registro() {
             </div>
 
             <div className="mt-8 grid grid-cols-3 gap-3 text-center text-xs text-gray-500">
-              <div className="bg-gray-50 rounded-xl py-3">Docentes</div>
+              <div className="bg-gray-50 rounded-xl py-3">Interinos</div>
               <div className="bg-gray-50 rounded-xl py-3">Propietarios</div>
               <div className="bg-gray-50 rounded-xl py-3">Sin comisiones</div>
             </div>

@@ -71,7 +71,8 @@ export default function Provincia() {
             ← Volver a {NOMBRES[comunidad] || 'la comunidad'}
           </button>
           <h1 className="text-3xl font-bold text-gray-800 mt-2">{PROVINCIA_NAMES[provincia] || provincia}</h1>
-          <p className="text-gray-500 mt-2">Selecciona una ciudad o pueblo para ver pisos disponibles.</p>
+          {/* ✏️ CAMBIO: texto más inclusivo */}
+          <p className="text-gray-500 mt-2">Selecciona una ciudad o pueblo para ver pisos disponibles para interinos.</p>
         </div>
       </section>
 

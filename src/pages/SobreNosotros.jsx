@@ -6,14 +6,14 @@ export default function SobreNosotros() {
 
   const valores = [
     {
-      icono: '🎓',
-      titulo: 'Pensado para docentes',
-      texto: 'Creamos una plataforma centrada en las necesidades reales de docentes interinos y desplazados.',
+      icono: '🧑‍💼',
+      titulo: 'Pensado para interinos',
+      texto: 'Creamos una plataforma centrada en las necesidades reales de interinos desplazados por trabajo.',
     },
     {
       icono: '🏠',
       titulo: 'Alquiler más humano',
-      texto: 'Buscamos que propietarios y docentes conecten sin intermediarios ni comisiones ocultas.',
+      texto: 'Buscamos que propietarios e inquilinos conecten sin intermediarios ni comisiones ocultas.',
     },
     {
       icono: '💶',
@@ -40,8 +40,9 @@ export default function SobreNosotros() {
             ← Volver al inicio
           </button>
           <h1 className="text-4xl md:text-5xl font-bold">Sobre nosotros</h1>
+          {/* ✏️ CAMBIO: marca y enfoque */}
           <p className="text-primary-100 mt-4 max-w-3xl text-lg">
-            Profinter nace para ayudar a docentes interinos a encontrar alojamiento mejor adaptado a sus estancias temporales.
+            Repla nace para ayudar a interinos a encontrar alojamiento mejor adaptado a sus estancias temporales.
           </p>
         </div>
       </section>
@@ -51,7 +52,7 @@ export default function SobreNosotros() {
           <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-8">
             <h2 className="text-2xl font-bold text-gray-800 mb-4">Nuestra misión</h2>
             <p className="text-gray-600 leading-relaxed mb-4">
-              Queremos simplificar la búsqueda de vivienda para docentes que se desplazan por trabajo.
+              Queremos simplificar la búsqueda de vivienda para interinos que se desplazan por trabajo.
               Sabemos que muchas veces el problema no es solo encontrar piso, sino encontrar un piso
               adecuado para una estancia corta o de varios meses, con trato directo y condiciones claras.
             </p>
@@ -98,7 +99,7 @@ export default function SobreNosotros() {
         <div className="mt-12 bg-primary-50 border border-primary-100 rounded-3xl p-8 text-center">
           <h2 className="text-2xl font-bold text-gray-800 mb-3">¿Eres propietario?</h2>
           <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
-            Si tienes un piso pensado para docentes, puedes publicarlo gratis y recibir consultas directas.
+            Si tienes un piso pensado para interinos, puedes publicarlo gratis y recibir consultas directas.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link
@@ -111,7 +112,7 @@ export default function SobreNosotros() {
               to="/contacto"
               className="border border-primary-200 text-primary-700 px-6 py-3 rounded-xl font-semibold hover:bg-primary-100 transition-all"
             >
-              Contactar con Profinter
+              Contactar con Repla
             </Link>
           </div>
         </div>

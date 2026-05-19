@@ -9,14 +9,14 @@ export default function VerificacionDocente() {
       <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-10 max-w-md w-full text-center">
 
         <div className="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-6">
-          <span className="text-4xl">👨‍🏫</span>
+          <span className="text-4xl">🧑‍💼</span>
         </div>
 
         <h1 className="text-2xl font-bold text-gray-800 mb-2">
           ¡Bienvenido, {usuario.nombre}!
         </h1>
         <p className="text-gray-500 mb-6">
-          Tu cuenta de docente ha sido creada correctamente.
+          Tu cuenta de interino ha sido creada correctamente.
         </p>
 
         <div className="bg-blue-50 border border-blue-200 rounded-2xl p-4 mb-6 text-left">
