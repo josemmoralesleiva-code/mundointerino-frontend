@@ -72,10 +72,9 @@ export default function Home() {
         <div className="relative max-w-4xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight drop-shadow-lg">
             El portal de alquiler<br />
-            {/* ✏️ CAMBIO: ampliado a toda la administración */}
             <span className="text-accent-400">para interinos de la administración</span>
           </h1>
-          {/* ✏️ CAMBIO: descripción más inclusiva */}
+
           <p className="text-primary-100 text-lg mb-10 drop-shadow">
             Educación, sanidad, justicia y más. Encuentra piso cerca de tu destino rápidamente. Precios justos, estancias cortas o largas.
           </p>
@@ -92,6 +91,7 @@ export default function Home() {
                 className="w-full text-gray-800 font-medium focus:outline-none placeholder-gray-300 text-sm"
               />
             </div>
+
             <div className="flex flex-col items-start px-3 py-1 border-r border-gray-100">
               <label className="text-xs text-gray-400 font-medium">📅 Disponible desde</label>
               <input
@@ -101,6 +101,7 @@ export default function Home() {
                 className="text-gray-800 font-medium focus:outline-none text-sm"
               />
             </div>
+
             <div className="flex flex-col items-start px-3 py-1">
               <label className="text-xs text-gray-400 font-medium">⏱️ Estancia</label>
               <select
@@ -113,6 +114,7 @@ export default function Home() {
                 <option value="larga">Larga (meses)</option>
               </select>
             </div>
+
             <button
               onClick={handleBuscar}
               className="bg-accent-500 hover:bg-accent-600 text-white px-8 py-3 rounded-xl font-bold transition-all hover:scale-105 shadow-md"
@@ -121,7 +123,22 @@ export default function Home() {
             </button>
           </div>
 
-          {/* ✏️ CAMBIO: estadísticas actualizadas y público ampliado */}
+          {/* NUEVO ACCESO A MUNDOINTERINO */}
+          <div className="flex flex-col sm:flex-row gap-3 justify-center mt-5">
+            <button
+              onClick={() => navigate('/pisos')}
+              className="bg-accent-500 hover:bg-accent-600 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-md"
+            >
+              🔍 Buscar piso
+            </button>
+            <button
+              onClick={() => navigate('/mundointerino')}
+              className="bg-white hover:bg-gray-50 text-primary-800 font-bold px-6 py-3 rounded-xl transition-all shadow-md border border-gray-200"
+            >
+              🌍 MundoInterino
+            </button>
+          </div>
+
           <div className="flex justify-center gap-8 mt-8 text-sm text-primary-100 flex-wrap">
             <span>✅ +200 pisos publicados</span>
             <span>🏥 Educación · Sanidad · Justicia</span>
@@ -132,14 +149,12 @@ export default function Home() {
 
       {/* VENTAJAS */}
       <section className="max-w-5xl mx-auto px-6 py-16">
-        {/* ✏️ CAMBIO: título y subtítulo */}
         <h2 className="text-2xl font-bold text-gray-800 mb-2 text-center">¿Por qué Repla?</h2>
         <p className="text-gray-400 text-center mb-10">El portal pensado para interinos de toda la administración pública</p>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {[
             {
               icon: '🏥',
-              // ✏️ CAMBIO: de "Solo para docentes" a todos los sectores
               titulo: 'Todos los sectores',
               texto: 'Educación, sanidad, justicia y concertada. Propietarios que entienden tus necesidades: contratos flexibles.',
               color: 'bg-blue-50'
@@ -291,7 +306,6 @@ export default function Home() {
           style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=1600&q=80)', backgroundSize: 'cover' }}
         />
         <div className="relative max-w-3xl mx-auto">
-          {/* ✏️ CAMBIO: CTA más inclusivo */}
           <h2 className="text-3xl font-bold mb-3">¿Tienes un piso cerca de un hospital, colegio o juzgado?</h2>
           <p className="text-primary-100 mb-8 text-lg">
             Únete a los propietarios que ya publican en Repla. Publicación gratuita, inquilinos con nómina pública garantizada.
@@ -317,7 +331,6 @@ export default function Home() {
       <footer className="bg-primary-900 text-white py-10 px-6">
         <div className="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-3">
-            {/* ✏️ CAMBIO: alt y texto del footer */}
             <img src="/img/logo.png" alt="Repla" className="h-12 brightness-0 invert opacity-70" />
             <p className="text-primary-100 text-sm">© 2026 Repla · Tu hogar donde te necesiten</p>
           </div>
