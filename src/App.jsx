@@ -86,7 +86,7 @@ export default function App() {
           path="/mundo"
           element={
             <PrivateRoute>
-              <MundoInterino />
+              <Mundo />
             </PrivateRoute>
           }
         />
