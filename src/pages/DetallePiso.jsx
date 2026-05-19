@@ -349,7 +349,7 @@ export default function DetallePiso() {
 
               {/* ✏️ CAMBIO: título y contenido del bloque "¿Por qué?" */}
               <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
-                <h3 className="font-bold text-gray-800 mb-4 text-sm">¿Por qué Repla?</h3>
+                <h3 className="font-bold text-gray-800 mb-4 text-sm">¿Por qué MundoInterino?</h3>
                 <div className="space-y-4">
                   {[
                     { icono: '🧑‍💼', titulo: 'Ideal para interinos', desc: 'Vivienda pensada para estancias laborales y temporales.' },
@@ -377,8 +377,8 @@ export default function DetallePiso() {
         <div className="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-3">
             {/* ✏️ CAMBIO: alt y texto del footer */}
-            <img src="/img/logo.png" alt="Repla" className="h-12 brightness-0 invert opacity-70" />
-            <p className="text-primary-100 text-sm">© 2026 Repla · Tu hogar donde te necesiten</p>
+            <img src="/img/logo.png" alt="MundoInterino" className="h-12 brightness-0 invert opacity-70" />
+            <p className="text-primary-100 text-sm">© 2026 MundoInterino · Tu hogar donde te necesiten</p>
           </div>
           <div className="flex gap-6 text-sm text-primary-100">
             <button onClick={() => navigate('/pisos')} className="hover:text-white transition-colors">Buscar piso</button>

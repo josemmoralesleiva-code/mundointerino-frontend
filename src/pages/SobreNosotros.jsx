@@ -42,7 +42,7 @@ export default function SobreNosotros() {
           <h1 className="text-4xl md:text-5xl font-bold">Sobre nosotros</h1>
           {/* ✏️ CAMBIO: marca y enfoque */}
           <p className="text-primary-100 mt-4 max-w-3xl text-lg">
-            Repla nace para ayudar a interinos a encontrar alojamiento mejor adaptado a sus estancias temporales.
+            MundoInterino nace para ayudar a interinos a encontrar alojamiento mejor adaptado a sus estancias temporales.
           </p>
         </div>
       </section>
@@ -112,7 +112,7 @@ export default function SobreNosotros() {
               to="/contacto"
               className="border border-primary-200 text-primary-700 px-6 py-3 rounded-xl font-semibold hover:bg-primary-100 transition-all"
             >
-              Contactar con Repla
+              Contactar con MundoInterino
             </Link>
           </div>
         </div>

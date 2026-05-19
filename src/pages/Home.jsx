@@ -149,7 +149,7 @@ export default function Home() {
 
       {/* VENTAJAS */}
       <section className="max-w-5xl mx-auto px-6 py-16">
-        <h2 className="text-2xl font-bold text-gray-800 mb-2 text-center">¿Por qué Repla?</h2>
+        <h2 className="text-2xl font-bold text-gray-800 mb-2 text-center">¿Por qué MundoInterino?</h2>
         <p className="text-gray-400 text-center mb-10">El portal pensado para interinos de toda la administración pública</p>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {[
@@ -308,7 +308,7 @@ export default function Home() {
         <div className="relative max-w-3xl mx-auto">
           <h2 className="text-3xl font-bold mb-3">¿Tienes un piso cerca de un hospital, colegio o juzgado?</h2>
           <p className="text-primary-100 mb-8 text-lg">
-            Únete a los propietarios que ya publican en Repla. Publicación gratuita, inquilinos con nómina pública garantizada.
+            Únete a los propietarios que ya publican en MundoInterino. Publicación gratuita, inquilinos con nómina pública garantizada.
           </p>
           <div className="flex flex-col md:flex-row gap-4 justify-center">
             <Link
@@ -331,8 +331,8 @@ export default function Home() {
       <footer className="bg-primary-900 text-white py-10 px-6">
         <div className="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-3">
-            <img src="/img/logo.png" alt="Repla" className="h-12 brightness-0 invert opacity-70" />
-            <p className="text-primary-100 text-sm">© 2026 Repla · Tu hogar donde te necesiten</p>
+            <img src="/img/logo.png" alt="MundoInterino" className="h-12 brightness-0 invert opacity-70" />
+            <p className="text-primary-100 text-sm">© 2026 MundoInterino · Tu hogar donde te necesiten</p>
           </div>
           <div className="flex gap-6 text-sm text-primary-100">
             <Link to="/sobre-nosotros" className="hover:text-white transition-colors">Sobre nosotros</Link>

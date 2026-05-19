@@ -49,8 +49,8 @@ export default function Contacto() {
               <div className="space-y-4 text-sm">
                 <div>
                   <p className="text-gray-400 mb-1">Email</p>
-                  {/* ✏️ CAMBIO: email actualizado a Repla */}
-                  <p className="font-medium text-gray-800">hola@repla.es</p>
+                  {/* ✏️ CAMBIO: email actualizado a MundoInterino */}
+                  <p className="font-medium text-gray-800">hola@mundointerino.es</p>
                 </div>
                 <div>
                   <p className="text-gray-400 mb-1">Teléfono</p>

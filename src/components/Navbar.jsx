@@ -32,7 +32,7 @@ export default function Navbar() {
 
         <div className="flex items-center gap-8">
           <button onClick={() => navigate('/')} className="flex items-center">
-            <img src="/img/logo.png" alt="Repla" className="h-14" />
+            <img src="/img/logo.png" alt="MundoInterino" className="h-14" />
           </button>
 
           <div className="hidden md:flex items-center gap-6">

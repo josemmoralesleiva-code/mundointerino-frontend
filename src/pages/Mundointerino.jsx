@@ -170,7 +170,7 @@ export default function MundoInterino() {
             <div className="lg:col-span-2">
               <h2 className="text-2xl font-bold text-gray-800 mb-3">¿Qué podrás hacer aquí?</h2>
               <p className="text-gray-600 leading-relaxed mb-5">
-                MundoInterino nace para ser la capa social de Repla: una comunidad para compartir información útil,
+                Mundo nace para ser la capa social de MundoInterino: una comunidad para compartir información útil,
                 encontrar personas en tu misma zona, organizar viajes, resolver dudas y publicar recursos.
               </p>
 

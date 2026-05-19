@@ -64,7 +64,7 @@ export default function Dashboard() {
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <button onClick={() => navigate('/')} className="flex items-center">
             {/* ✏️ CAMBIO: alt + tamaño consistente */}
-            <img src="/img/logo.png" alt="Repla" className="h-14" />
+            <img src="/img/logo.png" alt="MundoInterino" className="h-14" />
           </button>
           <div className="flex items-center gap-4">
             <span className="hidden md:block text-gray-600 text-sm">Hola, <strong>{usuario.nombre}</strong></span>

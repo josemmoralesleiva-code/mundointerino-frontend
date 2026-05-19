@@ -60,8 +60,8 @@ export default function Admin() {
       <nav className="bg-white shadow-sm px-6 py-3 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <button onClick={() => navigate('/')} className="flex items-center">
-            {/* ✏️ CAMBIO: alt actualizado a Repla + tamaño consistente */}
-            <img src="/img/logo.png" alt="Repla" className="h-14" />
+            {/* ✏️ CAMBIO: alt actualizado a MundoInterino + tamaño consistente */}
+            <img src="/img/logo.png" alt="MundoInterino" className="h-14" />
           </button>
           <div className="flex items-center gap-3">
             <span className="bg-red-100 text-red-700 text-xs font-bold px-3 py-1 rounded-full">ADMIN</span>

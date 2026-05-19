@@ -51,7 +51,7 @@ export default function Pisos() {
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <button onClick={() => navigate('/')} className="flex items-center">
             {/* ✏️ CAMBIO: alt + tamaño */}
-            <img src="/img/logo.png" alt="Repla" className="h-14" />
+            <img src="/img/logo.png" alt="MundoInterino" className="h-14" />
           </button>
 
           <div className="hidden md:flex items-center gap-3">
@@ -264,8 +264,8 @@ export default function Pisos() {
       <footer className="bg-primary-900 text-white py-8 px-6 text-center mt-8">
         <div className="max-w-5xl mx-auto">
           {/* ✏️ CAMBIO: alt, tamaño y texto */}
-          <img src="/img/logo.png" alt="Repla" className="h-12 mx-auto mb-3 opacity-70 brightness-0 invert" />
-          <p className="text-primary-100 text-sm">© 2026 Repla · Tu hogar donde te necesiten</p>
+          <img src="/img/logo.png" alt="MundoInterino" className="h-12 mx-auto mb-3 opacity-70 brightness-0 invert" />
+          <p className="text-primary-100 text-sm">© 2026 MundoInterino · Tu hogar donde te necesiten</p>
         </div>
       </footer>
     </div>

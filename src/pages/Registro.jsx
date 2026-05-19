@@ -63,7 +63,7 @@ export default function Registro() {
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <button onClick={() => navigate('/')} className="flex items-center">
             {/* ✏️ CAMBIO: alt + tamaño */}
-            <img src="/img/logo.png" alt="Repla" className="h-14" />
+            <img src="/img/logo.png" alt="MundoInterino" className="h-14" />
           </button>
 
           <div className="flex items-center gap-3">
@@ -100,7 +100,7 @@ export default function Registro() {
                 <h1 className="text-4xl font-bold leading-tight mb-4">
                   Crea tu cuenta
                   {/* ✏️ CAMBIO: marca */}
-                  <span className="text-accent-400 block">en Repla</span>
+                  <span className="text-accent-400 block">en MundoInterino</span>
                 </h1>
                 <p className="text-primary-100 text-lg max-w-md">
                   Accede a favoritos, chats, anuncios y verificación en una sola plataforma.

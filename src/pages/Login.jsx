@@ -48,7 +48,7 @@ export default function Login() {
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <button onClick={() => navigate('/')} className="flex items-center">
             {/* ✏️ CAMBIO: alt + tamaño */}
-            <img src="/img/logo.png" alt="Repla" className="h-14" />
+            <img src="/img/logo.png" alt="MundoInterino" className="h-14" />
           </button>
           <div className="flex items-center gap-3">
             <button onClick={() => navigate('/pisos')}
@@ -79,7 +79,7 @@ export default function Login() {
                 <h1 className="text-4xl font-bold leading-tight mb-4">
                   Bienvenido a<br />
                   {/* ✏️ CAMBIO: nombre de marca */}
-                  <span className="text-accent-400">Repla</span>
+                  <span className="text-accent-400">MundoInterino</span>
                 </h1>
                 <p className="text-primary-100 text-lg max-w-md">
                   Introduce tu email y contraseña. Te llevaremos automáticamente a tu espacio.
