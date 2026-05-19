@@ -44,10 +44,10 @@ export default function Navbar() {
             </button>
 
             <button
-              onClick={() => navigate('/mundointerino')}
+              onClick={() => navigate('/mundo')}
               className="text-gray-700 hover:text-primary-700 font-medium transition-colors text-sm border-b-2 border-transparent hover:border-primary-700 pb-1"
             >
-              MundoInterino
+              Mundo
             </button>
 
             <div className="relative" ref={refProp}>
@@ -123,10 +123,10 @@ export default function Navbar() {
                     Mi perfil
                   </button>
                   <button
-                    onClick={() => { navigate('/mundointerino'); setMenuUsuario(false) }}
+                    onClick={() => { navigate('/mundo'); setMenuUsuario(false) }}
                     className="w-full text-left text-sm text-gray-700 hover:text-primary-700 py-2 px-3 rounded-lg hover:bg-gray-50"
                   >
-                    MundoInterino
+                    Mundo
                   </button>
                   {usuario?.rol === 'admin' && (
                     <button
