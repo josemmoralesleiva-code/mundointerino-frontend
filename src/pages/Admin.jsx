@@ -60,7 +60,8 @@ export default function Admin() {
       <nav className="bg-white shadow-sm px-6 py-3 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <button onClick={() => navigate('/')} className="flex items-center">
-            <img src="/img/logo.png" alt="Profinter" className="h-10" />
+            {/* ✏️ CAMBIO: alt actualizado a Repla + tamaño consistente */}
+            <img src="/img/logo.png" alt="Repla" className="h-14" />
           </button>
           <div className="flex items-center gap-3">
             <span className="bg-red-100 text-red-700 text-xs font-bold px-3 py-1 rounded-full">ADMIN</span>
@@ -76,7 +77,8 @@ export default function Admin() {
       <section className="bg-gradient-to-br from-gray-800 to-gray-900 text-white py-10 px-6">
         <div className="max-w-7xl mx-auto">
           <h1 className="text-2xl font-bold mb-1">Panel de administración</h1>
-          <p className="text-gray-400 text-sm">Gestiona verificaciones de docentes y propietarios.</p>
+          {/* ✏️ CAMBIO: descripción más inclusiva */}
+          <p className="text-gray-400 text-sm">Gestiona verificaciones de usuarios y propietarios.</p>
         </div>
       </section>
 
@@ -144,7 +146,8 @@ export default function Admin() {
                           <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
                             u.rol === 'docente' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700'
                           }`}>
-                            {u.rol === 'docente' ? '👨‍🏫 Docente' : '🏠 Propietario'}
+                            {/* ✏️ CAMBIO: etiqueta más inclusiva */}
+                            {u.rol === 'docente' ? '🧑‍💼 Interino' : '🏠 Propietario'}
                           </span>
                           <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
                             u.verificacionEstado === 'pendiente' ? 'bg-amber-100 text-amber-700'

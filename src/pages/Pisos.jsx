@@ -18,19 +18,19 @@ export default function Pisos() {
   const [provincia, setProvincia] = useState(searchParams.get('provincia') || '')
 
   const fetchPisos = async (c, f, t, co, pro) => {
-  setCargando(true)
-  try {
-    const res = await axios.get(`${API}/api/pisos`, {
-      params: { ciudad: c, fecha: f, tipo: t, comunidad: co, provincia: pro }
-    })
-    setPisos(res.data.pisos || [])
-  } catch (error) {
-    console.error(error)
-    setPisos([])
-  } finally {
-    setCargando(false)
+    setCargando(true)
+    try {
+      const res = await axios.get(`${API}/api/pisos`, {
+        params: { ciudad: c, fecha: f, tipo: t, comunidad: co, provincia: pro }
+      })
+      setPisos(res.data.pisos || [])
+    } catch (error) {
+      console.error(error)
+      setPisos([])
+    } finally {
+      setCargando(false)
+    }
   }
-}
 
   useEffect(() => {
     fetchPisos(ciudad, fecha, tipoEstancia, comunidad, provincia)
@@ -50,7 +50,8 @@ export default function Pisos() {
       <nav className="bg-white shadow-sm px-6 py-3 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <button onClick={() => navigate('/')} className="flex items-center">
-            <img src="/img/logo.png" alt="Profinter" className="h-10" />
+            {/* ✏️ CAMBIO: alt + tamaño */}
+            <img src="/img/logo.png" alt="Repla" className="h-14" />
           </button>
 
           <div className="hidden md:flex items-center gap-3">
@@ -90,8 +91,9 @@ export default function Pisos() {
           <h1 className="text-3xl md:text-4xl font-bold mb-3">
             Encuentra tu piso ideal
           </h1>
+          {/* ✏️ CAMBIO: "docentes" → "interinos de la administración" */}
           <p className="text-primary-100 text-lg max-w-2xl">
-            Filtra por comunidad, provincia, ciudad, fecha y tipo de estancia para encontrar alojamientos para docentes.
+            Filtra por comunidad, provincia, ciudad, fecha y tipo de estancia para encontrar alojamientos para interinos de la administración.
           </p>
         </div>
       </section>
@@ -171,7 +173,6 @@ export default function Pisos() {
               </h2>
               <p className="text-gray-500 text-sm">{pisos.length} pisos encontrados</p>
             </div>
-
             <div className="flex items-center gap-2">
               <label className="text-sm text-gray-500">Ordenar por:</label>
               <select
@@ -241,7 +242,6 @@ export default function Pisos() {
                     {piso.titulo}
                   </h3>
                   <p className="text-gray-500 text-sm mb-4">📍 {piso.ciudad}</p>
-
                   <div className="flex justify-between items-center">
                     <span className="text-primary-700 font-bold text-lg">
                       {piso.precio}€
@@ -263,8 +263,9 @@ export default function Pisos() {
       {/* FOOTER */}
       <footer className="bg-primary-900 text-white py-8 px-6 text-center mt-8">
         <div className="max-w-5xl mx-auto">
-          <img src="/img/logo.png" alt="Profinter" className="h-8 mx-auto mb-3 opacity-70 brightness-0 invert" />
-          <p className="text-primary-100 text-sm">© 2026 Profinter · Portal de alquiler para docentes</p>
+          {/* ✏️ CAMBIO: alt, tamaño y texto */}
+          <img src="/img/logo.png" alt="Repla" className="h-12 mx-auto mb-3 opacity-70 brightness-0 invert" />
+          <p className="text-primary-100 text-sm">© 2026 Repla · Tu hogar donde te necesiten</p>
         </div>
       </footer>
     </div>

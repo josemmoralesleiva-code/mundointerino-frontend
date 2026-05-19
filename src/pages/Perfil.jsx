@@ -291,7 +291,7 @@ export default function Perfil() {
               <h2 className="text-xl font-bold text-gray-800">{usuarioMostrado?.nombre}</h2>
               <p className="text-gray-400 text-sm mt-1">{usuarioMostrado?.email}</p>
               <div className="mt-4 inline-flex items-center px-3 py-1.5 rounded-full bg-gray-100 text-gray-700 text-sm font-medium">
-                {usuarioMostrado?.rol === 'propietario' ? '🏠 Propietario' : '👨‍🏫 Docente'}
+                {usuarioMostrado?.rol === 'propietario' ? '🏠 Propietario' : '👨‍🏫 Interino'}
               </div>
             </div>
 

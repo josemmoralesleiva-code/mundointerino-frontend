@@ -23,7 +23,6 @@ export default function DetallePiso() {
         setError(true)
       }
     }
-
     if (id) cargar()
   }, [id])
 
@@ -306,8 +305,9 @@ export default function DetallePiso() {
                   <p className="text-gray-400 text-xs mt-1">Precio orientativo · Negociación directa</p>
                 </div>
 
+                {/* ✏️ CAMBIO: badge más inclusivo */}
                 <div className="bg-primary-50 border border-primary-100 rounded-2xl px-4 py-3 mb-5 text-sm text-primary-700 font-medium">
-                  🎓 Piso pensado para docentes interinos
+                  🧑‍💼 Piso pensado para interinos de la administración
                 </div>
 
                 <div className="space-y-3">
@@ -347,11 +347,12 @@ export default function DetallePiso() {
                 </button>
               </div>
 
+              {/* ✏️ CAMBIO: título y contenido del bloque "¿Por qué?" */}
               <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
-                <h3 className="font-bold text-gray-800 mb-4 text-sm">¿Por qué Profinter?</h3>
+                <h3 className="font-bold text-gray-800 mb-4 text-sm">¿Por qué Repla?</h3>
                 <div className="space-y-4">
                   {[
-                    { icono: '🎓', titulo: 'Ideal para docentes', desc: 'Vivienda pensada para estancias laborales y temporales.' },
+                    { icono: '🧑‍💼', titulo: 'Ideal para interinos', desc: 'Vivienda pensada para estancias laborales y temporales.' },
                     { icono: '🤝', titulo: 'Contacto directo', desc: 'Sin intermediarios. Negocia directamente con el propietario.' },
                     { icono: '💶', titulo: 'Sin comisiones', desc: 'La publicación y el contacto son completamente gratuitos.' },
                     { icono: '✅', titulo: 'Propietarios verificados', desc: 'Revisamos cada anuncio antes de publicarlo.' },
@@ -371,11 +372,13 @@ export default function DetallePiso() {
         </div>
       </div>
 
+      {/* FOOTER */}
       <footer className="bg-primary-900 text-white py-10 px-6 mt-16">
         <div className="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-3">
-            <img src="/img/logo.png" alt="Profinter" className="h-8 brightness-0 invert opacity-70" />
-            <p className="text-primary-100 text-sm">© 2026 Profinter · Portal de alquiler para docentes</p>
+            {/* ✏️ CAMBIO: alt y texto del footer */}
+            <img src="/img/logo.png" alt="Repla" className="h-12 brightness-0 invert opacity-70" />
+            <p className="text-primary-100 text-sm">© 2026 Repla · Tu hogar donde te necesiten</p>
           </div>
           <div className="flex gap-6 text-sm text-primary-100">
             <button onClick={() => navigate('/pisos')} className="hover:text-white transition-colors">Buscar piso</button>

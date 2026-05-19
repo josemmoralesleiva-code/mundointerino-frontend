@@ -22,24 +22,16 @@ export default function Login() {
       localStorage.setItem('usuario', JSON.stringify(res.data.usuario))
       const usuario = res.data.usuario
 
-      if (usuario.rol === 'admin') {
-        navigate('/admin')
-        return
-      }
-
+      if (usuario.rol === 'admin') { navigate('/admin'); return }
       if (usuario.rol === 'propietario') {
         if (usuario.verificacionEstado === 'pendiente') { navigate('/verificacion-propietario'); return }
         if (usuario.verificacionEstado === 'rechazado') { navigate('/verificacion-rechazada'); return }
-        navigate('/dashboard')
-        return
+        navigate('/dashboard'); return
       }
-
       if (usuario.rol === 'docente') {
         if (usuario.verificacionEstado === 'pendiente') { navigate('/verificacion-docente'); return }
-        navigate('/dashboard')
-        return
+        navigate('/dashboard'); return
       }
-
       navigate('/dashboard')
     } catch (err) {
       setError(err.response?.data?.error || 'Error al iniciar sesión')
@@ -55,7 +47,8 @@ export default function Login() {
       <nav className="bg-white shadow-sm px-6 py-3">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <button onClick={() => navigate('/')} className="flex items-center">
-            <img src="/img/logo.png" alt="Profinter" className="h-10" />
+            {/* ✏️ CAMBIO: alt + tamaño */}
+            <img src="/img/logo.png" alt="Repla" className="h-14" />
           </button>
           <div className="flex items-center gap-3">
             <button onClick={() => navigate('/pisos')}
@@ -85,13 +78,15 @@ export default function Login() {
               <div className="relative h-full flex flex-col justify-end p-10 text-white">
                 <h1 className="text-4xl font-bold leading-tight mb-4">
                   Bienvenido a<br />
-                  <span className="text-accent-400">Profinter</span>
+                  {/* ✏️ CAMBIO: nombre de marca */}
+                  <span className="text-accent-400">Repla</span>
                 </h1>
                 <p className="text-primary-100 text-lg max-w-md">
                   Introduce tu email y contraseña. Te llevaremos automáticamente a tu espacio.
                 </p>
+                {/* ✏️ CAMBIO: etiquetas de roles más inclusivas */}
                 <div className="mt-6 flex flex-col gap-2 text-sm text-primary-100">
-                  <span>👨‍🏫 Docentes → buscar y guardar pisos</span>
+                  <span>🧑‍💼 Interinos → buscar y guardar pisos</span>
                   <span>🏠 Propietarios → gestionar anuncios</span>
                   <span>🛡️ Admins → panel de control</span>
                 </div>

@@ -4,7 +4,8 @@ import Navbar from '../components/Navbar'
 const DATA = {
   aragon: {
     nombre: 'Aragón',
-    descripcion: 'Provincias y ciudades donde hay más movimiento de pisos para docentes.',
+    // ✏️ CAMBIO: "docentes" → "interinos"
+    descripcion: 'Provincias y ciudades donde hay más movimiento de pisos para interinos.',
     provincias: [
       { slug: 'zaragoza', nombre: 'Zaragoza', ciudades: ['Zaragoza', 'Calatayud', 'Ejea de los Caballeros', 'Tarazona'] },
       { slug: 'huesca', nombre: 'Huesca', ciudades: ['Huesca', 'Jaca', 'Fraga', 'Monzón'] },
@@ -13,7 +14,8 @@ const DATA = {
   },
   andalucia: {
     nombre: 'Andalucía',
-    descripcion: 'Gran volumen de demanda en capitales y pueblos de destino docente.',
+    // ✏️ CAMBIO: "docente" → "interino"
+    descripcion: 'Gran volumen de demanda en capitales y pueblos de destino interino.',
     provincias: [
       { slug: 'sevilla', nombre: 'Sevilla', ciudades: ['Sevilla', 'Écija', 'Utrera', 'Carmona'] },
       { slug: 'malaga', nombre: 'Málaga', ciudades: ['Málaga', 'Marbella', 'Vélez-Málaga', 'Antequera'] },

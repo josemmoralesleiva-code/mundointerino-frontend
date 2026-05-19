@@ -63,7 +63,8 @@ export default function Dashboard() {
       <nav className="bg-white shadow-sm px-6 py-3 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <button onClick={() => navigate('/')} className="flex items-center">
-            <img src="/img/logo.png" alt="Profinter" className="h-10" />
+            {/* ✏️ CAMBIO: alt + tamaño consistente */}
+            <img src="/img/logo.png" alt="Repla" className="h-14" />
           </button>
           <div className="flex items-center gap-4">
             <span className="hidden md:block text-gray-600 text-sm">Hola, <strong>{usuario.nombre}</strong></span>
@@ -84,7 +85,8 @@ export default function Dashboard() {
             <p className="text-primary-100">
               {usuario.rol === 'docente'
                 ? 'Encuentra el alojamiento ideal para tu destino.'
-                : 'Gestiona tus anuncios y conecta con docentes.'}
+                // ✏️ CAMBIO: "docentes" → "interinos"
+                : 'Gestiona tus anuncios y conecta con interinos.'}
             </p>
           </div>
           {usuario.rol === 'propietario' && (
@@ -125,7 +127,8 @@ export default function Dashboard() {
             className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 hover:shadow-md transition-all text-left group">
             <div className="text-2xl mb-3">🔍</div>
             <h2 className="font-semibold text-gray-800 mb-1 group-hover:text-primary-700 transition-colors">Buscar pisos</h2>
-            <p className="text-gray-400 text-sm">Encuentra alojamiento ideal en Aragón.</p>
+            {/* ✏️ CAMBIO: ampliado a toda España */}
+            <p className="text-gray-400 text-sm">Encuentra alojamiento ideal en toda España.</p>
           </button>
 
           {usuario.rol === 'propietario' && (
@@ -153,7 +156,6 @@ export default function Dashboard() {
                 <h2 className="text-xl font-bold text-gray-800">Mis pisos publicados</h2>
                 <p className="text-gray-400 text-sm mt-0.5">Gestiona disponibilidad, edita y elimina anuncios.</p>
               </div>
-              {/* TABS FILTRO */}
               <div className="flex gap-1 bg-gray-100 rounded-xl p-1">
                 {[['todos','Todos'],['disponibles','Disponibles'],['no-disponibles','Pausados']].map(([val, label]) => (
                   <button key={val} onClick={() => setTabActiva(val)}
@@ -178,7 +180,8 @@ export default function Dashboard() {
                   <span className="text-3xl">🏠</span>
                 </div>
                 <p className="text-gray-700 font-semibold text-lg">Sin anuncios todavía</p>
-                <p className="text-gray-400 text-sm mt-1 mb-6">Publica tu primer piso para llegar a docentes de Aragón.</p>
+                {/* ✏️ CAMBIO: "docentes de Aragón" → "interinos de toda España" */}
+                <p className="text-gray-400 text-sm mt-1 mb-6">Publica tu primer piso para llegar a interinos de toda España.</p>
                 <button onClick={() => navigate('/pisos/nuevo')}
                   className="bg-primary-700 text-white px-6 py-3 rounded-xl font-semibold hover:bg-primary-800 transition-all">
                   Publicar mi primer piso

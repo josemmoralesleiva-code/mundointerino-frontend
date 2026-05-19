@@ -49,7 +49,8 @@ export default function Contacto() {
               <div className="space-y-4 text-sm">
                 <div>
                   <p className="text-gray-400 mb-1">Email</p>
-                  <p className="font-medium text-gray-800">hola@profinter.es</p>
+                  {/* ✏️ CAMBIO: email actualizado a Repla */}
+                  <p className="font-medium text-gray-800">hola@repla.es</p>
                 </div>
                 <div>
                   <p className="text-gray-400 mb-1">Teléfono</p>
