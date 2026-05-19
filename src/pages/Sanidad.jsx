@@ -69,10 +69,10 @@ export default function Sanidad() {
       <section className="bg-gradient-to-br from-primary-700 to-primary-900 text-white">
         <div className="max-w-7xl mx-auto px-6 py-16">
           <button
-            onClick={() => navigate('/mundointerino')}
+            onClick={() => navigate('/mundo')}
             className="text-sm text-primary-100 hover:text-white mb-4 inline-flex items-center gap-1"
           >
-            ← Volver a MundoInterino
+            ← Volver a Mundo
           </button>
 
           <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-sm mb-4">
