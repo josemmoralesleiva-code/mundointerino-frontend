@@ -11,21 +11,21 @@ const ZONAS = [
     slug: 'aragon',
     emoji: '🏔️',
     desc: 'Tu zona principal: Zaragoza, Huesca y Teruel',
-    color: 'from-[#102A43] to-[#1F4E79]',
+    color: 'from-[#0F172A] to-[#1E3A5F]',
   },
   {
     nombre: 'Andalucía',
     slug: 'andalucia',
     emoji: '🌞',
     desc: 'Sevilla, Málaga, Granada y más provincias',
-    color: 'from-[#F59E0B] to-[#EA580C]',
+    color: 'from-[#D4AF37] to-[#B8860B]',
   },
   {
     nombre: 'Más comunidades',
     slug: 'zonas',
     emoji: '🗺️',
     desc: 'Explora todas las zonas disponibles',
-    color: 'from-[#14B8A6] to-[#0F766E]',
+    color: 'from-[#334155] to-[#0F172A]',
   },
 ]
 
@@ -56,7 +56,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC]">
+    <div className="min-h-screen bg-[#F8F5EF]">
       <Navbar />
 
       {/* HERO */}
@@ -68,7 +68,7 @@ export default function Home() {
           backgroundPosition: 'center',
         }}
       >
-        <div className="absolute inset-0 bg-[#102A43]/90"></div>
+        <div className="absolute inset-0 bg-[#0F172A]/92"></div>
 
         <div className="relative max-w-5xl mx-auto">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-sm mb-6">
@@ -79,14 +79,14 @@ export default function Home() {
           <h1 className="text-4xl md:text-6xl font-bold mb-5 leading-tight drop-shadow-lg">
             El portal de alquiler
             <br />
-            <span className="text-[#F59E0B]">para interinos de la administración</span>
+            <span className="text-[#D4AF37]">para interinos de la administración</span>
           </h1>
 
           <p className="text-slate-100 text-lg md:text-xl mb-10 max-w-3xl mx-auto leading-relaxed">
             Educación, sanidad, justicia y más. Encuentra piso cerca de tu destino con una experiencia clara, elegante y sin comisiones ocultas.
           </p>
 
-          <div className="bg-white/95 backdrop-blur-xl rounded-3xl p-4 md:p-5 max-w-5xl mx-auto shadow-2xl border border-white/40">
+          <div className="bg-white/96 backdrop-blur-xl rounded-3xl p-4 md:p-5 max-w-5xl mx-auto shadow-2xl border border-white/40">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
               <div className="flex flex-col items-start px-4 py-2 md:border-r md:border-gray-100">
                 <label className="text-xs text-gray-400 font-semibold mb-1">📍 Destino</label>
@@ -125,7 +125,7 @@ export default function Home() {
 
               <button
                 onClick={handleBuscar}
-                className="bg-[#1F4E79] hover:bg-[#102A43] text-white px-6 py-4 rounded-2xl font-bold transition-all hover:scale-[1.02] shadow-md"
+                className="bg-[#D4AF37] hover:bg-[#B8860B] text-[#0F172A] px-6 py-4 rounded-2xl font-bold transition-all hover:scale-[1.02] shadow-md"
               >
                 🔍 Buscar
               </button>
@@ -135,7 +135,7 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row gap-3 justify-center mt-6">
             <button
               onClick={() => navigate('/pisos')}
-              className="bg-white hover:bg-slate-50 text-[#102A43] font-bold px-6 py-3 rounded-2xl transition-all shadow-lg border border-white/40"
+              className="bg-white hover:bg-slate-50 text-[#0F172A] font-bold px-6 py-3 rounded-2xl transition-all shadow-lg border border-white/40"
             >
               🔍 Buscar piso
             </button>
@@ -207,7 +207,7 @@ export default function Home() {
             </div>
             <button
               onClick={() => navigate('/zonas')}
-              className="text-[#1F4E79] font-semibold hover:underline text-sm"
+              className="text-[#0F172A] font-semibold hover:underline text-sm"
             >
               Ver todas las zonas →
             </button>
@@ -233,7 +233,7 @@ export default function Home() {
               <button
                 key={z.nombre}
                 onClick={() => navigate(`/zonas/${z.comunidad}/${z.provincia}/${encodeURIComponent(z.ciudad)}`)}
-                className="bg-[#F8FAFC] hover:bg-gray-100 rounded-2xl p-4 text-left border border-gray-100 transition-all shadow-sm"
+                className="bg-[#F8F5EF] hover:bg-gray-100 rounded-2xl p-4 text-left border border-gray-100 transition-all shadow-sm"
               >
                 <div className="text-2xl mb-2">{z.emoji}</div>
                 <div className="font-semibold text-gray-900">{z.nombre}</div>
@@ -251,7 +251,7 @@ export default function Home() {
             <h2 className="text-2xl font-bold text-gray-900">Pisos disponibles ahora</h2>
             <p className="text-gray-500 text-sm mt-1">Los más recientes</p>
           </div>
-          <button onClick={() => navigate('/pisos')} className="text-[#1F4E79] font-semibold hover:underline text-sm">
+          <button onClick={() => navigate('/pisos')} className="text-[#0F172A] font-semibold hover:underline text-sm">
             Ver todos →
           </button>
         </div>
@@ -278,8 +278,8 @@ export default function Home() {
                     <span
                       className={`text-xs px-2 py-1 rounded-full font-medium ${
                         piso.tipoEstancia === 'corta'
-                          ? 'bg-[#F59E0B] text-white'
-                          : 'bg-[#14B8A6] text-white'
+                          ? 'bg-[#D4AF37] text-[#0F172A]'
+                          : 'bg-[#1E3A5F] text-white'
                       }`}
                     >
                       {piso.tipoEstancia === 'corta' ? '⚡ Corta' : '📅 Larga'}
@@ -288,13 +288,13 @@ export default function Home() {
                 </div>
 
                 <div className="p-5">
-                  <h3 className="font-semibold text-gray-900 mb-1 leading-snug group-hover:text-[#1F4E79] transition-colors">
+                  <h3 className="font-semibold text-gray-900 mb-1 leading-snug group-hover:text-[#0F172A] transition-colors">
                     {piso.titulo}
                   </h3>
                   <p className="text-gray-500 text-sm mb-4">📍 {piso.ciudad}</p>
 
                   <div className="flex justify-between items-center">
-                    <span className="text-[#1F4E79] font-bold text-lg">
+                    <span className="text-[#0F172A] font-bold text-lg">
                       {piso.precio}€
                       <span className="text-sm font-normal text-gray-400">
                         {piso.tipoEstancia === 'corta' ? '/noche' : '/mes'}
@@ -318,7 +318,7 @@ export default function Home() {
         <div className="text-center mt-10">
           <button
             onClick={() => navigate('/pisos')}
-            className="bg-[#1F4E79] text-white px-10 py-4 rounded-2xl font-bold hover:bg-[#102A43] text-lg transition-all hover:scale-[1.02] shadow-lg"
+            className="bg-[#0F172A] text-white px-10 py-4 rounded-2xl font-bold hover:bg-[#1E3A5F] text-lg transition-all hover:scale-[1.02] shadow-lg"
           >
             Ver todos los pisos
           </button>
@@ -326,7 +326,7 @@ export default function Home() {
       </section>
 
       {/* CTA */}
-      <section className="bg-[#102A43] py-16 px-6 text-center text-white relative overflow-hidden">
+      <section className="bg-[#0F172A] py-16 px-6 text-center text-white relative overflow-hidden">
         <div
           className="absolute inset-0 opacity-10"
           style={{
@@ -342,7 +342,7 @@ export default function Home() {
           <div className="flex flex-col md:flex-row gap-4 justify-center">
             <Link
               to="/pisos/nuevo"
-              className="bg-[#F59E0B] hover:bg-[#EA580C] text-white font-bold px-10 py-4 rounded-2xl text-lg transition-all hover:scale-[1.02] shadow-lg inline-flex items-center justify-center"
+              className="bg-[#D4AF37] hover:bg-[#B8860B] text-[#0F172A] font-bold px-10 py-4 rounded-2xl text-lg transition-all hover:scale-[1.02] shadow-lg inline-flex items-center justify-center"
             >
               Publicar mi piso gratis
             </Link>
@@ -357,7 +357,7 @@ export default function Home() {
       </section>
 
       {/* FOOTER */}
-      <footer className="bg-[#102A43] text-white py-10 px-6">
+      <footer className="bg-[#0B1220] text-white py-10 px-6">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-3">
             <img src="/img/logo.png" alt="MundoInterino" className="h-12 brightness-0 invert opacity-75" />
