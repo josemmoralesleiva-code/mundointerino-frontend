@@ -69,7 +69,7 @@ export default function Educacion() {
       <section className="bg-gradient-to-br from-primary-700 to-primary-900 text-white">
         <div className="max-w-7xl mx-auto px-6 py-16">
           <button
-            onClick={() => navigate('/mundointerino')}
+            onClick={() => navigate('/mundo')}
             className="text-sm text-primary-100 hover:text-white mb-4 inline-flex items-center gap-1"
           >
             ← Volver a Mundo

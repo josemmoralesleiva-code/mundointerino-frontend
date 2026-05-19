@@ -123,7 +123,7 @@ export default function Home() {
             </button>
           </div>
 
-          {/* NUEVO ACCESO A MUNDOINTERINO */}
+          {/* NUEVO ACCESO A MUNDO */}
           <div className="flex flex-col sm:flex-row gap-3 justify-center mt-5">
             <button
               onClick={() => navigate('/pisos')}
