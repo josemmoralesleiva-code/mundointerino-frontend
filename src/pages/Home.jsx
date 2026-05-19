@@ -61,99 +61,99 @@ export default function Home() {
 
       {/* HERO */}
       <section
-        className="relative text-white py-24 px-6 text-center overflow-hidden"
-        style={{
-          backgroundImage: 'url(https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=1600&q=80)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-        }}
-      >
-        <div className="absolute inset-0 bg-[#0F172A]/92"></div>
+  className="relative text-white py-12 px-6 text-center overflow-hidden"
+  style={{
+    backgroundImage: 'url(https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=1600&q=80)',
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+  }}
+>
+  <div className="absolute inset-0 bg-[#111827]/90"></div>
 
-        <div className="relative max-w-5xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-sm mb-6">
-            <span>🌍</span>
-            <span>MundoInterino · alquiler y comunidad</span>
-          </div>
+  <div className="relative max-w-5xl mx-auto">
+    <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-xs mb-4">
+      <span>🌍</span>
+      <span>MundoInterino · alquiler y comunidad</span>
+    </div>
 
-          <h1 className="text-4xl md:text-6xl font-bold mb-5 leading-tight drop-shadow-lg">
-            El portal de alquiler
-            <br />
-            <span className="text-[#D4AF37]">para interinos de la administración</span>
-          </h1>
+    <h1 className="text-3xl md:text-4xl font-bold mb-3 leading-tight drop-shadow-lg">
+      El portal de alquiler
+      <br />
+      <span className="text-[#D4AF37]">para interinos de la administración</span>
+    </h1>
 
-          <p className="text-slate-100 text-lg md:text-xl mb-10 max-w-3xl mx-auto leading-relaxed">
-            Educación, sanidad, justicia y más. Encuentra piso cerca de tu destino con una experiencia clara, elegante y sin comisiones ocultas.
-          </p>
+    <p className="text-slate-100 text-sm md:text-base mb-6 max-w-2xl mx-auto leading-relaxed">
+      Educación, sanidad, justicia y más. Encuentra piso cerca de tu destino con una experiencia clara, elegante y sin comisiones ocultas.
+    </p>
 
-          <div className="bg-white/96 backdrop-blur-xl rounded-3xl p-4 md:p-5 max-w-5xl mx-auto shadow-2xl border border-white/40">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-              <div className="flex flex-col items-start px-4 py-2 md:border-r md:border-gray-100">
-                <label className="text-xs text-gray-400 font-semibold mb-1">📍 Destino</label>
-                <input
-                  type="text"
-                  placeholder="Ciudad o provincia…"
-                  value={ciudad}
-                  onChange={e => setCiudad(e.target.value)}
-                  onKeyDown={e => e.key === 'Enter' && handleBuscar()}
-                  className="w-full bg-transparent text-gray-900 font-medium focus:outline-none placeholder:text-gray-300 text-sm"
-                />
-              </div>
-
-              <div className="flex flex-col items-start px-4 py-2 md:border-r md:border-gray-100">
-                <label className="text-xs text-gray-400 font-semibold mb-1">📅 Disponible desde</label>
-                <input
-                  type="date"
-                  value={fecha}
-                  onChange={e => setFecha(e.target.value)}
-                  className="w-full bg-transparent text-gray-900 font-medium focus:outline-none text-sm"
-                />
-              </div>
-
-              <div className="flex flex-col items-start px-4 py-2 md:border-r md:border-gray-100">
-                <label className="text-xs text-gray-400 font-semibold mb-1">⏱️ Estancia</label>
-                <select
-                  value={tipoEstancia}
-                  onChange={e => setTipoEstancia(e.target.value)}
-                  className="w-full bg-transparent text-gray-900 font-medium focus:outline-none text-sm"
-                >
-                  <option value="">Cualquiera</option>
-                  <option value="corta">Corta (días/semanas)</option>
-                  <option value="larga">Larga (meses)</option>
-                </select>
-              </div>
-
-              <button
-                onClick={handleBuscar}
-                className="bg-[#D4AF37] hover:bg-[#B8860B] text-[#0F172A] px-6 py-4 rounded-2xl font-bold transition-all hover:scale-[1.02] shadow-md"
-              >
-                🔍 Buscar
-              </button>
-            </div>
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-3 justify-center mt-6">
-            <button
-              onClick={() => navigate('/pisos')}
-              className="bg-white hover:bg-slate-50 text-[#0F172A] font-bold px-6 py-3 rounded-2xl transition-all shadow-lg border border-white/40"
-            >
-              🔍 Buscar piso
-            </button>
-            <button
-              onClick={() => navigate('/mundointerino')}
-              className="bg-white/10 hover:bg-white/15 text-white font-bold px-6 py-3 rounded-2xl transition-all shadow-lg border border-white/20 backdrop-blur-md"
-            >
-              🌍 MundoInterino
-            </button>
-          </div>
-
-          <div className="flex justify-center gap-8 mt-8 text-sm text-slate-100 flex-wrap">
-            <span>✅ +200 pisos publicados</span>
-            <span>🏥 Educación · Sanidad · Justicia</span>
-            <span>💶 Sin comisiones</span>
-          </div>
+    <div className="bg-white/96 backdrop-blur-xl rounded-3xl p-3 md:p-4 max-w-5xl mx-auto shadow-2xl border border-white/40">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+        <div className="flex flex-col items-start px-4 py-2 md:border-r md:border-gray-100">
+          <label className="text-xs text-gray-400 font-semibold mb-1">📍 Destino</label>
+          <input
+            type="text"
+            placeholder="Ciudad o provincia…"
+            value={ciudad}
+            onChange={e => setCiudad(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && handleBuscar()}
+            className="w-full bg-transparent text-gray-900 font-medium focus:outline-none placeholder:text-gray-300 text-sm"
+          />
         </div>
-      </section>
+
+        <div className="flex flex-col items-start px-4 py-2 md:border-r md:border-gray-100">
+          <label className="text-xs text-gray-400 font-semibold mb-1">📅 Disponible desde</label>
+          <input
+            type="date"
+            value={fecha}
+            onChange={e => setFecha(e.target.value)}
+            className="w-full bg-transparent text-gray-900 font-medium focus:outline-none text-sm"
+          />
+        </div>
+
+        <div className="flex flex-col items-start px-4 py-2 md:border-r md:border-gray-100">
+          <label className="text-xs text-gray-400 font-semibold mb-1">⏱️ Estancia</label>
+          <select
+            value={tipoEstancia}
+            onChange={e => setTipoEstancia(e.target.value)}
+            className="w-full bg-transparent text-gray-900 font-medium focus:outline-none text-sm"
+          >
+            <option value="">Cualquiera</option>
+            <option value="corta">Corta (días/semanas)</option>
+            <option value="larga">Larga (meses)</option>
+          </select>
+        </div>
+
+        <button
+          onClick={handleBuscar}
+          className="bg-[#D4AF37] hover:bg-[#B8860B] text-[#0F172A] px-5 py-3 rounded-2xl font-bold transition-all hover:scale-[1.02] shadow-md text-sm"
+        >
+          🔍 Buscar
+        </button>
+      </div>
+    </div>
+
+    <div className="flex flex-col sm:flex-row gap-3 justify-center mt-5">
+      <button
+        onClick={() => navigate('/pisos')}
+        className="bg-white hover:bg-slate-50 text-[#0F172A] font-bold px-5 py-2.5 rounded-2xl transition-all shadow-lg border border-white/40 text-sm"
+      >
+        🔍 Buscar piso
+      </button>
+      <button
+        onClick={() => navigate('/mundointerino')}
+        className="bg-white/10 hover:bg-white/15 text-white font-bold px-5 py-2.5 rounded-2xl transition-all shadow-lg border border-white/20 backdrop-blur-md text-sm"
+      >
+        🌍 MundoInterino
+      </button>
+    </div>
+
+    <div className="flex justify-center gap-6 mt-6 text-xs md:text-sm text-slate-100 flex-wrap">
+      <span>✅ +200 pisos publicados</span>
+      <span>🏥 Educación · Sanidad · Justicia</span>
+      <span>💶 Sin comisiones</span>
+    </div>
+  </div>
+</section>
 
       {/* VENTAJAS */}
       <section className="max-w-6xl mx-auto px-6 py-16">
