@@ -16,7 +16,6 @@ export default function Navbar() {
       if (refProp.current && !refProp.current.contains(e.target)) setMenuPropietarios(false)
       if (refUser.current && !refUser.current.contains(e.target)) setMenuUsuario(false)
     }
-
     document.addEventListener('mousedown', handler)
     return () => document.removeEventListener('mousedown', handler)
   }, [])
@@ -31,28 +30,25 @@ export default function Navbar() {
     <nav className="sticky top-0 z-50 bg-[#F8F5EF]/95 backdrop-blur-xl text-[#0F172A] border-b border-black/5 shadow-sm">
       <div className="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center">
         <div className="flex items-center gap-8">
-          <button
-            onClick={() => navigate('/')}
-            className="flex items-center"
-          >
+          <button onClick={() => navigate('/')} className="flex items-center">
             <img
               src="/img/logo.png"
               alt="MundoInterino"
-              className="h-14 w-auto object-contain"
+              className="h-16 w-auto object-contain"
             />
           </button>
 
           <div className="hidden md:flex items-center gap-2">
             <button
               onClick={() => navigate('/pisos')}
-              className="px-4 py-2 rounded-xl text-sm font-medium text-slate-200 hover:text-white hover:bg-white/10 transition-all"
+              className="px-4 py-2 rounded-xl text-sm font-medium text-slate-700 hover:text-[#0F172A] hover:bg-black/5 transition-all"
             >
               Buscar piso
             </button>
 
             <button
               onClick={() => navigate('/mundointerino')}
-              className="px-4 py-2 rounded-xl text-sm font-medium text-slate-200 hover:text-white hover:bg-white/10 transition-all"
+              className="px-4 py-2 rounded-xl text-sm font-medium text-slate-700 hover:text-[#0F172A] hover:bg-black/5 transition-all"
             >
               Mundo
             </button>
@@ -65,8 +61,8 @@ export default function Navbar() {
                 }}
                 className={`flex items-center gap-1 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
                   menuPropietarios
-                    ? 'bg-white/10 text-white'
-                    : 'text-slate-200 hover:text-white hover:bg-white/10'
+                    ? 'bg-black/5 text-[#0F172A]'
+                    : 'text-slate-700 hover:text-[#0F172A] hover:bg-black/5'
                 }`}
               >
                 Propietarios
@@ -107,7 +103,7 @@ export default function Navbar() {
             {usuario?.rol === 'admin' && (
               <button
                 onClick={() => navigate('/admin')}
-                className="flex items-center gap-1 bg-[#D4AF37]/15 text-[#F5D97A] hover:bg-[#D4AF37]/20 px-3 py-2 rounded-xl text-sm font-semibold transition-colors border border-[#D4AF37]/20"
+                className="flex items-center gap-1 bg-[#D4AF37]/15 text-[#8A6510] hover:bg-[#D4AF37]/20 px-3 py-2 rounded-xl text-sm font-semibold transition-colors border border-[#D4AF37]/20"
               >
                 🛡️ Admin
               </button>
@@ -123,16 +119,16 @@ export default function Navbar() {
                   setMenuUsuario(!menuUsuario)
                   setMenuPropietarios(false)
                 }}
-                className="flex items-center gap-3 bg-white/10 hover:bg-white/15 border border-white/10 px-3 py-2 rounded-2xl transition-all"
+                className="flex items-center gap-3 bg-white hover:bg-slate-50 border border-slate-200 px-3 py-2 rounded-2xl transition-all shadow-sm"
               >
                 <div className="w-8 h-8 bg-[#D4AF37] rounded-full flex items-center justify-center text-[#0F172A] text-xs font-bold shadow-sm">
                   {usuario?.nombre?.charAt(0)?.toUpperCase() || 'U'}
                 </div>
-                <span className="text-sm font-medium text-white hidden md:block">
+                <span className="text-sm font-medium text-slate-700 hidden md:block">
                   {usuario?.nombre}
                 </span>
                 <svg
-                  className={`w-4 h-4 text-slate-300 transition-transform ${menuUsuario ? 'rotate-180' : ''}`}
+                  className={`w-4 h-4 text-slate-400 transition-transform ${menuUsuario ? 'rotate-180' : ''}`}
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -176,7 +172,7 @@ export default function Navbar() {
                         navigate('/admin')
                         setMenuUsuario(false)
                       }}
-                      className="w-full text-left text-sm text-[#b45309] hover:text-[#92400e] py-3 px-3 rounded-xl hover:bg-amber-50 transition-colors font-semibold"
+                      className="w-full text-left text-sm text-[#8A6510] hover:text-[#6B4E00] py-3 px-3 rounded-xl hover:bg-amber-50 transition-colors font-semibold"
                     >
                       🛡️ Panel admin
                     </button>
@@ -195,7 +191,7 @@ export default function Navbar() {
             <>
               <button
                 onClick={() => navigate('/login')}
-                className="border border-white/15 text-slate-100 px-4 py-2 rounded-xl hover:bg-white/10 font-medium transition-all text-sm"
+                className="border border-slate-200 text-slate-700 px-4 py-2 rounded-xl hover:bg-slate-50 font-medium transition-all text-sm"
               >
                 Iniciar sesión
               </button>
