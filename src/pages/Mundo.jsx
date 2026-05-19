@@ -22,7 +22,7 @@ const BLOQUES = [
     titulo: 'Permutas',
     icono: '🔁',
     descripcion: 'Intercambio de destinos, pisos o habitaciones entre usuarios.',
-    ruta: '/mundointerino/permutas',
+    ruta: '/mundo/permutas',
     color: 'from-amber-50 to-amber-100',
     texto: 'text-amber-700',
   },
@@ -30,7 +30,7 @@ const BLOQUES = [
     titulo: 'Compartir coche',
     icono: '🚗',
     descripcion: 'Viajes compartidos, gastos y rutas entre personas del mismo destino.',
-    ruta: '/mundointerino/coche',
+    ruta: '/mundo/coche',
     color: 'from-purple-50 to-purple-100',
     texto: 'text-purple-700',
   },
@@ -38,7 +38,7 @@ const BLOQUES = [
     titulo: 'Recursos',
     icono: '📚',
     descripcion: 'Guías, plantillas, checklist, consejos legales y útiles.',
-    ruta: '/mundointerino/recursos',
+    ruta: '/mundo/recursos',
     color: 'from-slate-50 to-slate-100',
     texto: 'text-slate-700',
   },
@@ -46,7 +46,7 @@ const BLOQUES = [
     titulo: 'Avisos',
     icono: '📢',
     descripcion: 'Novedades, anuncios destacados y publicaciones oficiales.',
-    ruta: '/mundointerino/avisos',
+    ruta: '/mundo/avisos',
     color: 'from-red-50 to-red-100',
     texto: 'text-red-700',
   },
@@ -57,25 +57,25 @@ const ADMINISTRACIONES = [
     nombre: 'Educación',
     icono: '🎓',
     descripcion: 'Interinos, sustituciones, destinos, vivienda y cambios de provincia.',
-    ruta: '/mundointerino/educacion',
+    ruta: '/mundo/educacion',
   },
   {
     nombre: 'Sanidad',
     icono: '🩺',
     descripcion: 'Profesionales sanitarios, turnos, guardias y alojamiento temporal.',
-    ruta: '/mundointerino/sanidad',
+    ruta: '/mundo/sanidad',
   },
   {
     nombre: 'Justicia',
     icono: '⚖️',
     descripcion: 'Juzgados, desplazamientos, concursos y estancias por destino.',
-    ruta: '/mundointerino/justicia',
+    ruta: '/mundo/justicia',
   },
   {
     nombre: 'Otros',
     icono: '🧩',
     descripcion: 'Otras administraciones y colectivos con movilidad laboral.',
-    ruta: '/mundointerino/otros',
+    ruta: '/mundo/otros',
   },
 ]
 
@@ -94,7 +94,7 @@ export default function MundoInterino() {
               🌍 Comunidad profesional
             </span>
             <h1 className="text-4xl md:text-5xl font-bold leading-tight">
-              MundoInterino
+              Mundo
             </h1>
             <p className="mt-5 text-primary-100 text-lg max-w-2xl">
               Un espacio para conectar a docentes, sanitarios, personal de justicia y otros profesionales que se mueven por destino.

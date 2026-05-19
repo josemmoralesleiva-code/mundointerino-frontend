@@ -6,7 +6,7 @@ const PANELES = [
     titulo: 'Foro de Justicia',
     icono: '💬',
     descripcion: 'Dudas sobre destinos, juzgados, vivienda, movilidad y cambios de sede.',
-    ruta: '/mundointerino/justicia/foro',
+    ruta: '/mundo/justicia/foro',
     color: 'from-blue-50 to-blue-100',
     texto: 'text-blue-700',
   },
@@ -14,7 +14,7 @@ const PANELES = [
     titulo: 'Chat general',
     icono: '⚡',
     descripcion: 'Conversación rápida para personal de justicia en tiempo real.',
-    ruta: '/mundointerino/justicia/chat',
+    ruta: '/mundo/justicia/chat',
     color: 'from-green-50 to-green-100',
     texto: 'text-green-700',
   },
@@ -22,7 +22,7 @@ const PANELES = [
     titulo: 'Permutas',
     icono: '🔁',
     descripcion: 'Intercambia destino, alojamiento o información con otros compañeros.',
-    ruta: '/mundointerino/justicia/permutas',
+    ruta: '/mundo/justicia/permutas',
     color: 'from-amber-50 to-amber-100',
     texto: 'text-amber-700',
   },
@@ -30,7 +30,7 @@ const PANELES = [
     titulo: 'Compartir coche',
     icono: '🚗',
     descripcion: 'Encuentra compañeros para rutas, gasolina y desplazamientos.',
-    ruta: '/mundointerino/justicia/coche',
+    ruta: '/mundo/justicia/coche',
     color: 'from-purple-50 to-purple-100',
     texto: 'text-purple-700',
   },
@@ -38,7 +38,7 @@ const PANELES = [
     titulo: 'Recursos',
     icono: '📚',
     descripcion: 'Guías, checklist, modelos de documentos y consejos útiles.',
-    ruta: '/mundointerino/justicia/recursos',
+    ruta: '/mundo/justicia/recursos',
     color: 'from-slate-50 to-slate-100',
     texto: 'text-slate-700',
   },
@@ -46,7 +46,7 @@ const PANELES = [
     titulo: 'Avisos',
     icono: '📢',
     descripcion: 'Novedades, alertas y publicaciones destacadas para justicia.',
-    ruta: '/mundointerino/justicia/avisos',
+    ruta: '/mundo/justicia/avisos',
     color: 'from-red-50 to-red-100',
     texto: 'text-red-700',
   },
@@ -72,7 +72,7 @@ export default function Justicia() {
             onClick={() => navigate('/mundointerino')}
             className="text-sm text-primary-100 hover:text-white mb-4 inline-flex items-center gap-1"
           >
-            ← Volver a MundoInterino
+            ← Volver a Mundo
           </button>
 
           <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-sm mb-4">
