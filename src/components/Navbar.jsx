@@ -30,7 +30,6 @@ export default function Navbar() {
     <nav className="bg-white shadow-sm px-6 py-3 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
 
-        {/* LOGO + LINKS */}
         <div className="flex items-center gap-8">
           <button onClick={() => navigate('/')} className="flex items-center">
             <img src="/img/logo.png" alt="Repla" className="h-14" />
@@ -93,7 +92,6 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* DERECHA — usuario o botones auth */}
         <div className="flex items-center gap-3">
           {token ? (
             <div className="relative" ref={refUser}>
