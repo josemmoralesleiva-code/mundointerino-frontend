@@ -27,25 +27,29 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-white/10 bg-[#0B1220]/95 backdrop-blur-xl text-white shadow-[0_10px_30px_rgba(0,0,0,0.18)]">
+    <nav className="sticky top-0 z-50 bg-[#0B1220]/95 backdrop-blur-xl text-white shadow-[0_10px_30px_rgba(0,0,0,0.18)]">
       <div className="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center">
         <div className="flex items-center gap-8">
           <button
-            onClick={() => navigate('/')}
-            className="flex items-center gap-3 group"
-          >
-            <div className="h-11 w-11 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center overflow-hidden shadow-sm group-hover:bg-white/15 transition-colors">
-              <img src="/img/logo.png" alt="MundoInterino" className="h-8 w-auto brightness-0 invert opacity-90" />
-            </div>
-            <div className="hidden sm:block text-left">
-              <div className="text-sm font-semibold leading-none tracking-wide text-white">
-                MundoInterino
-              </div>
-              <div className="text-[11px] text-slate-300 mt-1">
-                Alquiler elegante para interinos
-              </div>
-            </div>
-          </button>
+  onClick={() => navigate('/')}
+  className="flex items-center gap-3 group"
+>
+  <div className="h-11 w-11 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center overflow-hidden shadow-sm group-hover:bg-white/15 transition-colors">
+    <img
+      src="/img/logo.png"
+      alt="MundoInterino"
+      className="h-8 w-auto object-contain"
+    />
+  </div>
+  <div className="hidden sm:block text-left">
+    <div className="text-sm font-semibold leading-none tracking-wide text-white">
+      MundoInterino
+    </div>
+    <div className="text-[11px] text-slate-300 mt-1">
+      Alquiler elegante para interinos
+    </div>
+  </div>
+</button>
 
           <div className="hidden md:flex items-center gap-2">
             <button
@@ -56,7 +60,7 @@ export default function Navbar() {
             </button>
 
             <button
-              onClick={() => navigate('/mundointerino')}
+              onClick={() => navigate('/mundo')}
               className="px-4 py-2 rounded-xl text-sm font-medium text-slate-200 hover:text-white hover:bg-white/10 transition-all"
             >
               Mundo
@@ -168,7 +172,7 @@ export default function Navbar() {
                   </button>
                   <button
                     onClick={() => {
-                      navigate('/mundointerino')
+                      navigate('/mundo')
                       setMenuUsuario(false)
                     }}
                     className="w-full text-left text-sm text-slate-700 hover:text-[#0F172A] py-3 px-3 rounded-xl hover:bg-slate-50 transition-colors"
