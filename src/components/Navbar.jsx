@@ -33,7 +33,8 @@ export default function Navbar() {
         {/* LOGO + LINKS */}
         <div className="flex items-center gap-8">
           <a href="/" className="flex items-center">
-            <img src="/img/logo.png" alt="Profinter" className="h-10" />
+            {/* ✏️ CAMBIO: alt actualizado a Repla */}
+            <img src="/img/logo.png" alt="Repla" className="h-10" />
           </a>
 
           <div className="hidden md:flex items-center gap-6">
@@ -96,6 +97,11 @@ export default function Navbar() {
                     className="w-full text-left text-sm text-gray-700 hover:text-primary-700 py-2 px-3 rounded-lg hover:bg-gray-50">
                     Mi panel
                   </button>
+                  {/* ✏️ FIX: "Mi perfil" movido aquí dentro, donde tiene sentido */}
+                  <button onClick={() => { navigate('/perfil'); setMenuUsuario(false) }}
+                    className="w-full text-left text-sm text-gray-700 hover:text-primary-700 py-2 px-3 rounded-lg hover:bg-gray-50">
+                    Mi perfil
+                  </button>
                   {usuario?.rol === 'admin' && (
                     <button onClick={() => { navigate('/admin'); setMenuUsuario(false) }}
                       className="w-full text-left text-sm text-red-600 hover:text-red-700 py-2 px-3 rounded-lg hover:bg-red-50 font-semibold">
@@ -119,10 +125,6 @@ export default function Navbar() {
               <button onClick={() => navigate('/registro')}
                 className="bg-primary-700 text-white px-4 py-2 rounded-lg hover:bg-primary-800 font-medium transition-all text-sm">
                 Registrarse
-              </button>
-              <button onClick={() => { navigate('/perfil'); setMenuUsuario(false) }}
-                className="w-full text-left text-sm text-gray-700 hover:text-primary-700 py-2 px-3 rounded-lg hover:bg-gray-50">
-                 Mi perfil
               </button>
             </>
           )}
