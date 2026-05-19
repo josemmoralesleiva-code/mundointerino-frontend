@@ -18,7 +18,7 @@ import Provincia from './pages/Provincia'
 import ZonaDetalle from './pages/ZonaDetalle'
 import Contacto from './pages/Contacto'
 import SobreNosotros from './pages/SobreNosotros'
-import MundoInterino from './pages/MundoInterino'
+import Mundo from './pages/Mundo'
 import Educacion from './pages/Educacion'
 import Sanidad from './pages/Sanidad'
 import Justicia from './pages/Justicia'
@@ -81,9 +81,9 @@ export default function App() {
         <Route path="/sobre-nosotros" element={<SobreNosotros />} />
         <Route path="/contacto" element={<Contacto />} />
 
-        {/* MundoInterino */}
+        {/* Mundo */}
         <Route
-          path="/mundointerino"
+          path="/mundo"
           element={
             <PrivateRoute>
               <MundoInterino />
@@ -91,7 +91,7 @@ export default function App() {
           }
         />
         <Route
-          path="/mundointerino/educacion"
+          path="/mundo/educacion"
           element={
             <PrivateRoute>
               <Educacion />
@@ -99,7 +99,7 @@ export default function App() {
           }
         />
         <Route
-          path="/mundointerino/sanidad"
+          path="/mundo/sanidad"
           element={
             <PrivateRoute>
               <Sanidad />
@@ -107,7 +107,7 @@ export default function App() {
           }
         />
         <Route
-          path="/mundointerino/justicia"
+          path="/mundo/justicia"
           element={
             <PrivateRoute>
               <Justicia />
