@@ -11,21 +11,21 @@ const ZONAS = [
     slug: 'aragon',
     emoji: '🏔️',
     desc: 'Tu zona principal: Zaragoza, Huesca y Teruel',
-    color: 'from-slate-900 to-primary-700',
+    color: 'from-[#102A43] to-[#1F4E79]',
   },
   {
     nombre: 'Andalucía',
     slug: 'andalucia',
     emoji: '🌞',
     desc: 'Sevilla, Málaga, Granada y más provincias',
-    color: 'from-orange-500 to-rose-600',
+    color: 'from-[#F59E0B] to-[#EA580C]',
   },
   {
     nombre: 'Más comunidades',
     slug: 'zonas',
     emoji: '🗺️',
     desc: 'Explora todas las zonas disponibles',
-    color: 'from-emerald-500 to-teal-700',
+    color: 'from-[#14B8A6] to-[#0F766E]',
   },
 ]
 
@@ -56,7 +56,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f7f8fb]">
+    <div className="min-h-screen bg-[#F8FAFC]">
       <Navbar />
 
       {/* HERO */}
@@ -68,21 +68,21 @@ export default function Home() {
           backgroundPosition: 'center',
         }}
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-950/90 via-primary-900/80 to-slate-900/70"></div>
+        <div className="absolute inset-0 bg-[#102A43]/90"></div>
 
         <div className="relative max-w-5xl mx-auto">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-sm mb-6">
             <span>🌍</span>
-            <span>Alquiler para interinos y administraciones</span>
+            <span>MundoInterino · alquiler y comunidad</span>
           </div>
 
           <h1 className="text-4xl md:text-6xl font-bold mb-5 leading-tight drop-shadow-lg">
             El portal de alquiler
             <br />
-            <span className="text-accent-400">para interinos de la administración</span>
+            <span className="text-[#F59E0B]">para interinos de la administración</span>
           </h1>
 
-          <p className="text-primary-100 text-lg md:text-xl mb-10 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-slate-100 text-lg md:text-xl mb-10 max-w-3xl mx-auto leading-relaxed">
             Educación, sanidad, justicia y más. Encuentra piso cerca de tu destino con una experiencia clara, elegante y sin comisiones ocultas.
           </p>
 
@@ -125,7 +125,7 @@ export default function Home() {
 
               <button
                 onClick={handleBuscar}
-                className="bg-accent-500 hover:bg-accent-600 text-white px-6 py-4 rounded-2xl font-bold transition-all hover:scale-[1.02] shadow-md"
+                className="bg-[#1F4E79] hover:bg-[#102A43] text-white px-6 py-4 rounded-2xl font-bold transition-all hover:scale-[1.02] shadow-md"
               >
                 🔍 Buscar
               </button>
@@ -135,7 +135,7 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row gap-3 justify-center mt-6">
             <button
               onClick={() => navigate('/pisos')}
-              className="bg-white hover:bg-gray-50 text-primary-900 font-bold px-6 py-3 rounded-2xl transition-all shadow-lg border border-white/40"
+              className="bg-white hover:bg-slate-50 text-[#102A43] font-bold px-6 py-3 rounded-2xl transition-all shadow-lg border border-white/40"
             >
               🔍 Buscar piso
             </button>
@@ -147,7 +147,7 @@ export default function Home() {
             </button>
           </div>
 
-          <div className="flex justify-center gap-8 mt-8 text-sm text-primary-100 flex-wrap">
+          <div className="flex justify-center gap-8 mt-8 text-sm text-slate-100 flex-wrap">
             <span>✅ +200 pisos publicados</span>
             <span>🏥 Educación · Sanidad · Justicia</span>
             <span>💶 Sin comisiones</span>
@@ -168,30 +168,26 @@ export default function Home() {
               icon: '🏥',
               titulo: 'Todos los sectores',
               texto: 'Educación, sanidad, justicia y concertada. Contratos y estancias flexibles.',
-              color: 'bg-white',
             },
             {
               icon: '💶',
               titulo: 'Precios justos',
               texto: 'Más económico que Booking. Sin comisiones ocultas. Negociación directa.',
-              color: 'bg-white',
             },
             {
               icon: '📅',
               titulo: 'Estancia flexible',
               texto: 'Desde un fin de semana hasta todo el curso o contrato. Tú decides.',
-              color: 'bg-white',
             },
             {
               icon: '🗺️',
               titulo: 'Cobertura amplia',
               texto: 'Encuentra pisos en distintas comunidades, provincias y pueblos.',
-              color: 'bg-white',
             },
           ].map(v => (
             <div
               key={v.titulo}
-              className={`${v.color} rounded-3xl p-6 border border-gray-100 text-center shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300`}
+              className="bg-white rounded-3xl p-6 border border-gray-100 text-center shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
             >
               <div className="text-4xl mb-3">{v.icon}</div>
               <h3 className="font-bold text-gray-900 mb-2">{v.titulo}</h3>
@@ -211,7 +207,7 @@ export default function Home() {
             </div>
             <button
               onClick={() => navigate('/zonas')}
-              className="text-primary-700 font-semibold hover:underline text-sm"
+              className="text-[#1F4E79] font-semibold hover:underline text-sm"
             >
               Ver todas las zonas →
             </button>
@@ -237,7 +233,7 @@ export default function Home() {
               <button
                 key={z.nombre}
                 onClick={() => navigate(`/zonas/${z.comunidad}/${z.provincia}/${encodeURIComponent(z.ciudad)}`)}
-                className="bg-[#f8fafc] hover:bg-gray-100 rounded-2xl p-4 text-left border border-gray-100 transition-all shadow-sm"
+                className="bg-[#F8FAFC] hover:bg-gray-100 rounded-2xl p-4 text-left border border-gray-100 transition-all shadow-sm"
               >
                 <div className="text-2xl mb-2">{z.emoji}</div>
                 <div className="font-semibold text-gray-900">{z.nombre}</div>
@@ -255,7 +251,7 @@ export default function Home() {
             <h2 className="text-2xl font-bold text-gray-900">Pisos disponibles ahora</h2>
             <p className="text-gray-500 text-sm mt-1">Los más recientes</p>
           </div>
-          <button onClick={() => navigate('/pisos')} className="text-primary-700 font-semibold hover:underline text-sm">
+          <button onClick={() => navigate('/pisos')} className="text-[#1F4E79] font-semibold hover:underline text-sm">
             Ver todos →
           </button>
         </div>
@@ -282,8 +278,8 @@ export default function Home() {
                     <span
                       className={`text-xs px-2 py-1 rounded-full font-medium ${
                         piso.tipoEstancia === 'corta'
-                          ? 'bg-yellow-400 text-yellow-900'
-                          : 'bg-emerald-400 text-emerald-900'
+                          ? 'bg-[#F59E0B] text-white'
+                          : 'bg-[#14B8A6] text-white'
                       }`}
                     >
                       {piso.tipoEstancia === 'corta' ? '⚡ Corta' : '📅 Larga'}
@@ -292,13 +288,13 @@ export default function Home() {
                 </div>
 
                 <div className="p-5">
-                  <h3 className="font-semibold text-gray-900 mb-1 leading-snug group-hover:text-primary-700 transition-colors">
+                  <h3 className="font-semibold text-gray-900 mb-1 leading-snug group-hover:text-[#1F4E79] transition-colors">
                     {piso.titulo}
                   </h3>
                   <p className="text-gray-500 text-sm mb-4">📍 {piso.ciudad}</p>
 
                   <div className="flex justify-between items-center">
-                    <span className="text-primary-700 font-bold text-lg">
+                    <span className="text-[#1F4E79] font-bold text-lg">
                       {piso.precio}€
                       <span className="text-sm font-normal text-gray-400">
                         {piso.tipoEstancia === 'corta' ? '/noche' : '/mes'}
@@ -322,7 +318,7 @@ export default function Home() {
         <div className="text-center mt-10">
           <button
             onClick={() => navigate('/pisos')}
-            className="bg-primary-700 text-white px-10 py-4 rounded-2xl font-bold hover:bg-primary-800 text-lg transition-all hover:scale-[1.02] shadow-lg"
+            className="bg-[#1F4E79] text-white px-10 py-4 rounded-2xl font-bold hover:bg-[#102A43] text-lg transition-all hover:scale-[1.02] shadow-lg"
           >
             Ver todos los pisos
           </button>
@@ -330,7 +326,7 @@ export default function Home() {
       </section>
 
       {/* CTA */}
-      <section className="bg-primary-700 py-16 px-6 text-center text-white relative overflow-hidden">
+      <section className="bg-[#102A43] py-16 px-6 text-center text-white relative overflow-hidden">
         <div
           className="absolute inset-0 opacity-10"
           style={{
@@ -340,13 +336,13 @@ export default function Home() {
         />
         <div className="relative max-w-3xl mx-auto">
           <h2 className="text-3xl font-bold mb-3">¿Tienes un piso cerca de un hospital, colegio o juzgado?</h2>
-          <p className="text-primary-100 mb-8 text-lg">
+          <p className="text-slate-100 mb-8 text-lg">
             Únete a los propietarios que ya publican en MundoInterino. Publicación gratuita, inquilinos con nómina pública garantizada.
           </p>
           <div className="flex flex-col md:flex-row gap-4 justify-center">
             <Link
               to="/pisos/nuevo"
-              className="bg-accent-500 hover:bg-accent-600 text-white font-bold px-10 py-4 rounded-2xl text-lg transition-all hover:scale-[1.02] shadow-lg inline-flex items-center justify-center"
+              className="bg-[#F59E0B] hover:bg-[#EA580C] text-white font-bold px-10 py-4 rounded-2xl text-lg transition-all hover:scale-[1.02] shadow-lg inline-flex items-center justify-center"
             >
               Publicar mi piso gratis
             </Link>
@@ -361,13 +357,13 @@ export default function Home() {
       </section>
 
       {/* FOOTER */}
-      <footer className="bg-primary-950 text-white py-10 px-6">
+      <footer className="bg-[#102A43] text-white py-10 px-6">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-3">
             <img src="/img/logo.png" alt="MundoInterino" className="h-12 brightness-0 invert opacity-75" />
-            <p className="text-primary-100 text-sm">© 2026 MundoInterino · Tu hogar donde te necesiten</p>
+            <p className="text-slate-100 text-sm">© 2026 MundoInterino · Tu hogar donde te necesiten</p>
           </div>
-          <div className="flex gap-6 text-sm text-primary-100">
+          <div className="flex gap-6 text-sm text-slate-100">
             <Link to="/sobre-nosotros" className="hover:text-white transition-colors">Sobre nosotros</Link>
             <Link to="/contacto" className="hover:text-white transition-colors">Contacto</Link>
             <Link to="/pisos/nuevo" className="hover:text-white transition-colors">Publicar piso</Link>
