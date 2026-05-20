@@ -30,12 +30,19 @@ export default function Navbar() {
     <nav className="sticky top-0 z-50 bg-[#F8F5EF]/95 backdrop-blur-xl text-[#0F172A] border-b border-black/5 shadow-sm">
       <div className="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center">
         <div className="flex items-center gap-8">
-          <button onClick={() => navigate('/')} className="flex items-center">
+          <button
+            onClick={() => navigate('/')}
+            className="flex items-center gap-3"
+          >
             <img
               src="/img/logo.png"
               alt="MundoInterino"
               className="h-16 w-auto object-contain"
             />
+            <span className="hidden sm:block text-xl font-bold tracking-tight">
+              <span className="text-[#0F172A]">Mundo</span>
+              <span className="text-[#2F5DAA]">Interino</span>
+            </span>
           </button>
 
           <div className="hidden md:flex items-center gap-2">
