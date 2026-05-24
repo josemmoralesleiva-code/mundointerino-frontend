@@ -12,10 +12,10 @@ const ADMINISTRACIONES = {
 }
 
 const TIPOS_DOC = {
-  nomina:        { label: 'Nómina',        icono: '💶' },
-  nombramiento:  { label: 'Nombramiento',  icono: '📄' },
-  credencial:    { label: 'Credencial',    icono: '🪪' },
-  contrato:      { label: 'Contrato',      icono: '📋' },
+  nomina:       { label: 'Nómina',       icono: '💶' },
+  nombramiento: { label: 'Nombramiento', icono: '📄' },
+  credencial:   { label: 'Credencial',   icono: '🪪' },
+  contrato:     { label: 'Contrato',     icono: '📋' },
 }
 
 export default function Admin() {
@@ -28,7 +28,7 @@ export default function Admin() {
   const [filtro, setFiltro] = useState('pendiente')
   const [motivoRechazo, setMotivoRechazo] = useState('')
   const [rechazandoId, setRechazandoId] = useState(null)
-  const [usuarioDetalle, setUsuarioDetalle] = useState(null) // modal detalle
+  const [usuarioDetalle, setUsuarioDetalle] = useState(null)
   const [busqueda, setBusqueda] = useState('')
 
   useEffect(() => {
@@ -66,7 +66,6 @@ export default function Admin() {
     }
   }
 
-  // Filtrado: pendientes NO muestra verificados ni rechazados
   const usuariosFiltrados = usuarios.filter(u => {
     const matchFiltro = filtro === '' ? true : u.verificacionEstado === filtro
     const matchBusqueda = busqueda === ''
@@ -77,13 +76,17 @@ export default function Admin() {
   })
 
   const stats = {
-    total:      usuarios.length,
-    pendientes: usuarios.filter(u => u.verificacionEstado === 'pendiente').length,
+    total:       usuarios.length,
+    pendientes:  usuarios.filter(u => u.verificacionEstado === 'pendiente').length,
     verificados: usuarios.filter(u => u.verificacionEstado === 'verificado').length,
-    rechazados: usuarios.filter(u => u.verificacionEstado === 'rechazado').length,
+    rechazados:  usuarios.filter(u => u.verificacionEstado === 'rechazado').length,
   }
 
-  const isPDF = url => url?.toLowerCase().includes('.pdf') || url?.toLowerCase().includes('raw/upload')
+  // ← FIX: detecta PDF por resource_type raw O por extensión
+  const isPDF = url =>
+    url?.includes('/raw/upload/') ||
+    url?.toLowerCase().endsWith('.pdf') ||
+    url?.toLowerCase().includes('.pdf')
 
   return (
     <div className="min-h-screen bg-[#F8F5EF]">
@@ -131,10 +134,10 @@ export default function Admin() {
         {/* STATS */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           {[
-            { label: 'Total',       valor: stats.total,       color: 'bg-[#F8F5EF] text-[#0F172A] border-gray-200',     icono: '👥' },
-            { label: 'Pendientes',  valor: stats.pendientes,  color: 'bg-amber-50 text-amber-700 border-amber-100',     icono: '⏳' },
+            { label: 'Total',       valor: stats.total,       color: 'bg-[#F8F5EF] text-[#0F172A] border-gray-200',      icono: '👥' },
+            { label: 'Pendientes',  valor: stats.pendientes,  color: 'bg-amber-50 text-amber-700 border-amber-100',      icono: '⏳' },
             { label: 'Verificados', valor: stats.verificados, color: 'bg-emerald-50 text-emerald-700 border-emerald-100', icono: '✅' },
-            { label: 'Rechazados',  valor: stats.rechazados,  color: 'bg-rose-50 text-rose-600 border-rose-100',        icono: '❌' },
+            { label: 'Rechazados',  valor: stats.rechazados,  color: 'bg-rose-50 text-rose-600 border-rose-100',         icono: '❌' },
           ].map(s => (
             <div key={s.label} className="bg-white rounded-3xl border border-gray-100 shadow-sm p-5 text-center hover:shadow-md transition-all">
               <div className={`inline-flex items-center justify-center w-10 h-10 rounded-xl text-xl mb-2 border ${s.color}`}>
@@ -146,12 +149,11 @@ export default function Admin() {
           ))}
         </div>
 
-        {/* TABLA */}
+        {/* LISTA */}
         <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
             <h2 className="text-xl font-bold text-gray-900">Usuarios registrados</h2>
             <div className="flex flex-col sm:flex-row gap-3">
-              {/* Buscador */}
               <input
                 type="text"
                 placeholder="🔍 Buscar por nombre o email..."
@@ -159,7 +161,6 @@ export default function Admin() {
                 onChange={e => setBusqueda(e.target.value)}
                 className="border border-gray-200 rounded-2xl px-4 py-2 text-sm focus:outline-none focus:border-[#0F172A] transition-colors w-full sm:w-56"
               />
-              {/* Filtros */}
               <div className="flex gap-1 bg-[#F8F5EF] rounded-2xl p-1 border border-gray-100">
                 {[
                   ['pendiente', '⏳ Pendientes'],
@@ -185,9 +186,7 @@ export default function Admin() {
 
           {cargando ? (
             <div className="space-y-3">
-              {[1, 2, 3].map(i => (
-                <div key={i} className="h-20 bg-gray-100 rounded-2xl animate-pulse" />
-              ))}
+              {[1, 2, 3].map(i => <div key={i} className="h-20 bg-gray-100 rounded-2xl animate-pulse" />)}
             </div>
           ) : usuariosFiltrados.length === 0 ? (
             <div className="text-center py-12 text-gray-400">
@@ -199,8 +198,6 @@ export default function Admin() {
               {usuariosFiltrados.map(u => (
                 <div key={u._id} className="bg-[#F8F5EF] rounded-3xl border border-gray-100 p-5 hover:shadow-md transition-all duration-200">
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-
-                    {/* Info usuario */}
                     <div className="flex items-center gap-4">
                       <div className="w-12 h-12 bg-gradient-to-br from-[#0F172A] to-[#1E3A5F] rounded-2xl flex items-center justify-center text-lg font-bold text-[#D4AF37] shrink-0">
                         {u.nombre.charAt(0).toUpperCase()}
@@ -214,7 +211,7 @@ export default function Admin() {
                             {u.rol === 'docente' ? '🧑‍🏫 Interino' : '🏠 Propietario'}
                           </span>
                           <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                            u.verificacionEstado === 'pendiente'  ? 'bg-amber-100 text-amber-700'   :
+                            u.verificacionEstado === 'pendiente'  ? 'bg-amber-100 text-amber-700'    :
                             u.verificacionEstado === 'verificado' ? 'bg-emerald-100 text-emerald-700' :
                             'bg-rose-100 text-rose-600'
                           }`}>
@@ -239,16 +236,13 @@ export default function Admin() {
                       </div>
                     </div>
 
-                    {/* Acciones */}
                     <div className="flex gap-2 shrink-0 flex-wrap">
-                      {/* Botón Ver detalle — siempre visible */}
                       <button
                         onClick={() => setUsuarioDetalle(u)}
                         className="bg-white border border-gray-200 text-[#0F172A] hover:bg-[#F8F5EF] px-4 py-2 rounded-2xl text-sm font-bold transition-all hover:scale-[1.02]"
                       >
                         👁 Ver detalle
                       </button>
-
                       {u.verificacionEstado === 'pendiente' && (
                         <>
                           <button
@@ -284,7 +278,6 @@ export default function Admin() {
                     </div>
                   </div>
 
-                  {/* Panel rechazo inline */}
                   {rechazandoId === u._id && (
                     <div className="mt-4 bg-rose-50 border border-rose-200 rounded-2xl p-4">
                       <p className="text-sm font-bold text-rose-700 mb-2">Motivo del rechazo (opcional)</p>
@@ -318,7 +311,7 @@ export default function Admin() {
         </div>
       </div>
 
-      {/* ── MODAL DETALLE USUARIO ── */}
+      {/* MODAL DETALLE */}
       {usuarioDetalle && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-[#0F172A]/70 backdrop-blur-sm px-4"
@@ -326,7 +319,6 @@ export default function Admin() {
         >
           <div className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto border border-gray-100">
 
-            {/* Header modal */}
             <div className="bg-[#0F172A] rounded-t-3xl px-8 py-6 text-white flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <div className="w-14 h-14 rounded-2xl bg-[#D4AF37] text-[#0F172A] flex items-center justify-center text-2xl font-bold">
@@ -347,21 +339,21 @@ export default function Admin() {
 
             <div className="p-8 space-y-6">
 
-              {/* Datos básicos */}
+              {/* Datos personales */}
               <div>
                 <h4 className="text-xs text-gray-400 font-semibold uppercase tracking-wide mb-3">Datos personales</h4>
                 <div className="grid grid-cols-2 gap-3">
                   {[
-                    { label: 'Nombre',    valor: usuarioDetalle.nombre },
-                    { label: 'Email',     valor: usuarioDetalle.email },
+                    { label: 'Nombre',   valor: usuarioDetalle.nombre },
+                    { label: 'Email',    valor: usuarioDetalle.email },
                     { label: 'Teléfono', valor: usuarioDetalle.telefono || '—' },
-                    { label: 'Rol',       valor: usuarioDetalle.rol === 'docente' ? '🧑‍🏫 Interino' : '🏠 Propietario' },
-                    { label: 'ID',        valor: usuarioDetalle._id },
+                    { label: 'Rol',      valor: usuarioDetalle.rol === 'docente' ? '🧑‍🏫 Interino' : '🏠 Propietario' },
+                    { label: 'ID',       valor: usuarioDetalle._id },
                     {
                       label: 'Alta',
                       valor: new Date(usuarioDetalle.createdAt).toLocaleDateString('es-ES', {
-                        day: '2-digit', month: 'long', year: 'numeric'
-                      })
+                        day: '2-digit', month: 'long', year: 'numeric',
+                      }),
                     },
                   ].map(item => (
                     <div key={item.label} className="bg-[#F8F5EF] rounded-2xl p-4 border border-gray-100">
@@ -412,23 +404,32 @@ export default function Admin() {
                 </div>
               </div>
 
-              {/* Documento */}
-              {usuarioDetalle.urlDocumento && (
+              {/* ← DOCUMENTO — fix PDF */}
+              {usuarioDetalle.urlDocumento ? (
                 <div>
                   <h4 className="text-xs text-gray-400 font-semibold uppercase tracking-wide mb-3">Documento adjunto</h4>
                   <div className="bg-[#F8F5EF] rounded-2xl border border-gray-200 overflow-hidden">
                     {isPDF(usuarioDetalle.urlDocumento) ? (
-                      <div className="p-6 text-center">
-                        <div className="text-5xl mb-3">📄</div>
-                        <p className="text-gray-600 text-sm font-medium mb-4">Documento PDF</p>
-                        <a
-                          href={usuarioDetalle.urlDocumento}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="bg-[#0F172A] text-white px-6 py-2.5 rounded-2xl font-bold text-sm hover:bg-[#1E3A5F] transition-all hover:scale-[1.02] inline-block"
-                        >
-                          📎 Abrir documento
-                        </a>
+                      <div className="p-6 text-center space-y-4">
+                        <div className="text-5xl">📄</div>
+                        <p className="text-gray-600 text-sm font-medium">Documento PDF</p>
+                        <div className="flex gap-3 justify-center flex-wrap">
+                          <a
+                            href={usuarioDetalle.urlDocumento}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="bg-[#0F172A] text-white px-6 py-2.5 rounded-2xl font-bold text-sm hover:bg-[#1E3A5F] transition-all hover:scale-[1.02] inline-block"
+                          >
+                            📎 Abrir en nueva pestaña
+                          </a>
+                          <a
+                            href={usuarioDetalle.urlDocumento}
+                            download
+                            className="border border-gray-200 text-gray-700 bg-white px-6 py-2.5 rounded-2xl font-bold text-sm hover:bg-gray-50 transition-all inline-block"
+                          >
+                            ⬇️ Descargar
+                          </a>
+                        </div>
                       </div>
                     ) : (
                       <div>
@@ -437,7 +438,7 @@ export default function Admin() {
                           alt="Documento de verificación"
                           className="w-full max-h-80 object-contain p-4"
                         />
-                        <div className="border-t border-gray-100 p-4 flex justify-center">
+                        <div className="border-t border-gray-100 p-4 flex gap-3 justify-center">
                           <a
                             href={usuarioDetalle.urlDocumento}
                             target="_blank"
@@ -446,14 +447,19 @@ export default function Admin() {
                           >
                             🔍 Ver imagen completa
                           </a>
+                          <a
+                            href={usuarioDetalle.urlDocumento}
+                            download
+                            className="border border-gray-200 text-gray-700 bg-white px-6 py-2.5 rounded-2xl font-bold text-sm hover:bg-gray-50 transition-all inline-block"
+                          >
+                            ⬇️ Descargar
+                          </a>
                         </div>
                       </div>
                     )}
                   </div>
                 </div>
-              )}
-
-              {!usuarioDetalle.urlDocumento && (
+              ) : (
                 <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 text-amber-700 text-sm text-center">
                   ⚠️ Este usuario aún no ha subido documentación de verificación.
                 </div>
