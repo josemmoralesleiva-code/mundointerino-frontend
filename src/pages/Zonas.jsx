@@ -5,7 +5,7 @@ const ZONAS = [
   {
     slug: 'aragon',
     nombre: 'Aragón',
-    descripcion: 'Zona principal de Profinter para docentes interinos.',
+    descripcion: 'Zona principal de Mundointerino para docentes interinos.',
     color: 'from-primary-700 to-primary-900',
     icono: '🏔️',
   },
