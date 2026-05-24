@@ -156,7 +156,7 @@ export default function Dashboard() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
               {[
                 { icono: '🔍', titulo: 'Buscar pisos', desc: 'Encuentra alojamiento en toda España.', ruta: '/pisos' },
-                { icono: '🌍', titulo: 'MundoInterino', desc: 'Comunidad de interinos. Foros, chat y más.', ruta: '/mundointerino' },
+                { icono: '🌍', titulo: 'Mundo', desc: 'Comunidad de interinos. Foros, chat y más.', ruta: '/mundo' },
                 { icono: '🗺️', titulo: 'Explorar zonas', desc: 'Busca por comunidad, provincia y ciudad.', ruta: '/zonas' },
                 { icono: '👤', titulo: 'Mi perfil', desc: 'Edita tus datos y preferencias.', ruta: '/perfil' },
               ].map(item => (
