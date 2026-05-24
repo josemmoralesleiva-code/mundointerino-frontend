@@ -54,7 +54,7 @@ export default function Navbar() {
             </button>
 
             <button
-              onClick={() => navigate('/mundointerino')}
+              onClick={() => navigate('/Mundo')}
               className="px-4 py-2 rounded-xl text-sm font-medium text-slate-700 hover:text-[#0F172A] hover:bg-black/5 transition-all"
             >
               Mundo
@@ -166,7 +166,7 @@ export default function Navbar() {
                   </button>
                   <button
                     onClick={() => {
-                      navigate('/mundointerino')
+                      navigate('/Mundo')
                       setMenuUsuario(false)
                     }}
                     className="w-full text-left text-sm text-slate-700 hover:text-[#0F172A] py-3 px-3 rounded-xl hover:bg-slate-50 transition-colors"
