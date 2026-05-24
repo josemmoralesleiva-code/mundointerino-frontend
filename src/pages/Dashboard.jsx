@@ -179,7 +179,7 @@ export default function Dashboard() {
                   <h2 className="text-xl font-bold text-gray-900">🌍 MundoInterino — Comunidad</h2>
                   <p className="text-gray-500 text-sm mt-0.5">Conecta con otros interinos de tu sector.</p>
                 </div>
-                <button onClick={() => navigate('/mundointerino')} className="text-[#0F172A] text-sm font-bold hover:underline">
+                <button onClick={() => navigate('/mundo')} className="text-[#0F172A] text-sm font-bold hover:underline">
                   Ver todo →
                 </button>
               </div>
