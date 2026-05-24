@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import axios from 'axios'
 import Navbar from '../components/Navbar'
 
@@ -22,7 +22,7 @@ export default function Perfil() {
     const cargarPerfil = async () => {
       try {
         const res = await axios.get(`${API}/api/usuarios/me`, {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${token}` },
         })
         setUsuario(res.data)
         setForm({
@@ -36,25 +36,20 @@ export default function Perfil() {
         setCargando(false)
       }
     }
-
     cargarPerfil()
   }, [token])
 
-  const handleChange = e => {
-    setForm({ ...form, [e.target.name]: e.target.value })
-  }
+  const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value })
 
   const guardarCambios = async e => {
     e.preventDefault()
     setGuardando(true)
     setError('')
     setMensaje('')
-
     try {
       const res = await axios.put(`${API}/api/usuarios/me`, form, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       })
-
       setUsuario(res.data)
       localStorage.setItem('usuario', JSON.stringify(res.data))
       setEditando(false)
@@ -72,24 +67,26 @@ export default function Perfil() {
     navigate('/login')
   }
 
-  const badgeEstado = (estado) => {
-    if (estado === 'verificado') return 'bg-green-100 text-green-700'
+  const badgeEstado = estado => {
+    if (estado === 'verificado') return 'bg-[#D4AF37]/20 text-[#0F172A]'
     if (estado === 'rechazado') return 'bg-red-100 text-red-700'
-    return 'bg-amber-100 text-amber-700'
+    return 'bg-[#F8F5EF] text-gray-700 border border-gray-200'
   }
 
-  const textoEstado = (estado) => {
-    if (estado === 'verificado') return 'Verificado'
-    if (estado === 'rechazado') return 'Rechazado'
-    return 'Pendiente'
+  const textoEstado = estado => {
+    if (estado === 'verificado') return '✅ Verificado'
+    if (estado === 'rechazado') return '❌ Rechazado'
+    return '🕐 Pendiente'
   }
+
+  const usuarioMostrado = usuario || usuarioLocal
 
   if (cargando) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-[#F8F5EF]">
         <Navbar />
         <div className="max-w-5xl mx-auto px-6 py-10">
-          <div className="h-8 w-48 bg-gray-200 rounded-xl animate-pulse mb-4" />
+          <div className="h-8 w-48 bg-gray-200 rounded-2xl animate-pulse mb-4" />
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="md:col-span-2 h-96 bg-white rounded-3xl animate-pulse" />
             <div className="h-96 bg-white rounded-3xl animate-pulse" />
@@ -99,97 +96,128 @@ export default function Perfil() {
     )
   }
 
-  const usuarioMostrado = usuario || usuarioLocal
-
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#F8F5EF]">
       <Navbar />
 
-      <section className="bg-gradient-to-br from-primary-700 to-primary-900 text-white py-12 px-6">
-        <div className="max-w-7xl mx-auto">
-          <p className="text-primary-100 text-sm mb-2 cursor-pointer" onClick={() => navigate('/dashboard')}>
+      {/* HERO */}
+      <section
+        className="relative text-white py-10 px-6 overflow-hidden"
+        style={{
+          backgroundImage: 'url(https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=1600&q=80)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      >
+        <div className="absolute inset-0 bg-[#111827]/90" />
+        <div className="relative max-w-6xl mx-auto">
+          <button
+            onClick={() => navigate('/dashboard')}
+            className="text-sm text-slate-300 hover:text-white mb-4 inline-flex items-center gap-1 transition-colors"
+          >
             ← Volver al panel
-          </p>
-          <h1 className="text-3xl font-bold">Mi perfil</h1>
-          <p className="text-primary-100 mt-2">
-            Revisa tus datos, tu verificación y actualiza la información de tu cuenta.
-          </p>
+          </button>
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-[#D4AF37] text-[#0F172A] flex items-center justify-center text-2xl font-bold shadow-lg shrink-0">
+              {usuarioMostrado?.nombre?.charAt(0)?.toUpperCase() || 'U'}
+            </div>
+            <div>
+              <h1 className="text-2xl md:text-3xl font-bold drop-shadow-lg">
+                {usuarioMostrado?.nombre}
+              </h1>
+              <p className="text-slate-300 text-sm mt-0.5">
+                {usuarioMostrado?.rol === 'propietario' ? '🏠 Propietario' : '🧑‍🏫 Interino'} ·{' '}
+                {usuarioMostrado?.email}
+              </p>
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-6 mt-5 text-xs md:text-sm text-slate-100">
+            <span>👤 Gestiona tus datos personales</span>
+            <span>🔒 Acceso seguro</span>
+            <span>✅ Verificación de cuenta</span>
+          </div>
         </div>
       </section>
 
-      <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="max-w-6xl mx-auto px-6 py-10">
+
+        {/* ALERTAS */}
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-600 rounded-xl px-4 py-3 mb-6 text-sm">
-            {error}
+          <div className="bg-red-50 border border-red-200 text-red-600 rounded-2xl px-4 py-3 mb-6 text-sm">
+            ⚠️ {error}
           </div>
         )}
-
         {mensaje && (
-          <div className="bg-green-50 border border-green-200 text-green-700 rounded-xl px-4 py-3 mb-6 text-sm">
-            {mensaje}
+          <div className="bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#0F172A] rounded-2xl px-4 py-3 mb-6 text-sm font-medium">
+            ✅ {mensaje}
           </div>
         )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+          {/* COLUMNA PRINCIPAL */}
           <div className="lg:col-span-2 space-y-6">
-            <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 md:p-8">
+
+            {/* Datos personales */}
+            <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 md:p-8 hover:shadow-xl transition-all duration-300">
               <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-6">
                 <div>
-                  <h2 className="text-xl font-bold text-gray-800 mb-1">Datos personales</h2>
-                  <p className="text-gray-400 text-sm">Información básica de tu cuenta.</p>
+                  <h2 className="text-xl font-bold text-gray-900 mb-1">Datos personales</h2>
+                  <p className="text-gray-500 text-sm">Información básica de tu cuenta.</p>
                 </div>
                 <button
                   onClick={() => setEditando(v => !v)}
-                  className="px-4 py-2 rounded-xl border border-gray-200 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                  className={`px-4 py-2 rounded-2xl border text-sm font-bold transition-all hover:scale-[1.02] ${
+                    editando
+                      ? 'border-gray-300 text-gray-600 hover:bg-gray-50'
+                      : 'border-[#0F172A] text-[#0F172A] hover:bg-[#F8F5EF]'
+                  }`}
                 >
-                  {editando ? 'Cancelar edición' : 'Editar perfil'}
+                  {editando ? 'Cancelar edición' : '✏️ Editar perfil'}
                 </button>
               </div>
 
               <form onSubmit={guardarCambios} className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm font-medium text-gray-700 mb-1 block">Nombre</label>
+                  <label className="text-xs text-gray-400 font-semibold mb-1 block">👤 Nombre</label>
                   <input
                     type="text"
                     name="nombre"
                     value={form.nombre}
                     onChange={handleChange}
                     disabled={!editando}
-                    className="w-full border border-gray-200 rounded-xl px-4 py-3 disabled:bg-gray-50 focus:outline-none focus:border-primary-500"
+                    className="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm text-gray-900 disabled:bg-[#F8F5EF] disabled:text-gray-500 focus:outline-none focus:border-[#0F172A] transition-colors"
                   />
                 </div>
-
                 <div>
-                  <label className="text-sm font-medium text-gray-700 mb-1 block">Email</label>
+                  <label className="text-xs text-gray-400 font-semibold mb-1 block">📧 Email</label>
                   <input
                     type="email"
                     name="email"
                     value={form.email}
                     onChange={handleChange}
                     disabled={!editando}
-                    className="w-full border border-gray-200 rounded-xl px-4 py-3 disabled:bg-gray-50 focus:outline-none focus:border-primary-500"
+                    className="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm text-gray-900 disabled:bg-[#F8F5EF] disabled:text-gray-500 focus:outline-none focus:border-[#0F172A] transition-colors"
                   />
                 </div>
-
                 <div>
-                  <label className="text-sm font-medium text-gray-700 mb-1 block">Teléfono</label>
+                  <label className="text-xs text-gray-400 font-semibold mb-1 block">📱 Teléfono</label>
                   <input
                     type="tel"
                     name="telefono"
                     value={form.telefono}
                     onChange={handleChange}
                     disabled={!editando}
-                    className="w-full border border-gray-200 rounded-xl px-4 py-3 disabled:bg-gray-50 focus:outline-none focus:border-primary-500"
+                    className="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm text-gray-900 disabled:bg-[#F8F5EF] disabled:text-gray-500 focus:outline-none focus:border-[#0F172A] transition-colors"
                   />
                 </div>
-
                 <div>
-                  <label className="text-sm font-medium text-gray-700 mb-1 block">Rol</label>
+                  <label className="text-xs text-gray-400 font-semibold mb-1 block">🎭 Rol</label>
                   <input
                     type="text"
                     value={usuarioMostrado?.rol || ''}
                     disabled
-                    className="w-full border border-gray-200 rounded-xl px-4 py-3 bg-gray-50 text-gray-600"
+                    className="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm bg-[#F8F5EF] text-gray-500"
                   />
                 </div>
 
@@ -197,14 +225,14 @@ export default function Perfil() {
                   <button
                     type="submit"
                     disabled={!editando || guardando}
-                    className="bg-primary-700 text-white px-5 py-3 rounded-xl font-semibold disabled:opacity-50"
+                    className="bg-[#0F172A] hover:bg-[#1E3A5F] text-white px-5 py-3 rounded-2xl font-bold text-sm disabled:opacity-50 transition-all hover:scale-[1.02] shadow-md"
                   >
-                    {guardando ? 'Guardando...' : 'Guardar cambios'}
+                    {guardando ? 'Guardando...' : 'Guardar cambios →'}
                   </button>
                   <button
                     type="button"
                     onClick={() => navigate('/dashboard')}
-                    className="border border-gray-200 px-5 py-3 rounded-xl font-medium text-gray-700 hover:bg-gray-50"
+                    className="border border-gray-200 px-5 py-3 rounded-2xl font-bold text-sm text-gray-700 hover:bg-[#F8F5EF] transition-all"
                   >
                     Ir al panel
                   </button>
@@ -212,41 +240,40 @@ export default function Perfil() {
               </form>
             </div>
 
-            <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 md:p-8">
-              <h2 className="text-xl font-bold text-gray-800 mb-4">Estado de verificación</h2>
+            {/* Estado de verificación */}
+            <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 md:p-8 hover:shadow-xl transition-all duration-300">
+              <h2 className="text-xl font-bold text-gray-900 mb-4">Estado de verificación</h2>
 
-              <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-semibold mb-4 ${badgeEstado(usuarioMostrado?.verificacionEstado)}`}>
+              <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-2xl text-sm font-bold mb-4 ${badgeEstado(usuarioMostrado?.verificacionEstado)}`}>
                 {textoEstado(usuarioMostrado?.verificacionEstado)}
               </div>
 
               {usuarioMostrado?.verificacionEstado === 'pendiente' && (
-                <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 text-amber-800 text-sm">
-                  Tu perfil está pendiente de revisión. Revisa que tu nombre, email y teléfono sean correctos.
+                <div className="bg-[#F8F5EF] border border-gray-200 rounded-2xl p-4 text-gray-700 text-sm">
+                  🕐 Tu perfil está <strong>pendiente de revisión</strong>. Revisa que tu nombre, email y teléfono sean correctos.
                 </div>
               )}
-
               {usuarioMostrado?.verificacionEstado === 'verificado' && (
-                <div className="bg-green-50 border border-green-200 rounded-2xl p-4 text-green-800 text-sm">
-                  Tu cuenta ya está verificada. Ya puedes usar todas las funciones de la plataforma.
+                <div className="bg-[#D4AF37]/10 border border-[#D4AF37]/30 rounded-2xl p-4 text-[#0F172A] text-sm">
+                  ✅ Tu cuenta ya está <strong>verificada</strong>. Ya puedes usar todas las funciones de la plataforma.
                 </div>
               )}
-
               {usuarioMostrado?.verificacionEstado === 'rechazado' && (
                 <div className="bg-red-50 border border-red-200 rounded-2xl p-4 text-red-800 text-sm space-y-3">
-                  <p className="font-semibold">Tu perfil ha sido rechazado.</p>
+                  <p className="font-bold">Tu perfil ha sido rechazado.</p>
                   <p>Motivo: {usuarioMostrado?.motivoRechazo || 'No se ha indicado un motivo.'}</p>
                   <p>Corrige tus datos y vuelve a enviar tu perfil para revisión.</p>
                   <div className="flex flex-wrap gap-3 pt-2">
                     <button
                       onClick={() => setEditando(true)}
-                      className="bg-red-600 text-white px-4 py-2 rounded-xl font-medium hover:bg-red-700"
+                      className="bg-[#0F172A] text-white px-4 py-2 rounded-2xl font-bold text-sm hover:bg-[#1E3A5F] transition-all hover:scale-[1.02]"
                     >
                       Corregir datos
                     </button>
                     {usuarioMostrado?.rol === 'propietario' && (
                       <button
                         onClick={() => navigate('/pisos/nuevo')}
-                        className="border border-red-200 text-red-700 px-4 py-2 rounded-xl font-medium hover:bg-red-50"
+                        className="border border-gray-300 text-gray-700 px-4 py-2 rounded-2xl font-bold text-sm hover:bg-[#F8F5EF] transition-all"
                       >
                         Publicar piso
                       </button>
@@ -256,79 +283,143 @@ export default function Perfil() {
               )}
             </div>
 
-            <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 md:p-8">
-              <h2 className="text-xl font-bold text-gray-800 mb-4">Más información</h2>
+            {/* Más información */}
+            <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 md:p-8 hover:shadow-xl transition-all duration-300">
+              <h2 className="text-xl font-bold text-gray-900 mb-4">Más información</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                <div className="bg-gray-50 rounded-2xl p-4">
-                  <p className="text-gray-400 mb-1">ID de usuario</p>
-                  <p className="font-medium text-gray-800">{usuarioMostrado?._id || usuarioMostrado?.id || '—'}</p>
-                </div>
-                <div className="bg-gray-50 rounded-2xl p-4">
-                  <p className="text-gray-400 mb-1">Fecha de alta</p>
-                  <p className="font-medium text-gray-800">
-                    {usuarioMostrado?.createdAt ? new Date(usuarioMostrado.createdAt).toLocaleDateString('es-ES') : '—'}
-                  </p>
-                </div>
-                <div className="bg-gray-50 rounded-2xl p-4">
-                  <p className="text-gray-400 mb-1">Última actualización</p>
-                  <p className="font-medium text-gray-800">
-                    {usuarioMostrado?.updatedAt ? new Date(usuarioMostrado.updatedAt).toLocaleDateString('es-ES') : '—'}
-                  </p>
-                </div>
-                <div className="bg-gray-50 rounded-2xl p-4">
-                  <p className="text-gray-400 mb-1">Nombre visible</p>
-                  <p className="font-medium text-gray-800">{usuarioMostrado?.nombre || '—'}</p>
-                </div>
+                {[
+                  { label: 'ID de usuario', valor: usuarioMostrado?._id || usuarioMostrado?.id || '—' },
+                  {
+                    label: 'Fecha de alta',
+                    valor: usuarioMostrado?.createdAt
+                      ? new Date(usuarioMostrado.createdAt).toLocaleDateString('es-ES')
+                      : '—',
+                  },
+                  {
+                    label: 'Última actualización',
+                    valor: usuarioMostrado?.updatedAt
+                      ? new Date(usuarioMostrado.updatedAt).toLocaleDateString('es-ES')
+                      : '—',
+                  },
+                  { label: 'Nombre visible', valor: usuarioMostrado?.nombre || '—' },
+                ].map(item => (
+                  <div key={item.label} className="bg-[#F8F5EF] rounded-2xl p-4 border border-gray-100">
+                    <p className="text-gray-400 text-xs font-semibold mb-1">{item.label}</p>
+                    <p className="font-bold text-gray-900 truncate">{item.valor}</p>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
 
+          {/* COLUMNA LATERAL */}
           <div className="space-y-6">
-            <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 md:p-8 text-center">
-              <div className="w-20 h-20 rounded-full bg-primary-700 text-white flex items-center justify-center mx-auto mb-4 text-2xl font-bold">
+
+            {/* Avatar card */}
+            <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 text-center hover:shadow-xl transition-all duration-300">
+              <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#0F172A] to-[#1E3A5F] text-[#D4AF37] flex items-center justify-center mx-auto mb-4 text-3xl font-bold shadow-lg">
                 {usuarioMostrado?.nombre?.charAt(0)?.toUpperCase() || 'U'}
               </div>
-              <h2 className="text-xl font-bold text-gray-800">{usuarioMostrado?.nombre}</h2>
-              <p className="text-gray-400 text-sm mt-1">{usuarioMostrado?.email}</p>
-              <div className="mt-4 inline-flex items-center px-3 py-1.5 rounded-full bg-gray-100 text-gray-700 text-sm font-medium">
-                {usuarioMostrado?.rol === 'propietario' ? '🏠 Propietario' : '👨‍🏫 Interino'}
+              <h2 className="text-lg font-bold text-gray-900">{usuarioMostrado?.nombre}</h2>
+              <p className="text-gray-500 text-sm mt-1">{usuarioMostrado?.email}</p>
+              <div className="mt-4 inline-flex items-center px-3 py-1.5 rounded-2xl bg-[#F8F5EF] border border-gray-100 text-gray-700 text-sm font-bold">
+                {usuarioMostrado?.rol === 'propietario' ? '🏠 Propietario' : '🧑‍🏫 Interino'}
               </div>
             </div>
 
-            <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 md:p-8">
-              <h3 className="font-bold text-gray-800 mb-4">Acciones rápidas</h3>
+            {/* Acciones rápidas */}
+            <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 hover:shadow-xl transition-all duration-300">
+              <h3 className="font-bold text-gray-900 mb-4">Acciones rápidas</h3>
               <div className="flex flex-col gap-3">
                 <button
                   onClick={() => navigate('/dashboard')}
-                  className="w-full border border-gray-200 text-gray-700 py-3 rounded-xl font-medium hover:bg-gray-50"
+                  className="w-full bg-[#0F172A] hover:bg-[#1E3A5F] text-white py-3 rounded-2xl font-bold text-sm transition-all hover:scale-[1.02] shadow-md"
                 >
-                  Ir a mi panel
+                  📊 Ir a mi panel
                 </button>
                 <button
                   onClick={() => navigate('/pisos')}
-                  className="w-full border border-gray-200 text-gray-700 py-3 rounded-xl font-medium hover:bg-gray-50"
+                  className="w-full border border-gray-200 text-gray-700 py-3 rounded-2xl font-bold text-sm hover:bg-[#F8F5EF] transition-all"
                 >
-                  Buscar pisos
+                  🔍 Buscar pisos
                 </button>
                 {usuarioMostrado?.rol === 'propietario' && (
                   <button
                     onClick={() => navigate('/pisos/nuevo')}
-                    className="w-full bg-primary-700 text-white py-3 rounded-xl font-semibold hover:bg-primary-800"
+                    className="w-full bg-[#D4AF37] hover:bg-[#B8860B] text-[#0F172A] py-3 rounded-2xl font-bold text-sm transition-all hover:scale-[1.02] shadow-md"
                   >
-                    Publicar piso
+                    🏠 Publicar piso
                   </button>
                 )}
                 <button
                   onClick={cerrarSesion}
-                  className="w-full border border-red-200 text-red-600 py-3 rounded-xl font-medium hover:bg-red-50"
+                  className="w-full border border-red-200 text-red-500 py-3 rounded-2xl font-bold text-sm hover:bg-red-50 transition-all"
                 >
-                  Cerrar sesión
+                  🚪 Cerrar sesión
                 </button>
               </div>
             </div>
+
+            {/* Info card */}
+            <div className="bg-gradient-to-br from-[#0F172A] to-[#1E3A5F] rounded-3xl p-6 text-white">
+              <div className="text-3xl mb-3">💶</div>
+              <h3 className="font-bold mb-1">Sin comisiones</h3>
+              <p className="text-white/80 text-sm leading-relaxed">
+                Plataforma gratuita para interinos y propietarios. Negociación directa sin intermediarios.
+              </p>
+            </div>
           </div>
+
         </div>
       </div>
+
+      {/* CTA BANNER */}
+      <section className="bg-[#0F172A] py-14 px-6 text-center text-white relative overflow-hidden mt-10">
+        <div
+          className="absolute inset-0 opacity-10"
+          style={{
+            backgroundImage: 'url(https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=1600&q=80)',
+            backgroundSize: 'cover',
+          }}
+        />
+        <div className="relative max-w-3xl mx-auto">
+          <h2 className="text-2xl md:text-3xl font-bold mb-3">
+            ¿Tienes un piso cerca de un hospital, colegio o juzgado?
+          </h2>
+          <p className="text-slate-100 mb-8 text-base md:text-lg">
+            Únete a los propietarios que ya publican en MundoInterino. Publicación gratuita, inquilinos con nómina pública garantizada.
+          </p>
+          <div className="flex flex-col md:flex-row gap-4 justify-center">
+            <Link
+              to="/pisos/nuevo"
+              className="bg-[#D4AF37] hover:bg-[#B8860B] text-[#0F172A] font-bold px-10 py-4 rounded-2xl text-lg transition-all hover:scale-[1.02] shadow-lg inline-flex items-center justify-center"
+            >
+              Publicar mi piso gratis
+            </Link>
+            <Link
+              to="/sobre-nosotros"
+              className="bg-white/15 hover:bg-white/25 text-white font-bold px-10 py-4 rounded-2xl text-lg transition-all border border-white/20 inline-flex items-center justify-center backdrop-blur-md"
+            >
+              Saber más
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* FOOTER */}
+      <footer className="bg-[#0B1220] text-white py-10 px-6">
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="flex items-center gap-3">
+            <img src="/img/logo.png" alt="MundoInterino" className="h-12 object-contain opacity-90" />
+            <p className="text-slate-100 text-sm">© 2026 MundoInterino · Tu hogar donde te necesiten</p>
+          </div>
+          <div className="flex gap-6 text-sm text-slate-100">
+            <Link to="/sobre-nosotros" className="hover:text-white transition-colors">Sobre nosotros</Link>
+            <Link to="/contacto" className="hover:text-white transition-colors">Contacto</Link>
+            <Link to="/pisos/nuevo" className="hover:text-white transition-colors">Publicar piso</Link>
+          </div>
+        </div>
+      </footer>
     </div>
   )
 }
