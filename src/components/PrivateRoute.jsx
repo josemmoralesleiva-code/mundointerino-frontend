@@ -4,13 +4,17 @@ export default function PrivateRoute({ children, administracion }) {
   const token = localStorage.getItem('token')
   const usuario = JSON.parse(localStorage.getItem('usuario') || 'null')
 
-  if (!token) return <Navigate to="/login" />
+  // Sin token → login
+  if (!token || !usuario) return <Navigate to="/login" />
 
+  // Si la ruta requiere una administración concreta
   if (administracion) {
-    if (usuario?.verificacionEstado !== 'verificado') {
+    // Cuenta no verificada
+    if (usuario.verificacionEstado !== 'verificado') {
       return <Navigate to="/verificacion-docente" />
     }
-    if (usuario?.administracion !== administracion) {
+    // Administración no coincide — comparación en minúsculas para evitar fallos
+    if ((usuario.administracion || '').toLowerCase() !== administracion.toLowerCase()) {
       return <Navigate to="/mundo" state={{ accesoDenegado: true }} />
     }
   }
