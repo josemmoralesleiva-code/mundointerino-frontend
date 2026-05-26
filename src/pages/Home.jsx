@@ -171,7 +171,7 @@ export default function Home() {
               🔍 Buscar piso
             </button>
             <button
-              onClick={() => navigate('/mundointerino')}
+              onClick={() => navigate('/mundo')}
               className="bg-white/10 hover:bg-white/15 text-white font-bold px-5 py-2.5 rounded-2xl transition-all shadow-lg border border-white/20 backdrop-blur-md text-sm"
             >
               🌍 MundoInterino
@@ -374,7 +374,7 @@ export default function Home() {
               </p>
             </div>
             <button
-              onClick={() => navigate('/mundointerino')}
+              onClick={() => navigate('/mundoi')}
               className="text-[#0F172A] font-semibold hover:underline text-sm whitespace-nowrap"
             >
               Explorar comunidad →
@@ -386,7 +386,7 @@ export default function Home() {
             {ESPACIO_MUNDO.map(canal => (
               <button
                 key={canal.slug}
-                onClick={() => navigate(`/mundointerino/${canal.slug}`)}
+                onClick={() => navigate(`/mundoi/${canal.slug}`)}
                 className={`bg-gradient-to-br ${canal.color} rounded-3xl p-6 text-white text-left hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group`}
               >
                 {canal.badge && (
@@ -416,7 +416,7 @@ export default function Home() {
               </div>
             </div>
             <button
-              onClick={() => navigate('/mundointerino/grupos')}
+              onClick={() => navigate('/mundo/grupos')}
               className="bg-[#0F172A] hover:bg-[#1E3A5F] text-white font-bold px-7 py-3 rounded-2xl text-sm transition-all hover:scale-[1.02] shadow-md whitespace-nowrap"
             >
               Ver grupos por zona
