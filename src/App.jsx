@@ -94,7 +94,7 @@ export default function App() {
         <Route
           path="/mundo/educacion"
           element={
-            <PrivateRoute>
+            <PrivateRoute administracion="educacion">
               <Educacion />
             </PrivateRoute>
           }
@@ -102,7 +102,7 @@ export default function App() {
         <Route
           path="/mundo/sanidad"
           element={
-            <PrivateRoute>
+            <PrivateRoute administracion="sanidad">
               <Sanidad />
             </PrivateRoute>
           }
@@ -110,14 +110,12 @@ export default function App() {
         <Route
           path="/mundo/justicia"
           element={
-            <PrivateRoute>
+            <PrivateRoute administracion="justicia">
               <Justicia />
             </PrivateRoute>
           }
         />
-          <Route path="/mundo/acceso-denegado" element={<AccesoDenegado />
-        } 
-        />
+        <Route path="/mundo/acceso-denegado" element={<AccesoDenegado />} />
       </Routes>
     </BrowserRouter>
   )
