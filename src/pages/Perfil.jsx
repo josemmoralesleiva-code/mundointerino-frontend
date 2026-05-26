@@ -12,11 +12,16 @@ export default function Perfil() {
 
   const [usuario, setUsuario] = useState(null)
   const [form, setForm] = useState({ nombre: '', email: '', telefono: '' })
+  const [formPassword, setFormPassword] = useState({ passwordActual: '', passwordNueva: '', passwordConfirm: '' })
   const [editando, setEditando] = useState(false)
+  const [editandoPassword, setEditandoPassword] = useState(false)
   const [cargando, setCargando] = useState(true)
   const [guardando, setGuardando] = useState(false)
+  const [guardandoPassword, setGuardandoPassword] = useState(false)
   const [error, setError] = useState('')
+  const [errorPassword, setErrorPassword] = useState('')
   const [mensaje, setMensaje] = useState('')
+  const [mensajePassword, setMensajePassword] = useState('')
 
   useEffect(() => {
     const cargarPerfil = async () => {
@@ -40,6 +45,7 @@ export default function Perfil() {
   }, [token])
 
   const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value })
+  const handleChangePassword = e => setFormPassword({ ...formPassword, [e.target.name]: e.target.value })
 
   const guardarCambios = async e => {
     e.preventDefault()
@@ -58,6 +64,35 @@ export default function Perfil() {
       setError(err.response?.data?.error || 'No se pudo actualizar el perfil')
     } finally {
       setGuardando(false)
+    }
+  }
+
+  const cambiarPassword = async e => {
+    e.preventDefault()
+    setErrorPassword('')
+    setMensajePassword('')
+    if (formPassword.passwordNueva !== formPassword.passwordConfirm) {
+      setErrorPassword('Las contraseñas nuevas no coinciden')
+      return
+    }
+    if (formPassword.passwordNueva.length < 6) {
+      setErrorPassword('La contraseña debe tener al menos 6 caracteres')
+      return
+    }
+    setGuardandoPassword(true)
+    try {
+      await axios.put(
+        `${API}/api/usuarios/me/password`,
+        { passwordActual: formPassword.passwordActual, passwordNueva: formPassword.passwordNueva },
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+      setMensajePassword('Contraseña actualizada correctamente')
+      setFormPassword({ passwordActual: '', passwordNueva: '', passwordConfirm: '' })
+      setEditandoPassword(false)
+    } catch (err) {
+      setErrorPassword(err.response?.data?.error || 'No se pudo cambiar la contraseña')
+    } finally {
+      setGuardandoPassword(false)
     }
   }
 
@@ -141,7 +176,7 @@ export default function Perfil() {
 
       <div className="max-w-6xl mx-auto px-6 py-10">
 
-        {/* ALERTAS */}
+        {/* ALERTAS GLOBALES */}
         {error && (
           <div className="bg-red-50 border border-red-200 text-red-600 rounded-2xl px-4 py-3 mb-6 text-sm">
             ⚠️ {error}
@@ -155,7 +190,7 @@ export default function Perfil() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-          {/* COLUMNA PRINCIPAL */}
+          {/* ── COLUMNA PRINCIPAL ─────────────────────────────────────────── */}
           <div className="lg:col-span-2 space-y-6">
 
             {/* Datos personales */}
@@ -220,7 +255,6 @@ export default function Perfil() {
                     className="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm bg-[#F8F5EF] text-gray-500"
                   />
                 </div>
-
                 <div className="md:col-span-2 flex gap-3 pt-2">
                   <button
                     type="submit"
@@ -240,50 +274,179 @@ export default function Perfil() {
               </form>
             </div>
 
-            {/* Estado de verificación */}
+            {/* ── CAMBIAR CONTRASEÑA ────────────────────────────────────── */}
             <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 md:p-8 hover:shadow-xl transition-all duration-300">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Estado de verificación</h2>
+              <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-6">
+                <div>
+                  <h2 className="text-xl font-bold text-gray-900 mb-1">Contraseña</h2>
+                  <p className="text-gray-500 text-sm">Cambia tu contraseña de acceso.</p>
+                </div>
+                <button
+                  onClick={() => { setEditandoPassword(v => !v); setErrorPassword(''); setMensajePassword('') }}
+                  className={`px-4 py-2 rounded-2xl border text-sm font-bold transition-all hover:scale-[1.02] ${
+                    editandoPassword
+                      ? 'border-gray-300 text-gray-600 hover:bg-gray-50'
+                      : 'border-[#0F172A] text-[#0F172A] hover:bg-[#F8F5EF]'
+                  }`}
+                >
+                  {editandoPassword ? 'Cancelar' : '🔑 Cambiar contraseña'}
+                </button>
+              </div>
 
-              <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-2xl text-sm font-bold mb-4 ${badgeEstado(usuarioMostrado?.verificacionEstado)}`}>
+              {!editandoPassword ? (
+                <div className="bg-[#F8F5EF] rounded-2xl p-4 border border-gray-100 text-sm text-gray-500">
+                  🔒 Tu contraseña está protegida. Haz clic en "Cambiar contraseña" para modificarla.
+                </div>
+              ) : (
+                <form onSubmit={cambiarPassword} className="space-y-4">
+                  {errorPassword && (
+                    <div className="bg-red-50 border border-red-200 text-red-600 rounded-2xl px-4 py-3 text-sm">
+                      ⚠️ {errorPassword}
+                    </div>
+                  )}
+                  {mensajePassword && (
+                    <div className="bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#0F172A] rounded-2xl px-4 py-3 text-sm font-medium">
+                      ✅ {mensajePassword}
+                    </div>
+                  )}
+                  <div>
+                    <label className="text-xs text-gray-400 font-semibold mb-1 block">🔒 Contraseña actual</label>
+                    <input
+                      type="password"
+                      name="passwordActual"
+                      value={formPassword.passwordActual}
+                      onChange={handleChangePassword}
+                      required
+                      placeholder="••••••••"
+                      className="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-[#0F172A] transition-colors"
+                    />
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-xs text-gray-400 font-semibold mb-1 block">🔑 Nueva contraseña</label>
+                      <input
+                        type="password"
+                        name="passwordNueva"
+                        value={formPassword.passwordNueva}
+                        onChange={handleChangePassword}
+                        required
+                        placeholder="Mínimo 6 caracteres"
+                        className="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-[#0F172A] transition-colors"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs text-gray-400 font-semibold mb-1 block">🔑 Confirmar contraseña</label>
+                      <input
+                        type="password"
+                        name="passwordConfirm"
+                        value={formPassword.passwordConfirm}
+                        onChange={handleChangePassword}
+                        required
+                        placeholder="Repite la nueva contraseña"
+                        className="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-[#0F172A] transition-colors"
+                      />
+                    </div>
+                  </div>
+                  <button
+                    type="submit"
+                    disabled={guardandoPassword}
+                    className="bg-[#0F172A] hover:bg-[#1E3A5F] text-white px-5 py-3 rounded-2xl font-bold text-sm disabled:opacity-50 transition-all hover:scale-[1.02] shadow-md"
+                  >
+                    {guardandoPassword ? 'Guardando...' : 'Actualizar contraseña →'}
+                  </button>
+                </form>
+              )}
+            </div>
+
+            {/* ── VERIFICACIÓN Y DOCUMENTOS ────────────────────────────── */}
+            <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 md:p-8 hover:shadow-xl transition-all duration-300">
+              <h2 className="text-xl font-bold text-gray-900 mb-4">Verificación de identidad</h2>
+
+              <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-2xl text-sm font-bold mb-5 ${badgeEstado(usuarioMostrado?.verificacionEstado)}`}>
                 {textoEstado(usuarioMostrado?.verificacionEstado)}
               </div>
 
+              {/* Info de administración */}
+              {usuarioMostrado?.administracion && (
+                <div className="bg-[#F8F5EF] rounded-2xl p-4 border border-gray-100 mb-5 flex items-center gap-3">
+                  <span className="text-2xl">
+                    {usuarioMostrado.administracion === 'educacion' ? '🎓'
+                      : usuarioMostrado.administracion === 'sanidad' ? '🩺'
+                      : usuarioMostrado.administracion === 'justicia' ? '⚖️' : '🏛️'}
+                  </span>
+                  <div>
+                    <p className="text-xs text-gray-400 font-semibold">Administración registrada</p>
+                    <p className="font-bold text-gray-900 capitalize">{usuarioMostrado.administracion}</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Documento subido */}
+              <div className="space-y-3 mb-5">
+                <p className="text-sm font-semibold text-gray-700">Documento aportado</p>
+
+                {usuarioMostrado?.tipoDocumento ? (
+                  <div className="flex items-center justify-between bg-[#F8F5EF] rounded-2xl p-4 border border-gray-100">
+                    <div className="flex items-center gap-3">
+                      <span className="text-2xl">📄</span>
+                      <div>
+                        <p className="text-sm font-bold text-gray-900 capitalize">
+                          {usuarioMostrado.tipoDocumento === 'nomina' ? 'Nómina'
+                            : usuarioMostrado.tipoDocumento === 'nombramiento' ? 'Nombramiento'
+                            : usuarioMostrado.tipoDocumento === 'credencial' ? 'Credencial'
+                            : 'Contrato'}
+                        </p>
+                        <p className="text-xs text-gray-400 mt-0.5">Documento de verificación</p>
+                      </div>
+                    </div>
+                    {usuarioMostrado?.urlDocumento ? (
+                      <a
+                        href={usuarioMostrado.urlDocumento}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bg-[#0F172A] text-white px-4 py-2 rounded-2xl text-xs font-bold hover:bg-[#1E3A5F] transition-all"
+                      >
+                        Ver documento
+                      </a>
+                    ) : (
+                      <span className="text-xs text-gray-400 bg-gray-100 px-3 py-1.5 rounded-xl">Sin URL</span>
+                    )}
+                  </div>
+                ) : (
+                  <div className="bg-[#F8F5EF] rounded-2xl p-4 border border-gray-100 text-sm text-gray-500">
+                    📭 No has subido ningún documento todavía.
+                  </div>
+                )}
+              </div>
+
+              {/* Mensajes de estado */}
               {usuarioMostrado?.verificacionEstado === 'pendiente' && (
                 <div className="bg-[#F8F5EF] border border-gray-200 rounded-2xl p-4 text-gray-700 text-sm">
-                  🕐 Tu perfil está <strong>pendiente de revisión</strong>. Revisa que tu nombre, email y teléfono sean correctos.
+                  🕐 Tu perfil está <strong>pendiente de revisión</strong>. Recibirás una notificación cuando sea revisado.
                 </div>
               )}
               {usuarioMostrado?.verificacionEstado === 'verificado' && (
                 <div className="bg-[#D4AF37]/10 border border-[#D4AF37]/30 rounded-2xl p-4 text-[#0F172A] text-sm">
-                  ✅ Tu cuenta ya está <strong>verificada</strong>. Ya puedes usar todas las funciones de la plataforma.
+                  ✅ Tu cuenta está <strong>verificada</strong>. Ya puedes acceder a todas las funciones de la plataforma.
                 </div>
               )}
               {usuarioMostrado?.verificacionEstado === 'rechazado' && (
                 <div className="bg-red-50 border border-red-200 rounded-2xl p-4 text-red-800 text-sm space-y-3">
-                  <p className="font-bold">Tu perfil ha sido rechazado.</p>
+                  <p className="font-bold">Tu verificación ha sido rechazada.</p>
                   <p>Motivo: {usuarioMostrado?.motivoRechazo || 'No se ha indicado un motivo.'}</p>
-                  <p>Corrige tus datos y vuelve a enviar tu perfil para revisión.</p>
                   <div className="flex flex-wrap gap-3 pt-2">
                     <button
-                      onClick={() => setEditando(true)}
-                      className="bg-[#0F172A] text-white px-4 py-2 rounded-2xl font-bold text-sm hover:bg-[#1E3A5F] transition-all hover:scale-[1.02]"
+                      onClick={() => navigate('/verificacion-docente')}
+                      className="bg-[#0F172A] text-white px-4 py-2 rounded-2xl font-bold text-sm hover:bg-[#1E3A5F] transition-all"
                     >
-                      Corregir datos
+                      Volver a verificarme
                     </button>
-                    {usuarioMostrado?.rol === 'propietario' && (
-                      <button
-                        onClick={() => navigate('/pisos/nuevo')}
-                        className="border border-gray-300 text-gray-700 px-4 py-2 rounded-2xl font-bold text-sm hover:bg-[#F8F5EF] transition-all"
-                      >
-                        Publicar piso
-                      </button>
-                    )}
                   </div>
                 </div>
               )}
             </div>
 
-            {/* Más información */}
+            {/* ── MÁS INFORMACIÓN ──────────────────────────────────────── */}
             <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 md:p-8 hover:shadow-xl transition-all duration-300">
               <h2 className="text-xl font-bold text-gray-900 mb-4">Más información</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
@@ -310,9 +473,10 @@ export default function Perfil() {
                 ))}
               </div>
             </div>
+
           </div>
 
-          {/* COLUMNA LATERAL */}
+          {/* ── COLUMNA LATERAL ───────────────────────────────────────────── */}
           <div className="space-y-6">
 
             {/* Avatar card */}
@@ -322,8 +486,41 @@ export default function Perfil() {
               </div>
               <h2 className="text-lg font-bold text-gray-900">{usuarioMostrado?.nombre}</h2>
               <p className="text-gray-500 text-sm mt-1">{usuarioMostrado?.email}</p>
-              <div className="mt-4 inline-flex items-center px-3 py-1.5 rounded-2xl bg-[#F8F5EF] border border-gray-100 text-gray-700 text-sm font-bold">
+              <div className="mt-3 inline-flex items-center px-3 py-1.5 rounded-2xl bg-[#F8F5EF] border border-gray-100 text-gray-700 text-sm font-bold">
                 {usuarioMostrado?.rol === 'propietario' ? '🏠 Propietario' : '🧑‍🏫 Interino'}
+              </div>
+              {usuarioMostrado?.administracion && (
+                <div className="mt-2 inline-flex items-center px-3 py-1.5 rounded-2xl bg-[#0F172A] text-[#D4AF37] text-xs font-bold">
+                  {usuarioMostrado.administracion === 'educacion' ? '🎓' 
+                    : usuarioMostrado.administracion === 'sanidad' ? '🩺' 
+                    : usuarioMostrado.administracion === 'justicia' ? '⚖️' : '🏛️'
+                  } {usuarioMostrado.administracion.charAt(0).toUpperCase() + usuarioMostrado.administracion.slice(1)}
+                </div>
+              )}
+            </div>
+
+            {/* Estado verificación lateral */}
+            <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 hover:shadow-xl transition-all duration-300">
+              <h3 className="font-bold text-gray-900 mb-3 text-sm">Estado de cuenta</h3>
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-500">Verificación</span>
+                  <span className={`font-bold text-xs px-2 py-1 rounded-full ${badgeEstado(usuarioMostrado?.verificacionEstado)}`}>
+                    {textoEstado(usuarioMostrado?.verificacionEstado)}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-500">Documento</span>
+                  <span className="font-bold text-xs text-gray-700">
+                    {usuarioMostrado?.tipoDocumento ? '📄 Subido' : '📭 Sin documento'}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-500">Sector</span>
+                  <span className="font-bold text-xs text-gray-700 capitalize">
+                    {usuarioMostrado?.administracion || '—'}
+                  </span>
+                </div>
               </div>
             </div>
 
@@ -336,6 +533,12 @@ export default function Perfil() {
                   className="w-full bg-[#0F172A] hover:bg-[#1E3A5F] text-white py-3 rounded-2xl font-bold text-sm transition-all hover:scale-[1.02] shadow-md"
                 >
                   📊 Ir a mi panel
+                </button>
+                <button
+                  onClick={() => navigate('/mundo')}
+                  className="w-full border border-[#0F172A] text-[#0F172A] py-3 rounded-2xl font-bold text-sm hover:bg-[#F8F5EF] transition-all"
+                >
+                  🌍 Espacio Mundo
                 </button>
                 <button
                   onClick={() => navigate('/pisos')}
