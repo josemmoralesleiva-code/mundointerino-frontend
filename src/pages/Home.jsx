@@ -38,6 +38,42 @@ const DESTACADOS = [
   { nombre: 'Granada', comunidad: 'andalucia', provincia: 'granada', ciudad: 'Granada', emoji: '⛰️' },
 ]
 
+// ── Canales de la comunidad Espacio Mundo ──────────────────────────────────
+const ESPACIO_MUNDO = [
+  {
+    icon: '💬',
+    titulo: 'Foro de interinos',
+    desc: 'Comparte dudas, experiencias y consejos con otros interinos de toda España.',
+    slug: 'foro',
+    color: 'from-[#1E3A5F] to-[#0F172A]',
+    badge: 'Nuevo',
+  },
+  {
+    icon: '📋',
+    titulo: 'Tablón de anuncios',
+    desc: 'Ofertas de piso, compañeros de piso y oportunidades publicadas por la comunidad.',
+    slug: 'tablon',
+    color: 'from-[#334155] to-[#1E3A5F]',
+    badge: null,
+  },
+  {
+    icon: '🗺️',
+    titulo: 'Grupos por zona',
+    desc: 'Únete al grupo de WhatsApp o Telegram de tu comunidad autónoma.',
+    slug: 'grupos',
+    color: 'from-[#B8860B] to-[#D4AF37]',
+    badge: '+30 grupos',
+  },
+  {
+    icon: '📰',
+    titulo: 'Noticias y convocatorias',
+    desc: 'Últimas oposiciones, listas de espera y novedades de la administración pública.',
+    slug: 'noticias',
+    color: 'from-[#0F172A] to-[#334155]',
+    badge: null,
+  },
+]
+
 export default function Home() {
   const navigate = useNavigate()
   const [ciudad, setCiudad] = useState('')
@@ -59,6 +95,7 @@ export default function Home() {
     <div className="min-h-screen bg-[#F8F5EF]">
       <Navbar />
 
+      {/* ── HERO ─────────────────────────────────────────────────────────── */}
       <section
         className="relative text-white pt-8 pb-12 px-6 text-center overflow-hidden"
         style={{
@@ -149,6 +186,7 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── POR QUÉ MUNDOINTERINO ─────────────────────────────────────────── */}
       <section className="max-w-6xl mx-auto px-6 py-14">
         <div className="text-center mb-10">
           <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">¿Por qué MundoInterino?</h2>
@@ -190,6 +228,7 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── BUSCA POR ZONA ───────────────────────────────────────────────── */}
       <section className="bg-white py-14 px-6 border-y border-gray-100">
         <div className="max-w-6xl mx-auto">
           <div className="flex items-end justify-between gap-4 mb-10 flex-wrap">
@@ -236,6 +275,7 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── PISOS DISPONIBLES ────────────────────────────────────────────── */}
       <section className="max-w-6xl mx-auto px-6 pb-16 pt-10">
         <div className="flex justify-between items-end mb-8 gap-4">
           <div>
@@ -316,6 +356,96 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── ESPACIO MUNDO · COMUNIDAD ────────────────────────────────────── */}
+      <section className="bg-white py-16 px-6 border-y border-gray-100">
+        <div className="max-w-6xl mx-auto">
+
+          {/* Cabecera */}
+          <div className="flex items-end justify-between gap-4 mb-10 flex-wrap">
+            <div>
+              <div className="inline-flex items-center gap-2 bg-[#0F172A] text-[#D4AF37] text-xs font-bold px-3 py-1 rounded-full mb-3 tracking-wide uppercase">
+                🌍 Espacio Mundo
+              </div>
+              <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+                La comunidad de los interinos
+              </h2>
+              <p className="text-gray-500 max-w-xl">
+                Mucho más que un portal de pisos. Conecta con miles de interinos, comparte información y mantente al día de todo lo que importa.
+              </p>
+            </div>
+            <button
+              onClick={() => navigate('/mundointerino')}
+              className="text-[#0F172A] font-semibold hover:underline text-sm whitespace-nowrap"
+            >
+              Explorar comunidad →
+            </button>
+          </div>
+
+          {/* Cards de canales */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {ESPACIO_MUNDO.map(canal => (
+              <button
+                key={canal.slug}
+                onClick={() => navigate(`/mundointerino/${canal.slug}`)}
+                className={`bg-gradient-to-br ${canal.color} rounded-3xl p-6 text-white text-left hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group`}
+              >
+                {canal.badge && (
+                  <span className="absolute top-4 right-4 bg-[#D4AF37] text-[#0F172A] text-[10px] font-bold px-2 py-0.5 rounded-full">
+                    {canal.badge}
+                  </span>
+                )}
+                <div className="text-4xl mb-3">{canal.icon}</div>
+                <h3 className="font-bold text-base mb-1">{canal.titulo}</h3>
+                <p className="text-white/75 text-xs leading-relaxed">{canal.desc}</p>
+                <div className="mt-4 text-white/90 text-xs font-semibold group-hover:translate-x-1 transition-transform duration-200">
+                  Acceder →
+                </div>
+              </button>
+            ))}
+          </div>
+
+          {/* Banner de grupos WhatsApp */}
+          <div className="mt-6 bg-gradient-to-r from-[#F8F5EF] to-[#EEE9DF] rounded-3xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-5 border border-gray-100">
+            <div className="flex items-center gap-4">
+              <div className="text-5xl">📲</div>
+              <div>
+                <p className="font-bold text-gray-900 text-base">¿Estás en los grupos de WhatsApp de interinos?</p>
+                <p className="text-gray-500 text-sm mt-0.5">
+                  Miles de compañeros ya comparten pisos, dudas y convocatorias. Únete al grupo de tu zona.
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => navigate('/mundointerino/grupos')}
+              className="bg-[#0F172A] hover:bg-[#1E3A5F] text-white font-bold px-7 py-3 rounded-2xl text-sm transition-all hover:scale-[1.02] shadow-md whitespace-nowrap"
+            >
+              Ver grupos por zona
+            </button>
+          </div>
+
+          {/* Stats de comunidad */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+            {[
+              { valor: '+8.000', label: 'Interinos en la comunidad', icon: '👥' },
+              { valor: '+30', label: 'Grupos por comunidad autónoma', icon: '🗺️' },
+              { valor: '+500', label: 'Mensajes al día', icon: '💬' },
+              { valor: '100%', label: 'Gratuito para interinos', icon: '🎁' },
+            ].map(stat => (
+              <div
+                key={stat.label}
+                className="bg-[#F8F5EF] rounded-2xl p-4 text-center border border-gray-100"
+              >
+                <div className="text-2xl mb-1">{stat.icon}</div>
+                <div className="text-xl font-bold text-[#0F172A]">{stat.valor}</div>
+                <div className="text-xs text-gray-500 mt-0.5 leading-tight">{stat.label}</div>
+              </div>
+            ))}
+          </div>
+
+        </div>
+      </section>
+
+      {/* ── CTA PROPIETARIOS ─────────────────────────────────────────────── */}
       <section className="bg-[#0F172A] py-14 px-6 text-center text-white relative overflow-hidden">
         <div
           className="absolute inset-0 opacity-10"
@@ -346,6 +476,7 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── FOOTER ───────────────────────────────────────────────────────── */}
       <footer className="bg-[#0B1220] text-white py-10 px-6">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-3">
