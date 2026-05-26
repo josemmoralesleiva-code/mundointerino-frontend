@@ -22,6 +22,7 @@ import Mundo from './pages/Mundo'
 import Educacion from './pages/Educacion'
 import Sanidad from './pages/Sanidad'
 import Justicia from './pages/Justicia'
+import AccesoDenegado from './pages/AccesoDenegado'
 
 export default function App() {
   return (
@@ -113,6 +114,9 @@ export default function App() {
               <Justicia />
             </PrivateRoute>
           }
+        />
+          <Route path="/mundo/acceso-denegado" element={<AccesoDenegado />
+        } 
         />
       </Routes>
     </BrowserRouter>

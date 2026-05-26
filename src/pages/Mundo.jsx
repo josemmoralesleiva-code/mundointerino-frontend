@@ -1,4 +1,4 @@
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate, Link, useLocation } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 
 const BLOQUES = [
@@ -6,14 +6,14 @@ const BLOQUES = [
     titulo: 'Foro',
     icono: '💬',
     descripcion: 'Dudas, destinos, opiniones y experiencias compartidas por la comunidad.',
-    ruta: '/mundointerino/foro',
+    ruta: '/mundo/foro',
     color: 'from-[#0F172A] to-[#1E3A5F]',
   },
   {
     titulo: 'Chat',
     icono: '⚡',
     descripcion: 'Conversación rápida por administración, provincia o tema.',
-    ruta: '/mundointerino/chat',
+    ruta: '/mundo/chat',
     color: 'from-[#1E3A5F] to-[#0F172A]',
   },
   {
@@ -75,12 +75,29 @@ const ADMINISTRACIONES = [
 
 export default function MundoInterino() {
   const navigate = useNavigate()
+  const location = useLocation()
+  const accesoDenegado = location.state?.accesoDenegado
 
   return (
     <div className="min-h-screen bg-[#F8F5EF]">
       <Navbar />
 
-      {/* HERO — igual que Home */}
+      {/* ── BANNER ACCESO DENEGADO ─────────────────────────────────────── */}
+      {accesoDenegado && (
+        <div className="bg-red-50 border-b border-red-100 px-6 py-4">
+          <div className="max-w-6xl mx-auto flex items-center gap-3">
+            <span className="text-2xl">🔒</span>
+            <div>
+              <p className="font-semibold text-red-800 text-sm">Acceso restringido</p>
+              <p className="text-red-600 text-xs mt-0.5">
+                Esa sección es exclusiva para interinos de ese sector. Accede al espacio de tu administración.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── HERO ─────────────────────────────────────────────────────────── */}
       <section
         className="relative text-white pt-8 pb-12 px-6 text-center overflow-hidden"
         style={{
@@ -105,7 +122,7 @@ export default function MundoInterino() {
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <button
-              onClick={() => navigate('/mundointerino/educacion')}
+              onClick={() => navigate('/mundo/educacion')}
               className="bg-white hover:bg-slate-50 text-[#0F172A] font-bold px-5 py-2.5 rounded-2xl transition-all shadow-lg border border-white/40 text-sm"
             >
               🎓 Entrar por administración
@@ -126,7 +143,7 @@ export default function MundoInterino() {
         </div>
       </section>
 
-      {/* ADMINISTRACIONES */}
+      {/* ── ADMINISTRACIONES ─────────────────────────────────────────────── */}
       <section className="max-w-6xl mx-auto px-6 py-14">
         <div className="text-center mb-10">
           <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
@@ -149,15 +166,13 @@ export default function MundoInterino() {
                 {admin.nombre}
               </h2>
               <p className="text-gray-500 text-sm leading-relaxed">{admin.descripcion}</p>
-              <div className="mt-4 text-[#0F172A] text-xs font-semibold">
-                Entrar →
-              </div>
+              <div className="mt-4 text-[#0F172A] text-xs font-semibold">Entrar →</div>
             </button>
           ))}
         </div>
       </section>
 
-      {/* BLOQUES COMUNIDAD — estilo zonas del Home */}
+      {/* ── BLOQUES COMUNIDAD ────────────────────────────────────────────── */}
       <section className="bg-white py-14 px-6 border-y border-gray-100">
         <div className="max-w-6xl mx-auto">
           <div className="flex items-end justify-between gap-4 mb-10 flex-wrap">
@@ -188,7 +203,7 @@ export default function MundoInterino() {
         </div>
       </section>
 
-      {/* ¿QUÉ PODRÁS HACER? */}
+      {/* ── ¿QUÉ PODRÁS HACER? ───────────────────────────────────────────── */}
       <section className="max-w-6xl mx-auto px-6 py-14">
         <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-8 md:p-10 hover:shadow-xl transition-all duration-300">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -245,7 +260,7 @@ export default function MundoInterino() {
         </div>
       </section>
 
-      {/* CTA BANNER */}
+      {/* ── CTA BANNER ───────────────────────────────────────────────────── */}
       <section className="bg-[#0F172A] py-14 px-6 text-center text-white relative overflow-hidden">
         <div
           className="absolute inset-0 opacity-10"
@@ -278,7 +293,7 @@ export default function MundoInterino() {
         </div>
       </section>
 
-      {/* FOOTER */}
+      {/* ── FOOTER ───────────────────────────────────────────────────────── */}
       <footer className="bg-[#0B1220] text-white py-10 px-6">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex items-center gap-3">
