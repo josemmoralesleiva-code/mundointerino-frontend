@@ -3,12 +3,12 @@ import type { AuthResponse, LoginRequest, RegisterRequest } from '../dto/auth.dt
 
 const authRepository = {
   async login(data: LoginRequest): Promise<AuthResponse> {
-    const res = await api.post<AuthResponse>('/api/auth/login', data)
+    const res = await api.post<AuthResponse>('/auth/login', data)
     return res.data
   },
 
   async register(data: RegisterRequest): Promise<AuthResponse> {
-    const res = await api.post<AuthResponse>('/api/auth/registro', data)
+    const res = await api.post<AuthResponse>('/auth/registro', data)
     return res.data
   },
 }

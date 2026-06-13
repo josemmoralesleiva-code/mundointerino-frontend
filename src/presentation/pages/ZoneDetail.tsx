@@ -16,7 +16,7 @@ export default function ZoneDetail() {
   useEffect(() => {
     const cargar = async () => {
       try {
-        const res = await axios.get(`${API}/api/pisos`, {
+        const res = await axios.get(`${API}/pisos`, {
           params: {
             comunidad,
             provincia,
