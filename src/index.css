@@ -1,5 +1,14 @@
 @import "tailwindcss";
 
+@layer base {
+  button,
+  a,
+  [role="button"],
+  [tabindex]:not([tabindex="-1"]) {
+    cursor: pointer;
+  }
+}
+
 @theme {
   --color-primary-50: #eff6ff;
   --color-primary-100: #dbeafe;
