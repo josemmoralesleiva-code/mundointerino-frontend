@@ -10,40 +10,40 @@ const propertiesRepository = {
         cleanParams[key] = value
       }
     })
-    const res = await api.get<PropertiesResponse>('/api/pisos', { params: cleanParams })
+    const res = await api.get<PropertiesResponse>('/pisos', { params: cleanParams })
     return res.data
   },
 
   async getById(id: string): Promise<Property> {
-    const res = await api.get<Property>(`/api/pisos/${id}`)
+    const res = await api.get<Property>(`/pisos/${id}`)
     return res.data
   },
 
   async getMyProperties(): Promise<Property[]> {
-    const res = await api.get<Property[]>('/api/pisos/mis-pisos')
+    const res = await api.get<Property[]>('/pisos/mis-pisos')
     return res.data
   },
 
   async create(formData: FormData): Promise<Property> {
-    const res = await api.post<Property>('/api/pisos', formData, {
+    const res = await api.post<Property>('/pisos', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     })
     return res.data
   },
 
   async update(id: string, formData: FormData): Promise<Property> {
-    const res = await api.put<Property>(`/api/pisos/${id}`, formData, {
+    const res = await api.put<Property>(`/pisos/${id}`, formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     })
     return res.data
   },
 
   async delete(id: string): Promise<void> {
-    await api.delete(`/api/pisos/${id}`)
+    await api.delete(`/pisos/${id}`)
   },
 
   async toggleAvailability(id: string): Promise<Property> {
-    const res = await api.patch<Property>(`/api/pisos/${id}/disponibilidad`, {})
+    const res = await api.patch<Property>(`/pisos/${id}/disponibilidad`, {})
     return res.data
   },
 }
