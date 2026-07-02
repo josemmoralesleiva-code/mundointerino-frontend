@@ -33,6 +33,15 @@ const usersRepository = {
     })
     return res.data
   },
+
+  async reVerifyUser(id: string): Promise<User> {
+    const res = await api.post<User>(`/usuarios/${id}/re-verify`)
+    return res.data
+  },
+
+  async deleteDocument(): Promise<void> {
+    await api.delete('/usuarios/documento')
+  },
 }
 
 export default usersRepository

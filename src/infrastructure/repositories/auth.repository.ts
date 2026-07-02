@@ -1,5 +1,5 @@
 import api from '../http/axiosClient'
-import type { AuthResponse, LoginRequest, RegisterRequest } from '../dto/auth.dto'
+import type { AuthResponse, LoginRequest, RegisterRequest, PasswordRequirementsResponse } from '../dto/auth.dto'
 
 const authRepository = {
   async login(data: LoginRequest): Promise<AuthResponse> {
@@ -9,6 +9,11 @@ const authRepository = {
 
   async register(data: RegisterRequest): Promise<AuthResponse> {
     const res = await api.post<AuthResponse>('/auth/registro', data)
+    return res.data
+  },
+
+  async getPasswordRequirements(): Promise<PasswordRequirementsResponse> {
+    const res = await api.get<PasswordRequirementsResponse>('/auth/password-requirements')
     return res.data
   },
 }

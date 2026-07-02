@@ -6,6 +6,8 @@ import {
   verifyTeacherUseCase,
   getUsersUseCase,
   verifyUserUseCase,
+  reVerifyUserUseCase,
+  deleteDocumentUseCase,
 } from '../../application/useCases/users'
 import type { User } from '../../domain/models'
 import type { UpdateProfileRequest, ChangePasswordRequest, VerifyUserRequest } from '../../infrastructure/dto/users.dto'
@@ -91,6 +93,16 @@ export function useUsers() {
     return updated
   }, [])
 
+  const reVerifyUser = useCallback(async (id: string) => {
+    const updated = await reVerifyUserUseCase(id)
+    setUsers((prev) => prev.map((u) => (u._id === id ? updated : u)))
+    return updated
+  }, [])
+
+  const deleteDocument = useCallback(async () => {
+    await deleteDocumentUseCase()
+  }, [])
+
   return {
     users,
     profile,
@@ -105,5 +117,7 @@ export function useUsers() {
     verifyTeacher,
     fetchAll,
     verifyUser,
+    reVerifyUser,
+    deleteDocument,
   }
 }

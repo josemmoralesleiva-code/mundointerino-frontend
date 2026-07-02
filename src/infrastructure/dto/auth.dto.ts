@@ -26,3 +26,19 @@ export interface RegisterRequest {
   telefono: string
   verificacionEstado: string
 }
+
+export interface PasswordRule {
+  regex: string
+  label: string
+}
+
+export interface PasswordRequirementItem {
+  clave: string
+  etiqueta: string
+  regex: string
+}
+
+export interface PasswordRequirementsResponse {
+  requisitos: PasswordRequirementItem[]
+  fortalezaMinima: number
+}

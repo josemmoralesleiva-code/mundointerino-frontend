@@ -16,6 +16,8 @@ const TIPOS_DOC = [
   { valor: 'nombramiento', label: 'Nombramiento', icono: '📄' },
   { valor: 'credencial', label: 'Credencial', icono: '🪪' },
   { valor: 'contrato', label: 'Contrato', icono: '📋' },
+  { valor: 'certificado_servicios', label: 'Cert. servicios', icono: '📜' },
+  { valor: 'resolucion', label: 'Resolución', icono: '📝' },
 ]
 
 export default function TeacherVerification() {
@@ -28,6 +30,22 @@ export default function TeacherVerification() {
   const [tipoDoc, setTipoDoc] = useState('')
   const [archivo, setArchivo] = useState<File | null>(null)
   const [preview, setPreview] = useState(null)
+
+  const rechazado = user?.verificacionEstado === 'rechazado'
+  const traducirMotivo = () => {
+    const m = user?.motivoRechazo
+    if (!m) return 'No se ha indicado un motivo.'
+    const mapa: Record<string, string> = {
+      'OCR extraction failed, manual review required': 'No se pudo extraer la información del documento. Requiere revisión manual.',
+      'Document is not readable or is of poor quality': 'El documento no es legible o tiene baja calidad. Por favor, sube una imagen más nítida.',
+      'Document type does not match the selected category': 'El tipo de documento no coincide con la categoría seleccionada.',
+      'Document appears to be expired or invalid': 'El documento parece estar caducado o no es válido.',
+      'Multiple people detected in the document': 'Se ha detectado más de una persona en el documento.',
+      'Document does not belong to the registered user': 'El documento no pertenece al usuario registrado.',
+      'Manual review required - suspicious document': 'El documento requiere revisión manual por posibles irregularidades.',
+    }
+    return mapa[m] || m
+  }
 
   const handleArchivo = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files![0]
@@ -105,6 +123,22 @@ export default function TeacherVerification() {
 
       {/* CONTENIDO */}
       <section className="max-w-2xl mx-auto px-6 py-12">
+
+        {/* ── RECHAZADO ── */}
+        {rechazado && (
+          <div className="bg-red-50 border border-red-200 rounded-3xl p-6 text-sm mb-8">
+            <div className="flex items-start gap-3">
+              <span className="text-2xl">❌</span>
+              <div className="space-y-3 flex-1">
+                <p className="font-bold text-red-800 text-base">Tu verificación anterior fue rechazada</p>
+                <p className="text-red-700">{traducirMotivo()}</p>
+                <p className="text-xs text-red-500 leading-relaxed">
+                  Puedes corregir el problema y volver a enviar tu documentación. Si crees que es un error, contacta con soporte.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* ── PASO 1: ADMINISTRACIÓN ── */}
         {paso === 1 && (
@@ -240,7 +274,7 @@ export default function TeacherVerification() {
 
             {/* Info */}
             <div className="bg-[#F8F5EF] border border-gray-200 rounded-2xl px-4 py-3 text-xs text-gray-600 leading-relaxed mb-6">
-              🔒 Tu documento es <strong className="text-[#0F172A]">confidencial</strong>. Solo lo verá el equipo de MundoInterino para verificar tu perfil. No se compartirá con terceros.
+              🔒 Tu documento es <strong className="text-[#0F172A]">confidencial</strong>. Se verificará automáticamente al enviarlo. Solo se almacena de forma segura en nuestros servidores.
             </div>
 
             {error && (
@@ -284,8 +318,8 @@ export default function TeacherVerification() {
             </div>
             <h2 className="text-2xl font-bold text-gray-900 mb-2">¡Documentación enviada!</h2>
             <p className="text-gray-500 text-sm mb-6 max-w-sm mx-auto leading-relaxed">
-              Revisaremos tu perfil en las próximas <strong className="text-[#0F172A]">24-48 horas</strong>.
-              Te avisaremos cuando esté verificado.
+              Tu documento está en <strong className="text-[#0F172A]">proceso de verificación</strong>.
+              Si cumple los requisitos, tu cuenta se verificará al instante.
             </p>
 
             <div className="bg-[#F8F5EF] border border-gray-100 rounded-2xl p-5 mb-8 text-left space-y-3">
@@ -335,7 +369,7 @@ export default function TeacherVerification() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
             {[
               { icon: '🔒', texto: 'Documento confidencial' },
-              { icon: '⚡', texto: 'Revisión en 24-48h' },
+              { icon: '⚡', texto: 'Verificación automática' },
               { icon: '🔍', texto: 'Puedes buscar mientras tanto' },
             ].map(b => (
               <div key={b.texto} className="bg-white rounded-2xl border border-gray-100 p-4 text-center shadow-sm text-xs text-gray-500">

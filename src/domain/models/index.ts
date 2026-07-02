@@ -11,3 +11,5 @@ export type {
   OwnerSummary,
   Property,
 } from './Property'
+
+export type { Anuncio } from './Anuncio'

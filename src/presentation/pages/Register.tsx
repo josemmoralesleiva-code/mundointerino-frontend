@@ -1,8 +1,10 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import Navbar from '../components/Navbar'
 import PageLayout from '../components/layout/PageLayout'
+import { getPasswordRequirementsUseCase } from '../../application/useCases/auth'
+import type { PasswordRule } from '../../infrastructure/dto/auth.dto'
 
 export default function Register() {
   const navigate = useNavigate()
@@ -16,6 +18,45 @@ export default function Register() {
   })
   const [error, setError] = useState('')
   const [cargando, setCargando] = useState(false)
+
+  const [passwordRules, setPasswordRules] = useState<Record<string, PasswordRule>>({
+    minLength: { regex: '.{8,}', label: 'Al menos 8 caracteres' },
+    uppercase: { regex: '[A-Z]', label: 'Al menos una mayúscula' },
+    lowercase: { regex: '[a-z]', label: 'Al menos una minúscula' },
+    number: { regex: '[0-9]', label: 'Al menos un número' },
+    special: { regex: '[^A-Za-z0-9]', label: 'Al menos un carácter especial' },
+  })
+  const [fortalezaMinima, setFortalezaMinima] = useState(4)
+  const fetchedRef = useRef(false)
+
+  useEffect(() => {
+    if (fetchedRef.current) return
+    fetchedRef.current = true
+    getPasswordRequirementsUseCase()
+      .then((req) => {
+        const rules: Record<string, PasswordRule> = {}
+        for (const item of req.requisitos) {
+          rules[item.clave] = { regex: item.regex, label: item.etiqueta }
+        }
+        setPasswordRules(rules)
+        setFortalezaMinima(req.fortalezaMinima)
+      })
+      .catch(() => {
+        fetchedRef.current = false
+      })
+  }, [])
+
+  const passwordChecks = Object.entries(passwordRules).map(([key, rule]) => {
+    try {
+      return { key, label: rule.label, passed: new RegExp(rule.regex).test(form.password) }
+    } catch {
+      return { key, label: rule.label, passed: false }
+    }
+  })
+
+  const passwordStrength = passwordChecks.length ? Math.round((passwordChecks.filter(c => c.passed).length / passwordChecks.length) * 100) : 0
+
+  const barColor = passwordStrength < 40 ? 'bg-red-500' : passwordStrength < 80 ? 'bg-yellow-500' : 'bg-green-500'
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => setForm({ ...form, [e.target.name]: e.target.value })
   const handleRol = (rol: string) => setForm(prev => ({ ...prev, rol }))
@@ -204,9 +245,32 @@ export default function Register() {
                   value={form.password}
                   onChange={handleChange}
                   required
-                  placeholder="Mínimo 6 caracteres"
+                  placeholder="Crea una contraseña segura"
                   className="w-full border border-gray-200 rounded-2xl px-4 py-3 text-gray-900 text-sm focus:outline-none focus:border-[#0F172A] transition-colors placeholder:text-gray-300"
                 />
+
+                {passwordChecks.length > 0 && (
+                  <div className="mt-3">
+                    <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                      <div
+                        className={`h-full rounded-full transition-all duration-300 ${barColor}`}
+                        style={{ width: `${passwordStrength}%` }}
+                      />
+                    </div>
+                    <ul className="mt-2 space-y-1">
+                      {passwordChecks.map((check) => (
+                        <li key={check.key} className="flex items-center gap-2 text-xs">
+                          <span className={check.passed ? 'text-green-600' : 'text-gray-300'}>
+                            {check.passed ? '✓' : '○'}
+                          </span>
+                          <span className={check.passed ? 'text-green-700' : 'text-gray-400'}>
+                            {check.label}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
 
               {/* AVISO VERIFICACIÓN */}

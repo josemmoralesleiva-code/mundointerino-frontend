@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../store/auth.store'
 import { loginUseCase } from '../../application/useCases/auth'
 import { registerUseCase } from '../../application/useCases/auth'
+import { clearAdminSession } from '../components/ImpersonationBanner'
 import type { LoginRequest, RegisterRequest } from '../../infrastructure/dto/auth.dto'
 
 export function useAuth() {
@@ -15,11 +16,11 @@ export function useAuth() {
 
     if (response.usuario.rol === 'admin') { navigate('/admin'); return }
     if (response.usuario.rol === 'propietario') {
-      if (response.usuario.verificacionEstado === 'pendiente') { navigate('/verificacion-propietario'); return }
+      if (response.usuario.verificacionEstado !== 'verificado') { navigate('/verificacion-propietario'); return }
       navigate('/dashboard'); return
     }
     if (response.usuario.rol === 'docente') {
-      if (response.usuario.verificacionEstado === 'pendiente') { navigate('/verificacion-docente'); return }
+      if (response.usuario.verificacionEstado !== 'verificado') { navigate('/verificacion-docente'); return }
       navigate('/dashboard'); return
     }
     navigate('/dashboard')
@@ -35,6 +36,7 @@ export function useAuth() {
 
   const logout = useCallback(() => {
     storeLogout()
+    clearAdminSession()
     navigate('/login')
   }, [navigate, storeLogout])
 

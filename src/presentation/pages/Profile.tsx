@@ -6,10 +6,25 @@ import { useAuthStore } from '../store/auth.store'
 import { useUsers } from '../hooks/useUsers'
 import type { User } from '../../domain/models'
 
+const TRADUCCION_MOTIVO: Record<string, string> = {
+  'OCR extraction failed, manual review required': 'No se pudo extraer la información del documento. Requiere revisión manual.',
+  'Document is not readable or is of poor quality': 'El documento no es legible o tiene baja calidad. Por favor, sube una imagen más nítida.',
+  'Document type does not match the selected category': 'El tipo de documento no coincide con la categoría seleccionada.',
+  'Document appears to be expired or invalid': 'El documento parece estar caducado o no es válido.',
+  'Multiple people detected in the document': 'Se ha detectado más de una persona en el documento.',
+  'Document does not belong to the registered user': 'El documento no pertenece al usuario registrado.',
+  'Manual review required - suspicious document': 'El documento requiere revisión manual por posibles irregularidades.',
+}
+
+function traducirMotivo(motivo?: string): string {
+  if (!motivo) return 'No se ha indicado un motivo.'
+  return TRADUCCION_MOTIVO[motivo] || motivo
+}
+
 export default function Profile() {
   const navigate = useNavigate()
   const { user, logout } = useAuthStore()
-  const { profile, loading, error, fetchProfile, updateProfile, changePassword, setError } = useUsers()
+  const { profile, loading, error, fetchProfile, updateProfile, changePassword, setError, deleteDocument } = useUsers()
 
   const [form, setForm] = useState({ nombre: '', email: '', telefono: '' })
   const [formPassword, setFormPassword] = useState({ passwordActual: '', passwordNueva: '', passwordConfirm: '' })
@@ -20,6 +35,9 @@ export default function Profile() {
   const [errorPassword, setErrorPassword] = useState('')
   const [mensaje, setMensaje] = useState('')
   const [mensajePassword, setMensajePassword] = useState('')
+  const [eliminandoDoc, setEliminandoDoc] = useState(false)
+  const [errorDoc, setErrorDoc] = useState('')
+  const [mensajeDoc, setMensajeDoc] = useState('')
 
   useEffect(() => {
     fetchProfile()
@@ -83,6 +101,22 @@ export default function Profile() {
   const cerrarSesion = () => {
     logout()
     navigate('/login')
+  }
+
+  const handleEliminarDocumento = async () => {
+    if (!confirm('¿Estás seguro de que quieres eliminar tu documento de verificación?')) return
+    setEliminandoDoc(true)
+    setErrorDoc('')
+    setMensajeDoc('')
+    try {
+      await deleteDocument()
+      setMensajeDoc('Documento eliminado. Puedes subir uno nuevo desde la página de verificación.')
+      fetchProfile()
+    } catch (err: any) {
+      setErrorDoc(err.response?.data?.error || 'Error al eliminar el documento')
+    } finally {
+      setEliminandoDoc(false)
+    }
   }
 
   const badgeEstado = (estado: string) => {
@@ -368,6 +402,17 @@ export default function Profile() {
               <div className="space-y-3 mb-5">
                 <p className="text-sm font-semibold text-gray-700">Documento aportado</p>
 
+                {errorDoc && (
+                  <div className="bg-red-50 border border-red-200 text-red-600 rounded-2xl px-4 py-3 text-sm">
+                    ⚠️ {errorDoc}
+                  </div>
+                )}
+                {mensajeDoc && (
+                  <div className="bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#0F172A] rounded-2xl px-4 py-3 text-sm font-medium">
+                    ✅ {mensajeDoc}
+                  </div>
+                )}
+
                 {usuarioMostrado?.tipoDocumento ? (
                   <div className="flex items-center justify-between bg-[#F8F5EF] rounded-2xl p-4 border border-gray-100">
                     <div className="flex items-center gap-3">
@@ -377,28 +422,54 @@ export default function Profile() {
                           {usuarioMostrado.tipoDocumento === 'nomina' ? 'Nómina'
                             : usuarioMostrado.tipoDocumento === 'nombramiento' ? 'Nombramiento'
                             : usuarioMostrado.tipoDocumento === 'credencial' ? 'Credencial'
-                            : 'Contrato'}
+                            : usuarioMostrado.tipoDocumento === 'contrato' ? 'Contrato'
+                            : usuarioMostrado.tipoDocumento === 'certificado_servicios' ? 'Certificado de servicios'
+                            : usuarioMostrado.tipoDocumento === 'resolucion' ? 'Resolución'
+                            : usuarioMostrado.tipoDocumento}
                         </p>
                         <p className="text-xs text-gray-400 mt-0.5">Documento de verificación</p>
                       </div>
                     </div>
-                    {usuarioMostrado?.urlDocumento ? (
-                      <a
-                        href={usuarioMostrado.urlDocumento}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="bg-[#0F172A] text-white px-4 py-2 rounded-2xl text-xs font-bold hover:bg-[#1E3A5F] transition-all"
+                    <div className="flex items-center gap-2">
+                      {usuarioMostrado?.urlDocumento ? (
+                        <a
+                          href={usuarioMostrado.urlDocumento}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="bg-[#0F172A] text-white px-4 py-2 rounded-2xl text-xs font-bold hover:bg-[#1E3A5F] transition-all"
+                        >
+                          Ver documento
+                        </a>
+                      ) : (
+                        <span className="text-xs text-gray-400 bg-gray-100 px-3 py-1.5 rounded-xl">Sin URL</span>
+                      )}
+                      <button
+                        onClick={handleEliminarDocumento}
+                        disabled={eliminandoDoc}
+                        className="border border-red-200 text-red-500 px-4 py-2 rounded-2xl text-xs font-bold hover:bg-red-50 transition-all disabled:opacity-50"
                       >
-                        Ver documento
-                      </a>
-                    ) : (
-                      <span className="text-xs text-gray-400 bg-gray-100 px-3 py-1.5 rounded-xl">Sin URL</span>
-                    )}
+                        {eliminandoDoc ? 'Eliminando...' : '🗑 Eliminar'}
+                      </button>
+                    </div>
                   </div>
                 ) : (
                   <div className="bg-[#F8F5EF] rounded-2xl p-4 border border-gray-100 text-sm text-gray-500">
                     📭 No has subido ningún documento todavía.
                   </div>
+                )}
+
+                {!usuarioMostrado?.tipoDocumento && (
+                  <button
+                    onClick={() => navigate('/verificacion-docente')}
+                    className="w-full bg-[#0F172A] hover:bg-[#1E3A5F] text-white py-3 rounded-2xl font-bold text-sm transition-all"
+                  >
+                    📎 Subir documento de verificación
+                  </button>
+                )}
+                {usuarioMostrado?.tipoDocumento && !mensajeDoc && (
+                  <p className="text-xs text-gray-400 text-center">
+                    Puedes eliminar y volver a subir un documento una vez al día.
+                  </p>
                 )}
               </div>
 
@@ -406,18 +477,47 @@ export default function Profile() {
               {usuarioMostrado?.verificacionEstado === 'pendiente' && (
                 <div className="bg-[#F8F5EF] border border-gray-200 rounded-2xl p-4 text-gray-700 text-sm">
                   🕐 Tu perfil está <strong>pendiente de revisión</strong>. Recibirás una notificación cuando sea revisado.
+                  {(usuarioMostrado?.verificationConfidence != null) && (
+                    <div className="mt-3 pt-3 border-t border-gray-200 space-y-1.5">
+                      <p className="text-xs text-gray-400 font-semibold">Resultado verificación automática</p>
+                      <p className="text-xs">Confianza: <strong>{usuarioMostrado.verificationConfidence}%</strong></p>
+                      {usuarioMostrado.verificationNotes && (
+                        <p className="text-xs">Notas: <strong>{usuarioMostrado.verificationNotes}</strong></p>
+                      )}
+                    </div>
+                  )}
                 </div>
               )}
               {usuarioMostrado?.verificacionEstado === 'verificado' && (
                 <div className="bg-[#D4AF37]/10 border border-[#D4AF37]/30 rounded-2xl p-4 text-[#0F172A] text-sm">
-                  ✅ Tu cuenta está <strong>verificada</strong>. Ya puedes acceder a todas las funciones de la plataforma.
+                  <p>✅ Tu cuenta está <strong>verificada</strong>. Ya puedes acceder a todas las funciones de la plataforma.</p>
+                  {usuarioMostrado?.verificationDate && (
+                    <p className="text-xs text-[#0F172A]/70 mt-2">
+                      Verificado el {new Date(usuarioMostrado.verificationDate).toLocaleDateString('es-ES')}
+                    </p>
+                  )}
                 </div>
               )}
               {usuarioMostrado?.verificacionEstado === 'rechazado' && (
-                <div className="bg-red-50 border border-red-200 rounded-2xl p-4 text-red-800 text-sm space-y-3">
-                  <p className="font-bold">Tu verificación ha sido rechazada.</p>
-                  <p>Motivo: {usuarioMostrado?.motivoRechazo || 'No se ha indicado un motivo.'}</p>
-                  <div className="flex flex-wrap gap-3 pt-2">
+                <div className="bg-red-50 border border-red-200 rounded-2xl p-5 text-sm space-y-4">
+                  <div>
+                    <p className="font-bold text-red-800">Tu verificación ha sido rechazada</p>
+                    <p className="text-red-700 mt-1">{traducirMotivo(usuarioMostrado?.motivoRechazo)}</p>
+                  </div>
+                  {(usuarioMostrado?.verificationNotes || usuarioMostrado?.verificationConfidence != null) && (
+                    <div className="pt-3 border-t border-red-200 space-y-1.5 text-xs text-red-600">
+                      {usuarioMostrado?.verificationConfidence != null && (
+                        <p>Puntuación de la verificación automática: <strong>{usuarioMostrado.verificationConfidence}%</strong></p>
+                      )}
+                      {usuarioMostrado.verificationNotes && (
+                        <p>Detalles: {traducirMotivo(usuarioMostrado.verificationNotes)}</p>
+                      )}
+                    </div>
+                  )}
+                  <p className="text-xs text-red-500 leading-relaxed">
+                    Puedes corregir el problema y volver a enviar tu documentación. Si crees que es un error, contacta con soporte.
+                  </p>
+                  <div className="flex flex-wrap gap-3 pt-1">
                     <button
                       onClick={() => navigate('/verificacion-docente')}
                       className="bg-[#0F172A] text-white px-4 py-2 rounded-2xl font-bold text-sm hover:bg-[#1E3A5F] transition-all"
@@ -434,7 +534,6 @@ export default function Profile() {
               <h2 className="text-xl font-bold text-gray-900 mb-4">Más información</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                 {[
-                  { label: 'ID de usuario', valor: usuarioMostrado?._id || usuarioMostrado?.id || '—' },
                   {
                     label: 'Fecha de alta',
                     valor: usuarioMostrado?.createdAt
