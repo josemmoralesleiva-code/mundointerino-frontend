@@ -200,7 +200,7 @@ export default function Home() {
             {
               icon: '💶',
               titulo: 'Precios justos',
-              texto: 'Más económico que Booking. Sin comisiones ocultas. Negociación directa.',
+              texto: 'Más económico que las plataformas tradicionales. Sin comisiones ocultas. Negociación directa.',
             },
             {
               icon: '📅',
