@@ -9,7 +9,6 @@ function AppShell() {
   const navigate = useNavigate()
   const { bootstrap } = useAuth()
   const isBootstrapping = useAuthStore((s) => s.isBootstrapping)
-  const storeLogout = useAuthStore((s) => s.logout)
 
   useEffect(() => {
     void bootstrap()
@@ -17,12 +16,11 @@ function AppShell() {
 
   useEffect(() => {
     const handler = () => {
-      storeLogout()
       navigate('/')
     }
     window.addEventListener('auth:logout', handler)
     return () => window.removeEventListener('auth:logout', handler)
-  }, [navigate, storeLogout])
+  }, [navigate])
 
   if (isBootstrapping) {
     return (

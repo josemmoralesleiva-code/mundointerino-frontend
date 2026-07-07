@@ -1,12 +1,19 @@
 import { useState, useRef, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
+import { useAuthStore } from '../store/auth.store'
+import { storage } from '../../infrastructure/storage/localStorage'
 import { getMenuItems } from '../../domain/constants/menu'
 import type { MenuContext } from '../../domain/constants/menu'
 
 export default function Navbar() {
   const navigate = useNavigate()
-  const { user, isAuthenticated, logout } = useAuth()
+  const { logout } = useAuth()
+  const storeUser = useAuthStore((s) => s.user)
+  const storeIsAuthenticated = useAuthStore((s) => s.isAuthenticated)
+  const cached = storage.getUser()
+  const user = storeUser ?? cached
+  const isAuthenticated = storeIsAuthenticated || cached !== null
 
   const [menuUsuario, setMenuUsuario] = useState(false)
   const [menuAbierto, setMenuAbierto] = useState(false)
