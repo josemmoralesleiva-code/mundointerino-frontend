@@ -8,7 +8,7 @@ export default function Region() {
   const { comunidad } = useParams()
   const { provincias, loading, error } = useProvincias(comunidad as string)
 
-  if (error && !loading && provincias.length === 0) {
+  if (error && !loading && (provincias ?? []).length === 0) {
     return (
       <PageLayout>
         <Navbar />
@@ -81,7 +81,7 @@ export default function Region() {
             ? Array.from({ length: 6 }).map((_, i) => (
                 <div key={i} className="h-40 rounded-3xl bg-gray-100 animate-pulse" />
               ))
-            : provincias.map(provincia => (
+            : (provincias ?? []).map(provincia => (
                 <button
                   key={provincia.slug}
                   onClick={() => navigate(`/zonas/${comunidad}/${provincia.slug}`)}

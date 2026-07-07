@@ -40,7 +40,7 @@ export default function Zones() {
             ? Array.from({ length: 6 }).map((_, i) => (
                 <div key={i} className="h-44 rounded-3xl bg-gray-100 animate-pulse" />
               ))
-            : comunidades.map((zona, i) => (
+            : (comunidades ?? []).map((zona, i) => (
                 <button
                   key={zona.slug}
                   onClick={() => navigate(`/zonas/${zona.slug}`)}
