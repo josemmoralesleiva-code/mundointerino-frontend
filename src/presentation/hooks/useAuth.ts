@@ -90,8 +90,13 @@ export function useAuth() {
     try {
       const usuario = await meUseCase()
       storeLogin(usuario)
-    } catch {
-      storeLogout()
+    } catch (err: any) {
+      const status = err?.response?.status
+      if (status === 401) {
+        storeLogout()
+      }
+      // Para otros errores (backend caído, timeout, 5xx)
+      // conservamos el usuario cacheado para no perder la UI.
     } finally {
       setBootstrapping(false)
     }
