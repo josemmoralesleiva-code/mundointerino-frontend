@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate, useLocation, Link } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { useAuthStore } from '../store/auth.store'
 import { storage } from '../../infrastructure/storage/localStorage'
@@ -27,9 +27,15 @@ export default function Navbar() {
     return () => document.removeEventListener('mousedown', handler)
   }, [])
 
+  const { pathname } = useLocation()
   const context: MenuContext = (user?.rol as MenuContext | undefined) ?? 'anon'
   const isVerified = user?.verificacionEstado === 'verificado'
   const items = getMenuItems(context, isVerified)
+
+  const isActive = (to: string) => {
+    if (to === '/') return pathname === '/'
+    return pathname === to || pathname.startsWith(to + '/')
+  }
 
   const goTo = (to: string) => {
     setMenuAbierto(false)
@@ -58,12 +64,17 @@ export default function Navbar() {
 
           <div className="hidden md:flex items-center gap-2">
             {items.map((item) => {
+              const active = isActive(item.to)
               if (item.id === 'buscar-pisos') {
                 return (
                   <button
                     key={item.id}
                     onClick={() => goTo(item.to)}
-                    className="px-4 py-2 rounded-xl text-sm font-semibold text-[#0F172A] bg-[#D4AF37]/15 hover:bg-[#D4AF37]/25 transition-all border border-[#D4AF37]/20"
+                    className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all border ${
+                      active
+                        ? 'bg-[#D4AF37]/30 text-[#0F172A] border-[#D4AF37]/40'
+                        : 'text-[#0F172A] bg-[#D4AF37]/15 hover:bg-[#D4AF37]/25 border-[#D4AF37]/20'
+                    }`}
                   >
                     {item.label}
                   </button>
@@ -74,7 +85,11 @@ export default function Navbar() {
                   <button
                     key={item.id}
                     onClick={() => goTo(item.to)}
-                    className="flex items-center gap-1 bg-[#D4AF37]/15 text-[#8A6510] hover:bg-[#D4AF37]/20 px-3 py-2 rounded-xl text-sm font-semibold transition-colors border border-[#D4AF37]/20"
+                    className={`flex items-center gap-1 px-3 py-2 rounded-xl text-sm font-semibold transition-colors border ${
+                      active
+                        ? 'bg-[#D4AF37]/30 text-[#8A6510] border-[#D4AF37]/40'
+                        : 'bg-[#D4AF37]/15 text-[#8A6510] hover:bg-[#D4AF37]/20 border-[#D4AF37]/20'
+                    }`}
                   >
                     🛡️ {item.label}
                   </button>
@@ -84,7 +99,11 @@ export default function Navbar() {
                 <Link
                   key={item.id}
                   to={item.to}
-                  className="px-4 py-2 rounded-xl text-sm font-medium text-slate-700 hover:text-[#0F172A] hover:bg-black/5 transition-all"
+                  className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
+                    active
+                      ? 'bg-slate-200/70 text-[#0F172A] font-semibold'
+                      : 'text-slate-700 hover:text-[#0F172A] hover:bg-black/5'
+                  }`}
                 >
                   {item.label}
                 </Link>
@@ -187,20 +206,23 @@ export default function Navbar() {
       {menuAbierto && (
         <div className="md:hidden bg-white border-t border-slate-200 shadow-lg">
           <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col gap-1">
-            {items.map((item) => (
-              <Link
-                key={item.id}
-                to={item.to}
-                onClick={() => setMenuAbierto(false)}
-                className={`w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-colors ${
-                  item.id === 'buscar-pisos'
-                    ? 'bg-[#D4AF37]/15 text-[#0F172A] font-semibold'
-                    : 'text-slate-700 hover:bg-slate-50'
-                }`}
-              >
-                {item.id === 'panel-admin' ? `🛡️ ${item.label}` : item.label}
-              </Link>
-            ))}
+            {items.map((item) => {
+              const active = isActive(item.to)
+              return (
+                <Link
+                  key={item.id}
+                  to={item.to}
+                  onClick={() => setMenuAbierto(false)}
+                  className={`w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-colors ${
+                    active
+                      ? 'bg-slate-200/70 text-[#0F172A] font-semibold'
+                      : 'text-slate-700 hover:bg-slate-50'
+                  } ${item.id === 'buscar-pisos' && !active ? 'bg-[#D4AF37]/15' : ''}`}
+                >
+                  {item.id === 'panel-admin' ? `🛡️ ${item.label}` : item.label}
+                </Link>
+              )
+            })}
 
             <div className="my-2 border-t border-slate-100" />
 
