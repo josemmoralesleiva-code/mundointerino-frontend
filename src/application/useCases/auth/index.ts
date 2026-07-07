@@ -1,3 +1,7 @@
 export { loginUseCase } from './LoginUseCase'
 export { registerUseCase } from './RegisterUseCase'
+export { verifyEmailUseCase } from './VerifyEmailUseCase'
+export { resendVerificationUseCase } from './ResendVerificationUseCase'
 export { getPasswordRequirementsUseCase } from './GetPasswordRequirementsUseCase'
+export { meUseCase } from './MeUseCase'
+export { logoutUseCase } from './LogoutUseCase'

@@ -24,7 +24,7 @@ export function useProperties() {
       setProperties(data)
       setError('')
     } catch (err) {
-      setError('Error loading properties')
+      setError('No se pudieron cargar los pisos. Inténtalo más tarde.')
       setProperties([])
     } finally {
       setLoading(false)
@@ -39,7 +39,7 @@ export function useProperties() {
       setError('')
       return data
     } catch {
-      setError('Property not found')
+      setError('No se pudo encontrar el piso solicitado.')
       setProperty(null)
       return null
     } finally {
@@ -54,7 +54,7 @@ export function useProperties() {
       setProperties(data)
       setError('')
     } catch {
-      setError('Error loading my properties')
+      setError('No se pudieron cargar tus pisos. Inténtalo más tarde.')
     } finally {
       setLoading(false)
     }
@@ -66,7 +66,7 @@ export function useProperties() {
     try {
       return await createPropertyUseCase(formData)
     } catch (err: any) {
-      setError(err.response?.data?.error || 'Error creating property')
+      setError(err.response?.data?.error || 'No se pudo publicar el piso. Inténtalo más tarde.')
       throw err
     } finally {
       setLoading(false)
@@ -79,7 +79,7 @@ export function useProperties() {
     try {
       return await updatePropertyUseCase(id, formData)
     } catch (err: any) {
-      setError(err.response?.data?.error || 'Error updating property')
+      setError(err.response?.data?.error || 'No se pudo actualizar el piso. Inténtalo más tarde.')
       throw err
     } finally {
       setLoading(false)

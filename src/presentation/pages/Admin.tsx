@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../store/auth.store'
+import { useAuth } from '../hooks/useAuth'
 import { useUsers } from '../hooks/useUsers'
 import { useAdmin } from '../hooks/useAdmin'
 import { useAnuncios } from '../hooks/useAnuncios'
-import { saveAdminSession } from '../components/ImpersonationBanner'
+import ImpersonationBanner, { saveAdminSession } from '../components/ImpersonationBanner'
 import type { User } from '../../domain/models'
 import type { Anuncio } from '../../domain/models/Anuncio'
 import type { LastRegisteredUser } from '../../infrastructure/dto/admin.dto'
@@ -45,12 +46,13 @@ const EMPTY_ANUNCIO_FORM = {
 
 export default function Admin() {
   const navigate = useNavigate()
-  const { user, logout } = useAuthStore()
+  const { user, logout } = useAuth()
   const { users, loading: usersLoading, setUsers, fetchAll, verifyUser, reVerifyUser } = useUsers()
   const { stats, usuariosPage, loading: adminLoading, error: adminError, fetchStats, fetchUsuarios, updateUsuario, impersonate } = useAdmin()
   const { anunciosPage, loading: anunciosLoading, error: anunciosError, fetchAll: fetchAnuncios, create: createAnuncio, update: updateAnuncio, remove: deleteAnuncio } = useAnuncios()
 
   const [tab, setTab] = useState<'dashboard' | 'usuarios' | 'anuncios'>('dashboard')
+  const [menuAbierto, setMenuAbierto] = useState(false)
 
   // Users state
   const [filtro, setFiltro] = useState('todos')
@@ -121,13 +123,12 @@ export default function Admin() {
 
   const suplantar = async (u: User) => {
     try {
-      const currentToken = useAuthStore.getState().token
       const currentUser = useAuthStore.getState().user
-      if (currentToken && currentUser) {
-        saveAdminSession(currentToken, currentUser)
+      if (currentUser) {
+        saveAdminSession(currentUser)
       }
       const res = await impersonate(u._id)
-      useAuthStore.getState().login(res.token, res.usuario)
+      useAuthStore.getState().login(res.usuario)
       navigate('/dashboard')
     } catch (err: any) {
       alert(err.response?.data?.error || 'Error al suplantar usuario')
@@ -216,6 +217,7 @@ export default function Admin() {
 
   return (
     <div className="min-h-screen bg-[#F8F5EF]">
+      <ImpersonationBanner />
 
       {/* NAVBAR */}
       <nav className="sticky top-0 z-50 bg-[#F8F5EF]/95 backdrop-blur-xl text-[#0F172A] border-b border-black/5 shadow-sm">
@@ -232,14 +234,59 @@ export default function Admin() {
               ADMIN
             </span>
             <button
-              onClick={() => { logout(); navigate('/login') }}
-              className="text-sm text-slate-700 hover:text-[#0F172A] font-medium"
+              onClick={() => { void logout() }}
+              className="hidden md:block text-sm text-slate-700 hover:text-[#0F172A] font-medium"
+            >
+              Cerrar sesión
+            </button>
+            <button
+              onClick={() => setMenuAbierto(!menuAbierto)}
+              className="md:hidden p-2 rounded-xl text-slate-700 hover:bg-black/5 transition-colors"
+              aria-label="Abrir menú"
+              aria-expanded={menuAbierto}
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {menuAbierto ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                )}
+              </svg>
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      {menuAbierto && (
+        <div className="md:hidden bg-white border-b border-gray-200 shadow-lg">
+          <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col gap-1">
+            {[
+              { key: 'dashboard' as const, label: '📊 Dashboard' },
+              { key: 'usuarios' as const, label: '👥 Usuarios' },
+              { key: 'anuncios' as const, label: '📢 Anuncios' },
+            ].map(t => (
+              <button
+                key={t.key}
+                onClick={() => { setTab(t.key); setMenuAbierto(false) }}
+                className={`w-full text-left px-4 py-3 rounded-xl text-sm font-semibold transition-colors ${
+                  tab === t.key
+                    ? 'bg-[#0F172A] text-white'
+                    : 'text-slate-700 hover:bg-slate-50'
+                }`}
+              >
+                {t.label}
+              </button>
+            ))}
+            <div className="my-2 border-t border-slate-100" />
+            <button
+              onClick={() => { setMenuAbierto(false); void logout() }}
+              className="w-full text-left px-4 py-3 rounded-xl text-sm font-semibold text-rose-600 hover:bg-rose-50 transition-colors"
             >
               Cerrar sesión
             </button>
           </div>
         </div>
-      </nav>
+      )}
 
       {/* HERO */}
       <section className="bg-[#0F172A] text-white py-10 px-6">
@@ -260,18 +307,18 @@ export default function Admin() {
       {/* ERROR BANNER */}
       {(adminError || anunciosError) && (
         <div className="max-w-7xl mx-auto px-6 pt-4">
-          <div className="bg-red-50 border border-red-200 rounded-2xl p-4 text-red-700 text-sm">
-            <p className="font-bold mb-1">Error de conexión</p>
+          <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 text-amber-800 text-sm">
+            <p className="font-bold mb-1">No hay conexión con el servicio</p>
             <p>{adminError || anunciosError}</p>
-            <p className="text-xs text-red-400 mt-1">
-              Revisa la consola del navegador (F12) para más detalles. Verifica que el backend esté corriendo y que hayas iniciado sesión como admin recientemente.
+            <p className="text-xs text-amber-600 mt-1">
+              Algunas funciones pueden no estar disponibles. Inténtalo de nuevo en unos momentos.
             </p>
           </div>
         </div>
       )}
 
       {/* TABS */}
-      <div className="max-w-7xl mx-auto px-6 pt-6">
+      <div className="hidden md:block max-w-7xl mx-auto px-6 pt-6">
         <div className="flex gap-1 bg-white rounded-3xl p-1.5 border border-gray-100 shadow-sm">
           {[
             { key: 'dashboard' as const, label: '📊 Dashboard' },
@@ -478,7 +525,7 @@ export default function Admin() {
                             >
                               ✏️ Editar
                             </button>
-                            {u.rol !== 'admin' && (
+                            {u._id !== user?.id && (
                               <button
                                 onClick={() => suplantar(u)}
                                 className="bg-amber-500 text-amber-900 hover:bg-amber-600 px-4 py-2 rounded-2xl text-sm font-bold transition-all"
@@ -1092,7 +1139,7 @@ export default function Admin() {
                   type="date"
                   value={anuncioForm.fechaExpiracion}
                   onChange={e => setAnuncioForm(f => ({ ...f, fechaExpiracion: e.target.value }))}
-                  className="w-full border border-gray-200 rounded-2xl px-3 py-2 text-sm focus:outline-none focus:border-[#0F172A]"
+                  className="w-full border border-gray-200 rounded-2xl px-3 py-2 text-sm focus:outline-none focus:border-[#0F172A] [color-scheme:light]"
                 />
               </div>
               <div className="flex gap-4">

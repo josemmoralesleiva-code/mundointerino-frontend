@@ -4,40 +4,44 @@ import type { AuthUser } from '../../infrastructure/dto/auth.dto'
 
 interface AuthState {
   user: AuthUser | null
-  token: string | null
   isAuthenticated: boolean
+  isBootstrapping: boolean
 
-  login: (token: string, user: AuthUser) => void
+  login: (user: AuthUser) => void
   logout: () => void
-  hydrate: () => void
+  setUser: (user: AuthUser) => void
   updateUser: (user: AuthUser) => void
+  setBootstrapping: (value: boolean) => void
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
-  user: null,
-  token: null,
-  isAuthenticated: false,
+const cachedUser = storage.getUser()
 
-  login: (token, user) => {
-    storage.setAuth(token, user)
-    set({ user, token, isAuthenticated: true })
+export const useAuthStore = create<AuthState>((set) => ({
+  user: cachedUser,
+  isAuthenticated: cachedUser !== null,
+  isBootstrapping: true,
+
+  login: (user) => {
+    storage.setUser(user)
+    set({ user, isAuthenticated: true })
   },
 
   logout: () => {
-    storage.clearAuth()
-    set({ user: null, token: null, isAuthenticated: false })
+    storage.clearUser()
+    set({ user: null, isAuthenticated: false })
   },
 
-  hydrate: () => {
-    const token = storage.getToken()
-    const user = storage.getUser()
-    if (token && user) {
-      set({ user, token, isAuthenticated: true })
-    }
+  setUser: (user) => {
+    storage.setUser(user)
+    set({ user, isAuthenticated: user !== null })
   },
 
   updateUser: (user) => {
-    storage.updateUser(user)
-    set({ user })
+    storage.setUser(user)
+    set({ user, isAuthenticated: user !== null })
+  },
+
+  setBootstrapping: (value) => {
+    set({ isBootstrapping: value })
   },
 }))

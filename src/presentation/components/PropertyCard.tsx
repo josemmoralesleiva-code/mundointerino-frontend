@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import type { Property } from '../../../domain/models'
+import type { Property } from '../../domain/models'
 
 interface PropertyCardProps {
   property: Property

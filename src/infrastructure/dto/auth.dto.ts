@@ -6,10 +6,17 @@ export interface AuthUser {
   telefono: string
   verificacionEstado: string
   administracion: string | null
+  emailVerificado?: boolean
+  motivoRechazo?: string
+  tipoDocumento?: string | null
+  urlDocumento?: string | null
+  verificationConfidence?: number
+  verificationNotes?: string
+  verificationDate?: string
+  verificationType?: string
 }
 
 export interface AuthResponse {
-  token: string
   usuario: AuthUser
 }
 
@@ -25,6 +32,17 @@ export interface RegisterRequest {
   rol: string
   telefono: string
   verificacionEstado: string
+}
+
+export interface RegisterResponse {
+  mensaje: string
+  requiereVerificacionEmail: boolean
+}
+
+export type VerifyEmailResponse = AuthResponse
+
+export interface ReenviarVerificacionResponse {
+  mensaje: string
 }
 
 export interface PasswordRule {

@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import PropertyCard from '../components/PropertyCard'
+import CityAutocomplete from '../components/ui/CityAutocomplete'
 import PageLayout from '../components/layout/PageLayout'
 import { useProperties } from '../hooks/useProperties'
+import { useComunidades } from '../hooks/useCities'
+import type { City } from '../../domain/models/City'
 
 const ZONAS = [
   {
@@ -29,49 +32,7 @@ const ZONAS = [
   },
 ]
 
-const DESTACADOS = [
-  { nombre: 'Zaragoza', comunidad: 'aragon', provincia: 'zaragoza', ciudad: 'Zaragoza', emoji: '🏛️' },
-  { nombre: 'Huesca', comunidad: 'aragon', provincia: 'huesca', ciudad: 'Huesca', emoji: '🏔️' },
-  { nombre: 'Teruel', comunidad: 'aragon', provincia: 'teruel', ciudad: 'Teruel', emoji: '🌟' },
-  { nombre: 'Sevilla', comunidad: 'andalucia', provincia: 'sevilla', ciudad: 'Sevilla', emoji: '🌇' },
-  { nombre: 'Málaga', comunidad: 'andalucia', provincia: 'malaga', ciudad: 'Málaga', emoji: '🏖️' },
-  { nombre: 'Granada', comunidad: 'andalucia', provincia: 'granada', ciudad: 'Granada', emoji: '⛰️' },
-]
 
-const ESPACIO_MUNDO = [
-  {
-    icon: '💬',
-    titulo: 'Foro de interinos',
-    desc: 'Comparte dudas, experiencias y consejos con otros interinos de toda España.',
-    slug: 'foro',
-    color: 'from-[#1E3A5F] to-[#0F172A]',
-    badge: 'Nuevo',
-  },
-  {
-    icon: '📋',
-    titulo: 'Tablón de anuncios',
-    desc: 'Ofertas de piso, compañeros de piso y oportunidades publicadas por la comunidad.',
-    slug: 'tablon',
-    color: 'from-[#334155] to-[#1E3A5F]',
-    badge: null,
-  },
-  {
-    icon: '🗺️',
-    titulo: 'Grupos por zona',
-    desc: 'Únete al grupo de WhatsApp o Telegram de tu comunidad autónoma.',
-    slug: 'grupos',
-    color: 'from-[#B8860B] to-[#D4AF37]',
-    badge: '+30 grupos',
-  },
-  {
-    icon: '📰',
-    titulo: 'Noticias y convocatorias',
-    desc: 'Últimas oposiciones, listas de espera y novedades de la administración pública.',
-    slug: 'noticias',
-    color: 'from-[#0F172A] to-[#334155]',
-    badge: null,
-  },
-]
 
 export default function Home() {
   const navigate = useNavigate()
@@ -79,6 +40,7 @@ export default function Home() {
   const [fecha, setFecha] = useState('')
   const [tipoEstancia, setTipoEstancia] = useState('')
   const { properties: pisosDestacados, fetchAll } = useProperties()
+  const { comunidades } = useComunidades()
 
   useEffect(() => {
     fetchAll({ limite: '6' })
@@ -87,6 +49,14 @@ export default function Home() {
   const handleBuscar = () => {
     navigate(`/pisos?ciudad=${encodeURIComponent(ciudad)}&fecha=${fecha}&tipo=${tipoEstancia}`)
   }
+
+  const onSelectCiudad = (city: City | null) => setCiudad(city?.nombre ?? '')
+
+  const destacar = (comunidades || []).slice(0, 6).map(c => ({
+    nombre: c.nombre,
+    slug: c.slug,
+    emoji: '📍',
+  }))
 
   return (
     <PageLayout>
@@ -118,13 +88,10 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
               <div className="flex flex-col items-start px-4 py-2 md:border-r md:border-gray-100">
                 <label className="text-xs text-gray-400 font-semibold mb-1">📍 Destino</label>
-                <input
-                  type="text"
-                  placeholder="Ciudad o provincia…"
+                <CityAutocomplete
                   value={ciudad}
-                  onChange={e => setCiudad(e.target.value)}
-                  onKeyDown={e => e.key === 'Enter' && handleBuscar()}
-                  className="w-full bg-transparent text-gray-900 font-medium focus:outline-none placeholder:text-gray-300 text-sm"
+                  onChange={onSelectCiudad}
+                  placeholder="Ciudad o provincia…"
                 />
               </div>
 
@@ -134,7 +101,7 @@ export default function Home() {
                   type="date"
                   value={fecha}
                   onChange={e => setFecha(e.target.value)}
-                  className="w-full bg-transparent text-gray-900 font-medium focus:outline-none text-sm"
+                  className="w-full bg-transparent text-gray-900 font-medium focus:outline-none text-sm [color-scheme:light] [&::-webkit-calendar-picker-indicator]:opacity-50 [&::-webkit-calendar-picker-indicator]:hover:opacity-100 [&::-webkit-calendar-picker-indicator]:cursor-pointer"
                 />
               </div>
 
@@ -166,12 +133,6 @@ export default function Home() {
               className="bg-white hover:bg-slate-50 text-[#0F172A] font-bold px-5 py-2.5 rounded-2xl transition-all shadow-lg border border-white/40 text-sm"
             >
               🔍 Buscar piso
-            </button>
-            <button
-              onClick={() => navigate('/mundo')}
-              className="bg-white/10 hover:bg-white/15 text-white font-bold px-5 py-2.5 rounded-2xl transition-all shadow-lg border border-white/20 backdrop-blur-md text-sm"
-            >
-              🌍 MundoInterino
             </button>
           </div>
 
@@ -257,16 +218,18 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-6">
-            {DESTACADOS.map(z => (
+            {destacar.length > 0 ? destacar.map(z => (
               <button
-                key={z.nombre}
-                onClick={() => navigate(`/zonas/${z.comunidad}/${z.provincia}/${encodeURIComponent(z.ciudad)}`)}
+                key={z.slug}
+                onClick={() => navigate(`/pisos?comunidad=${encodeURIComponent(z.slug)}`)}
                 className="bg-[#F8F5EF] hover:bg-gray-100 rounded-2xl p-4 text-left border border-gray-100 transition-all shadow-sm"
               >
                 <div className="text-2xl mb-2">{z.emoji}</div>
                 <div className="font-semibold text-gray-900">{z.nombre}</div>
-                <div className="text-xs text-gray-500 mt-1">Ver pisos en {z.ciudad}</div>
+                <div className="text-xs text-gray-500 mt-1">Ver pisos en esta comunidad</div>
               </button>
+            )) : Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="bg-[#F8F5EF] rounded-2xl p-4 border border-gray-100 animate-pulse h-24" />
             ))}
           </div>
         </div>
@@ -304,95 +267,6 @@ export default function Home() {
           >
             Ver todos los pisos
           </button>
-        </div>
-      </section>
-
-      {/* ── ESPACIO MUNDO · COMUNIDAD ────────────────────────────────────── */}
-      <section className="bg-white py-16 px-6 border-y border-gray-100">
-        <div className="max-w-6xl mx-auto">
-
-          {/* Cabecera */}
-          <div className="flex items-end justify-between gap-4 mb-10 flex-wrap">
-            <div>
-              <div className="inline-flex items-center gap-2 bg-[#0F172A] text-[#D4AF37] text-xs font-bold px-3 py-1 rounded-full mb-3 tracking-wide uppercase">
-                🌍 Espacio Mundo
-              </div>
-              <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
-                La comunidad de los interinos
-              </h2>
-              <p className="text-gray-500 max-w-xl">
-                Mucho más que un portal de pisos. Conecta con miles de interinos, comparte información y mantente al día de todo lo que importa.
-              </p>
-            </div>
-            <button
-              onClick={() => navigate('/mundoi')}
-              className="text-[#0F172A] font-semibold hover:underline text-sm whitespace-nowrap"
-            >
-              Explorar comunidad →
-            </button>
-          </div>
-
-          {/* Cards de canales */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {ESPACIO_MUNDO.map(canal => (
-              <button
-                key={canal.slug}
-                onClick={() => navigate(`/mundoi/${canal.slug}`)}
-                className={`bg-gradient-to-br ${canal.color} rounded-3xl p-6 text-white text-left hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group`}
-              >
-                {canal.badge && (
-                  <span className="absolute top-4 right-4 bg-[#D4AF37] text-[#0F172A] text-[10px] font-bold px-2 py-0.5 rounded-full">
-                    {canal.badge}
-                  </span>
-                )}
-                <div className="text-4xl mb-3">{canal.icon}</div>
-                <h3 className="font-bold text-base mb-1">{canal.titulo}</h3>
-                <p className="text-white/75 text-xs leading-relaxed">{canal.desc}</p>
-                <div className="mt-4 text-white/90 text-xs font-semibold group-hover:translate-x-1 transition-transform duration-200">
-                  Acceder →
-                </div>
-              </button>
-            ))}
-          </div>
-
-          {/* Banner de grupos WhatsApp */}
-          <div className="mt-6 bg-gradient-to-r from-[#F8F5EF] to-[#EEE9DF] rounded-3xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-5 border border-gray-100">
-            <div className="flex items-center gap-4">
-              <div className="text-5xl">📲</div>
-              <div>
-                <p className="font-bold text-gray-900 text-base">¿Estás en los grupos de WhatsApp de interinos?</p>
-                <p className="text-gray-500 text-sm mt-0.5">
-                  Miles de compañeros ya comparten pisos, dudas y convocatorias. Únete al grupo de tu zona.
-                </p>
-              </div>
-            </div>
-            <button
-              onClick={() => navigate('/mundo/grupos')}
-              className="bg-[#0F172A] hover:bg-[#1E3A5F] text-white font-bold px-7 py-3 rounded-2xl text-sm transition-all hover:scale-[1.02] shadow-md whitespace-nowrap"
-            >
-              Ver grupos por zona
-            </button>
-          </div>
-
-          {/* Stats de comunidad */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
-            {[
-              { valor: '+8.000', label: 'Interinos en la comunidad', icon: '👥' },
-              { valor: '+30', label: 'Grupos por comunidad autónoma', icon: '🗺️' },
-              { valor: '+500', label: 'Mensajes al día', icon: '💬' },
-              { valor: '100%', label: 'Gratuito para interinos', icon: '🎁' },
-            ].map(stat => (
-              <div
-                key={stat.label}
-                className="bg-[#F8F5EF] rounded-2xl p-4 text-center border border-gray-100"
-              >
-                <div className="text-2xl mb-1">{stat.icon}</div>
-                <div className="text-xl font-bold text-[#0F172A]">{stat.valor}</div>
-                <div className="text-xs text-gray-500 mt-0.5 leading-tight">{stat.label}</div>
-              </div>
-            ))}
-          </div>
-
         </div>
       </section>
     </PageLayout>

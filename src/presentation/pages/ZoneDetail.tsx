@@ -1,38 +1,21 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import axios from 'axios'
 import Navbar from '../components/Navbar'
 import PageLayout from '../components/layout/PageLayout'
-import type { Piso } from '../../types'
-
-const API = import.meta.env.VITE_API_URL
+import { useProperties } from '../hooks/useProperties'
 
 export default function ZoneDetail() {
   const navigate = useNavigate()
   const { comunidad, provincia, ciudad } = useParams()
-  const [pisos, setPisos] = useState<Piso[]>([])
-  const [cargando, setCargando] = useState(true)
+  const { properties: pisos, fetchAll, loading: cargando } = useProperties()
 
   useEffect(() => {
-    const cargar = async () => {
-      try {
-        const res = await axios.get(`${API}/pisos`, {
-          params: {
-            comunidad,
-            provincia,
-            ciudad: decodeURIComponent(ciudad!),
-            limite: 24,
-          },
-        })
-        setPisos(res.data.pisos || [])
-      } catch {
-        setPisos([])
-      } finally {
-        setCargando(false)
-      }
-    }
-
-    cargar()
+    fetchAll({
+      comunidad,
+      provincia,
+      ciudad: decodeURIComponent(ciudad!),
+      limite: '24',
+    })
   }, [comunidad, provincia, ciudad])
 
   return (

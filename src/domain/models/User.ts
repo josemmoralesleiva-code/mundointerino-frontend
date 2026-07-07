@@ -13,6 +13,7 @@ export interface User {
   rol: Role
   telefono: string
   verificacionEstado: VerificationStatus
+  emailVerificado?: boolean
   motivoRechazo?: string
   tipoDocumento?: DocumentType | null
   administracion?: Administration | null

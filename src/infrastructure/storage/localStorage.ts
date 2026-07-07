@@ -1,15 +1,10 @@
 import type { AuthUser } from '../dto/auth.dto'
 
 const KEYS = {
-  token: 'token',
   usuario: 'usuario',
 } as const
 
 export const storage = {
-  getToken(): string | null {
-    return localStorage.getItem(KEYS.token)
-  },
-
   getUser(): AuthUser | null {
     const raw = localStorage.getItem(KEYS.usuario)
     if (!raw) return null
@@ -20,8 +15,7 @@ export const storage = {
     }
   },
 
-  setAuth(token: string, user: AuthUser): void {
-    localStorage.setItem(KEYS.token, token)
+  setUser(user: AuthUser): void {
     localStorage.setItem(KEYS.usuario, JSON.stringify(user))
   },
 
@@ -29,8 +23,7 @@ export const storage = {
     localStorage.setItem(KEYS.usuario, JSON.stringify(user))
   },
 
-  clearAuth(): void {
-    localStorage.removeItem(KEYS.token)
+  clearUser(): void {
     localStorage.removeItem(KEYS.usuario)
   },
 }

@@ -2,7 +2,9 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useProperties } from '../hooks/useProperties'
 import Navbar from '../components/Navbar'
+import CityAutocomplete from '../components/ui/CityAutocomplete'
 import PageLayout from '../components/layout/PageLayout'
+import type { City } from '../../domain/models/City'
 
 const SERVICIOS_OPCIONES = [
   'WiFi', 'Calefacción', 'Aire acondicionado', 'Lavadora',
@@ -22,10 +24,14 @@ export default function NewProperty() {
   const [paso, setPaso] = useState(1)
   const [cargando, setCargando] = useState(false)
   const [error, setError] = useState('')
-  const [imagenes, setImagenes] = useState([])
-  const [previews, setPreviews] = useState([])
-  const [form, setForm] = useState({
-    titulo: '', descripcion: '', ciudad: '', barrio: '',
+  const [imagenes, setImagenes] = useState<File[]>([])
+  const [previews, setPreviews] = useState<string[]>([])
+  const [form, setForm] = useState<{
+    titulo: string; descripcion: string; ciudad: string; comunidad: string; provincia: string; barrio: string;
+    precio: string; precioDia: string; tipoEstancia: string; habitaciones: string;
+    banos: string; metros: string; planta: string; fianza: string; disponible: string; servicios: string[]
+  }>({
+    titulo: '', descripcion: '', ciudad: '', comunidad: '', provincia: '', barrio: '',
     precio: '', precioDia: '', tipoEstancia: '', habitaciones: '',
     banos: '', metros: '', planta: '', fianza: '', disponible: '', servicios: []
   })
@@ -33,12 +39,15 @@ export default function NewProperty() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => setForm({ ...form, [e.target.name]: e.target.value })
 
   const toggleServicio = (servicio: string) => {
-    setForm(prev => ({
-      ...prev,
-      servicios: prev.servicios.includes(servicio)
-        ? prev.servicios.filter(s => s !== servicio)
-        : [...prev.servicios, servicio]
-    }))
+    setForm(prev => {
+      const servicios = Array.isArray(prev.servicios) ? prev.servicios : []
+      return {
+        ...prev,
+        servicios: servicios.includes(servicio)
+          ? servicios.filter(s => s !== servicio)
+          : [...servicios, servicio]
+      }
+    })
   }
 
   const handleImagenesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -93,6 +102,8 @@ export default function NewProperty() {
       formData.append('titulo', form.titulo)
       formData.append('descripcion', form.descripcion)
       formData.append('ciudad', form.ciudad)
+      formData.append('comunidad', form.comunidad || '')
+      formData.append('provincia', form.provincia || '')
       formData.append('barrio', form.barrio || '')
       formData.append('precio', form.precio)
       formData.append('precioDia', form.precioDia || '')
@@ -193,14 +204,20 @@ export default function NewProperty() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm font-medium text-gray-700 mb-1 block">Ciudad *</label>
-                  <select name="ciudad" value={form.ciudad} onChange={handleChange}
-                    className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 transition-colors">
-                    <option value="">Selecciona ciudad</option>
-                    <option value="Zaragoza">Zaragoza</option>
-                    <option value="Huesca">Huesca</option>
-                    <option value="Teruel">Teruel</option>
-                    <option value="Otra">Otra</option>
-                  </select>
+                  <div className="border border-gray-200 rounded-xl px-4 py-3 focus-within:border-primary-500 transition-colors">
+                    <CityAutocomplete
+                      value={form.ciudad}
+                      onChange={(c: City | null) =>
+                        setForm(f => ({
+                          ...f,
+                          ciudad: c?.nombre ?? '',
+                          provincia: c?.provincia ?? '',
+                          comunidad: c?.comunidad ?? '',
+                        }))
+                      }
+                      placeholder="Busca una ciudad..."
+                    />
+                  </div>
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-700 mb-1 block">Barrio (opcional)</label>
@@ -245,7 +262,7 @@ export default function NewProperty() {
                 ].map(f => (
                   <div key={f.name}>
                     <label className="text-sm font-medium text-gray-700 mb-1 block">{f.label}</label>
-                    <input type={f.type} name={f.name} value={form[f.name]} onChange={handleChange}
+                    <input type={f.type} name={f.name} value={(form as any)[f.name]} onChange={handleChange}
                       placeholder={f.placeholder} min={f.min}
                       className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 transition-colors" />
                   </div>
@@ -269,7 +286,7 @@ export default function NewProperty() {
                 <div>
                   <label className="text-sm font-medium text-gray-700 mb-1 block">Disponible desde *</label>
                   <input type="date" name="disponible" value={form.disponible} onChange={handleChange}
-                    className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 transition-colors" />
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 transition-colors [color-scheme:light]" />
                 </div>
               </div>
             </div>

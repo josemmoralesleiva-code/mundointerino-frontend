@@ -5,8 +5,7 @@ import {
   updateAdminUsuarioUseCase,
   impersonateUserUseCase,
 } from '../../application/useCases/admin'
-import type { AdminStats, AdminUsuariosResponse } from '../../infrastructure/dto/admin.dto'
-import type { AuthResponse } from '../../infrastructure/dto/auth.dto'
+import type { AdminStats, AdminUsuariosResponse, ImpersonateResponse } from '../../infrastructure/dto/admin.dto'
 
 export function useAdmin() {
   const [stats, setStats] = useState<AdminStats | null>(null)
@@ -56,15 +55,10 @@ export function useAdmin() {
     verificacionEstado?: string
     motivoRechazo?: string
   }) => {
-    try {
-      const updated = await updateAdminUsuarioUseCase(id, data)
-      return updated
-    } catch (err: any) {
-      throw err
-    }
+    return updateAdminUsuarioUseCase(id, data)
   }, [])
 
-  const impersonate = useCallback(async (userId: string): Promise<AuthResponse> => {
+  const impersonate = useCallback(async (userId: string): Promise<ImpersonateResponse> => {
     const res = await impersonateUserUseCase(userId)
     return res
   }, [])

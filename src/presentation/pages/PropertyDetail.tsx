@@ -55,7 +55,7 @@ export default function PropertyDetail() {
   const fotos = piso.fotos?.length > 0 ? piso.fotos : null
   const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((piso.ciudad || '') + ' ' + (piso.barrio || ''))}`
 
-  const serviciosIconos = {
+  const serviciosIconos: Record<string, string> = {
     WiFi: '📶',
     Calefacción: '🔥',
     'Aire acondicionado': '❄️',

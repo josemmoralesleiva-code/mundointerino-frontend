@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
+import CityAutocomplete from '../components/ui/CityAutocomplete'
 import PageLayout from '../components/layout/PageLayout'
 import { useProperties } from '../hooks/useProperties'
+import type { City } from '../../domain/models/City'
 
 type EditPropertyFormData = Record<string, any>
 
@@ -52,16 +54,16 @@ export default function EditProperty() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
-    setForm(prev => ({ ...prev, [name]: value }))
+    setForm(prev => prev ? ({ ...prev, [name]: value }) : prev)
   }
 
   const toggleServicio = (servicio: string) => {
-    setForm(prev => ({
+    setForm(prev => prev ? ({
       ...prev,
-      servicios: prev.servicios.includes(servicio)
+      servicios: Array.isArray(prev.servicios) && prev.servicios.includes(servicio)
         ? prev.servicios.filter((s: string) => s !== servicio)
-        : [...prev.servicios, servicio]
-    }))
+        : [...(prev.servicios || []), servicio]
+    }) : prev)
   }
 
   const handleImagenesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -81,13 +83,14 @@ export default function EditProperty() {
   }
 
   const eliminarFotoActual = (i: number) => {
-    setForm(prev => ({
+    setForm(prev => prev ? ({
       ...prev,
-      fotosActuales: prev.fotosActuales.filter((_: string, idx: number) => idx !== i)
-    }))
+      fotosActuales: Array.isArray(prev.fotosActuales) ? prev.fotosActuales.filter((_: string, idx: number) => idx !== i) : []
+    }) : prev)
   }
 
   const validarPaso = () => {
+    if (!form) return false
     if (paso === 1 && (!form.titulo || !form.descripcion || !form.ciudad)) {
       setError('Por favor rellena título, descripción y ciudad.')
       return false
@@ -118,6 +121,7 @@ export default function EditProperty() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (paso !== 3) return // 🔒 Guardia extra
+    if (!form) return // 🔒 Guardia extra
     setGuardando(true)
     setError('')
     try {
@@ -127,6 +131,8 @@ export default function EditProperty() {
       formData.append('titulo', form.titulo || '')
       formData.append('descripcion', form.descripcion || '')
       formData.append('ciudad', form.ciudad || '')
+      formData.append('comunidad', form.comunidad || '')
+      formData.append('provincia', form.provincia || '')
       formData.append('barrio', form.barrio || '')
       formData.append('contacto', form.contacto || '')
       formData.append('precio', form.precio || '')
@@ -273,14 +279,20 @@ export default function EditProperty() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm font-medium text-gray-700 mb-1 block">Ciudad *</label>
-                  <select name="ciudad" value={form.ciudad || ''} onChange={handleChange}
-                    className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 transition-colors">
-                    <option value="">Selecciona ciudad</option>
-                    <option value="Zaragoza">Zaragoza</option>
-                    <option value="Huesca">Huesca</option>
-                    <option value="Teruel">Teruel</option>
-                    <option value="Otra">Otra</option>
-                  </select>
+                  <div className="border border-gray-200 rounded-xl px-4 py-3 focus-within:border-primary-500 transition-colors">
+                    <CityAutocomplete
+                      value={form.ciudad || ''}
+                      onChange={(c: City | null) =>
+                        setForm((f: any) => ({
+                          ...f,
+                          ciudad: c?.nombre ?? '',
+                          provincia: c?.provincia ?? '',
+                          comunidad: c?.comunidad ?? '',
+                        }))
+                      }
+                      placeholder="Busca una ciudad..."
+                    />
+                  </div>
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-700 mb-1 block">Barrio (opcional)</label>
@@ -310,7 +322,7 @@ export default function EditProperty() {
                 <div className="grid grid-cols-3 gap-3">
                   {[['larga','📅 Larga'],['corta','🌙 Corta'],['ambas','✅ Ambas']].map(([val, label]) => (
                     <button key={val} type="button"
-                      onClick={() => setForm(prev => ({ ...prev, tipoEstancia: val }))}
+                      onClick={() => setForm(prev => prev ? ({ ...prev, tipoEstancia: val }) : prev)}
                       className={`py-3 px-2 rounded-xl border-2 text-sm font-medium transition-all ${
                         form.tipoEstancia === val
                           ? 'border-primary-700 bg-primary-50 text-primary-700'
@@ -360,7 +372,7 @@ export default function EditProperty() {
                 <div>
                   <label className="text-sm font-medium text-gray-700 mb-1 block">Disponible desde</label>
                   <input type="date" name="disponible" value={form.disponible?.substring(0,10) || ''} onChange={handleChange}
-                    className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 transition-colors" />
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 transition-colors [color-scheme:light]" />
                 </div>
               </div>
 
@@ -368,7 +380,7 @@ export default function EditProperty() {
               <div className={`flex items-center justify-between p-4 rounded-xl border-2 cursor-pointer transition-all ${
                 form.activo !== false ? 'border-green-200 bg-green-50' : 'border-orange-200 bg-orange-50'
               }`}
-                onClick={() => setForm(prev => ({ ...prev, activo: !prev.activo }))}>
+                onClick={() => setForm(prev => prev ? ({ ...prev, activo: !prev.activo }) : prev)}>
                 <div>
                   <p className="font-medium text-sm text-gray-800">Estado del anuncio</p>
                   <p className="text-xs text-gray-500 mt-0.5">

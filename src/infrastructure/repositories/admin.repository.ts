@@ -1,6 +1,5 @@
 import api from '../http/axiosClient'
-import type { AdminStats, AdminUsuariosResponse, AdminUpdateUserRequest } from '../dto/admin.dto'
-import type { AuthResponse } from '../dto/auth.dto'
+import type { AdminStats, AdminUsuariosResponse, AdminUpdateUserRequest, ImpersonateResponse } from '../dto/admin.dto'
 import type { User } from '../../domain/models'
 
 const adminRepository = {
@@ -24,9 +23,13 @@ const adminRepository = {
     return res.data
   },
 
-  async impersonate(userId: string): Promise<AuthResponse> {
-    const res = await api.post<AuthResponse>(`/admin/usuarios/${userId}/impersonate`)
+  async impersonate(userId: string): Promise<ImpersonateResponse> {
+    const res = await api.post<ImpersonateResponse>(`/admin/usuarios/${userId}/impersonate`)
     return res.data
+  },
+
+  async endImpersonation(): Promise<void> {
+    await api.post('/admin/end-impersonation')
   },
 }
 

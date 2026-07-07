@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import PageLayout from '../components/layout/PageLayout'
-import { useAuthStore } from '../store/auth.store'
+import { useAuth } from '../hooks/useAuth'
 import { useUsers } from '../hooks/useUsers'
 import type { User } from '../../domain/models'
 
@@ -23,7 +23,7 @@ function traducirMotivo(motivo?: string): string {
 
 export default function Profile() {
   const navigate = useNavigate()
-  const { user, logout } = useAuthStore()
+  const { user, logout, updateUser } = useAuth()
   const { profile, loading, error, fetchProfile, updateProfile, changePassword, setError, deleteDocument } = useUsers()
 
   const [form, setForm] = useState({ nombre: '', email: '', telefono: '' })
@@ -99,8 +99,7 @@ export default function Profile() {
   }
 
   const cerrarSesion = () => {
-    logout()
-    navigate('/login')
+    void logout()
   }
 
   const handleEliminarDocumento = async () => {
@@ -615,12 +614,6 @@ export default function Profile() {
                   className="w-full bg-[#0F172A] hover:bg-[#1E3A5F] text-white py-3 rounded-2xl font-bold text-sm transition-all hover:scale-[1.02] shadow-md"
                 >
                   📊 Ir a mi panel
-                </button>
-                <button
-                  onClick={() => navigate('/mundo')}
-                  className="w-full border border-[#0F172A] text-[#0F172A] py-3 rounded-2xl font-bold text-sm hover:bg-[#F8F5EF] transition-all"
-                >
-                  🌍 Espacio Mundo
                 </button>
                 <button
                   onClick={() => navigate('/pisos')}

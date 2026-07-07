@@ -1,52 +1,112 @@
 import { useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../store/auth.store'
-import { loginUseCase } from '../../application/useCases/auth'
-import { registerUseCase } from '../../application/useCases/auth'
+import {
+  loginUseCase,
+  registerUseCase,
+  verifyEmailUseCase,
+  resendVerificationUseCase,
+  meUseCase,
+  logoutUseCase,
+} from '../../application/useCases/auth'
 import { clearAdminSession } from '../components/ImpersonationBanner'
-import type { LoginRequest, RegisterRequest } from '../../infrastructure/dto/auth.dto'
+import { storage } from '../../infrastructure/storage/localStorage'
+import type { LoginRequest, RegisterRequest, AuthUser } from '../../infrastructure/dto/auth.dto'
+
+export type VerifyEmailHookError = string | undefined
+
+const redirectByRole = (usuario: AuthUser, navigate: (to: string) => void) => {
+  if (usuario.rol === 'admin') { navigate('/admin'); return }
+  if (usuario.rol === 'propietario') {
+    if (usuario.verificacionEstado !== 'verificado') { navigate('/verificacion-propietario'); return }
+    navigate('/dashboard'); return
+  }
+  if (usuario.rol === 'docente') {
+    if (usuario.verificacionEstado !== 'verificado') { navigate('/verificacion-docente'); return }
+    navigate('/dashboard'); return
+  }
+  navigate('/dashboard')
+}
 
 export function useAuth() {
   const navigate = useNavigate()
-  const { user, token, isAuthenticated, login: storeLogin, logout: storeLogout, hydrate } = useAuthStore()
+  const { user, isAuthenticated, isBootstrapping, login: storeLogin, logout: storeLogout, updateUser, setBootstrapping } = useAuthStore()
 
   const login = useCallback(async (data: LoginRequest) => {
-    const response = await loginUseCase(data)
-    storeLogin(response.token, response.usuario)
-
-    if (response.usuario.rol === 'admin') { navigate('/admin'); return }
-    if (response.usuario.rol === 'propietario') {
-      if (response.usuario.verificacionEstado !== 'verificado') { navigate('/verificacion-propietario'); return }
-      navigate('/dashboard'); return
-    }
-    if (response.usuario.rol === 'docente') {
-      if (response.usuario.verificacionEstado !== 'verificado') { navigate('/verificacion-docente'); return }
-      navigate('/dashboard'); return
-    }
-    navigate('/dashboard')
+    const usuario = await loginUseCase(data)
+    storeLogin(usuario)
+    redirectByRole(usuario, navigate)
   }, [navigate, storeLogin])
 
   const register = useCallback(async (data: RegisterRequest) => {
-    const response = await registerUseCase(data)
-    storeLogin(response.token, response.usuario)
+    await registerUseCase(data)
+    const emailEncoded = encodeURIComponent(data.email)
+    navigate(`/verificar-email-pendiente?email=${emailEncoded}`)
+  }, [navigate])
 
-    if (response.usuario.rol === 'propietario') { navigate('/verificacion-propietario'); return }
-    navigate('/verificacion-docente')
+  const verifyEmail = useCallback(async (token: string): Promise<{ ok: boolean; error?: VerifyEmailHookError }> => {
+    try {
+      const res = await verifyEmailUseCase(token)
+      storeLogin(res.usuario)
+      redirectByRole(res.usuario, navigate)
+      return { ok: true }
+    } catch (err: any) {
+      const code = err?.response?.data?.error as string | undefined
+      return { ok: false, error: code }
+    }
   }, [navigate, storeLogin])
 
-  const logout = useCallback(() => {
+  const resendVerification = useCallback(async (email: string): Promise<{ ok: boolean; error?: VerifyEmailHookError }> => {
+    try {
+      await resendVerificationUseCase(email)
+      return { ok: true }
+    } catch (err: any) {
+      const code = err?.response?.data?.error as string | undefined
+      return { ok: false, error: code }
+    }
+  }, [])
+
+  const logout = useCallback(async () => {
+    try {
+      await logoutUseCase()
+    } catch {
+      // best-effort: limpiamos estado local aunque falle la llamada al servidor
+    }
     storeLogout()
     clearAdminSession()
-    navigate('/login')
+    navigate('/')
   }, [navigate, storeLogout])
+
+  const bootstrap = useCallback(async () => {
+    // Solo validamos contra el backend si había una sesión cacheada;
+    // si no hay usuario guardado, no tiene sentido llamar a /me ni disparar
+    // refresh (la cookie httpOnly no se puede leer desde JS).
+    const cached = storage.getUser()
+    if (!cached) {
+      setBootstrapping(false)
+      return
+    }
+    setBootstrapping(true)
+    try {
+      const usuario = await meUseCase()
+      storeLogin(usuario)
+    } catch {
+      storeLogout()
+    } finally {
+      setBootstrapping(false)
+    }
+  }, [storeLogin, storeLogout, setBootstrapping])
 
   return {
     user,
-    token,
     isAuthenticated,
+    isBootstrapping,
     login,
     register,
+    verifyEmail,
+    resendVerification,
     logout,
-    hydrate,
+    updateUser,
+    bootstrap,
   }
 }

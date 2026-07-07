@@ -29,7 +29,7 @@ export default function TeacherVerification() {
   const [administracion, setAdministracion] = useState('')
   const [tipoDoc, setTipoDoc] = useState('')
   const [archivo, setArchivo] = useState<File | null>(null)
-  const [preview, setPreview] = useState(null)
+  const [preview, setPreview] = useState<string | null>(null)
 
   const rechazado = user?.verificacionEstado === 'rechazado'
   const traducirMotivo = () => {

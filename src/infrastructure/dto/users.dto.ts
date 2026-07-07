@@ -1,6 +1,6 @@
 import type { User } from '../../domain/models'
 
-export interface UsersListResponse extends Array<User> {}
+export type UsersListResponse = User[]
 
 export interface UpdateProfileRequest {
   nombre: string

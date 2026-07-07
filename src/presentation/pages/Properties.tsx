@@ -5,10 +5,13 @@ import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
 import Navbar from '../components/Navbar'
 import PropertyCard from '../components/PropertyCard'
+import CityAutocomplete from '../components/ui/CityAutocomplete'
 import PageLayout from '../components/layout/PageLayout'
 import { useProperties } from '../hooks/useProperties'
+import { useComunidades } from '../hooks/useCities'
+import type { City } from '../../domain/models/City'
 
-delete L.Icon.Default.prototype._getIconUrl
+delete (L.Icon.Default.prototype as any)._getIconUrl
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
   iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
@@ -30,10 +33,126 @@ export default function Properties() {
   const [precioMin, setPrecioMin] = useState('')
   const [precioMax, setPrecioMax] = useState('')
   const [habitaciones, setHabitaciones] = useState('')
+  const [filtrosAbiertos, setFiltrosAbiertos] = useState(false)
+  const { comunidades, loading: cargandoComunidades } = useComunidades()
 
   const fetchPisos = (c: string, f: string, t: string, co: string, pro: string) => {
     fetchAll({ ciudad: c, fecha: f, tipo: t, comunidad: co, provincia: pro })
   }
+
+  const limpiarFiltros = () => {
+    setPrecioMin('')
+    setPrecioMax('')
+    setHabitaciones('')
+    setTipoEstancia('')
+    setComunidad('')
+    setCiudad('')
+    setFecha('')
+    fetchPisos('', '', '', '', '')
+  }
+
+  const contenidoFiltros = () => (
+    <>
+      <div className="mb-5">
+        <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2 block">
+          💶 Precio (€)
+        </label>
+        <div className="flex gap-2">
+          <input
+            type="number"
+            placeholder="Mín"
+            value={precioMin}
+            onChange={e => setPrecioMin(e.target.value)}
+            className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-[#0F172A]"
+          />
+          <input
+            type="number"
+            placeholder="Máx"
+            value={precioMax}
+            onChange={e => setPrecioMax(e.target.value)}
+            className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-[#0F172A]"
+          />
+        </div>
+      </div>
+
+      <div className="mb-5">
+        <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2 block">
+          🛏️ Habitaciones mínimas
+        </label>
+        <div className="flex gap-2 flex-wrap">
+          {['', '1', '2', '3', '4'].map(n => (
+            <button
+              key={n}
+              onClick={() => setHabitaciones(n)}
+              className={`px-3 py-1.5 rounded-xl text-xs font-medium border transition-all ${
+                habitaciones === n
+                  ? 'bg-[#0F172A] text-white border-[#0F172A]'
+                  : 'border-gray-200 text-gray-600 hover:border-[#0F172A]'
+              }`}
+            >
+              {n === '' ? 'Todas' : `${n}+`}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="mb-5">
+        <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2 block">
+          ⏱️ Tipo de estancia
+        </label>
+        <div className="flex flex-col gap-2">
+          {[['', 'Cualquiera'], ['corta', '⚡ Corta (días/semanas)'], ['larga', '📅 Larga (meses)']].map(([val, label]) => (
+            <button
+              key={val}
+              onClick={() => setTipoEstancia(val)}
+              className={`text-left px-3 py-2 rounded-xl text-sm font-medium border transition-all ${
+                tipoEstancia === val
+                  ? 'bg-[#0F172A] text-white border-[#0F172A]'
+                  : 'border-gray-200 text-gray-600 hover:border-[#0F172A]'
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="mb-5">
+        <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2 block">
+          🏞️ Comunidad
+        </label>
+        <div className="flex flex-col gap-2">
+          <button
+            onClick={() => setComunidad('')}
+            className={`text-left px-3 py-2 rounded-xl text-sm font-medium border transition-all ${
+              comunidad === ''
+                ? 'bg-[#0F172A] text-white border-[#0F172A]'
+                : 'border-gray-200 text-gray-600 hover:border-[#0F172A]'
+            }`}
+          >
+            Todas
+          </button>
+          {cargandoComunidades
+            ? Array.from({ length: 3 }).map((_, i) => (
+                <div key={i} className="h-9 rounded-xl bg-gray-100 animate-pulse" />
+              ))
+            : (comunidades ?? []).map(c => (
+                <button
+                  key={c.slug}
+                  onClick={() => setComunidad(c.slug)}
+                  className={`text-left px-3 py-2 rounded-xl text-sm font-medium border transition-all ${
+                    comunidad === c.slug
+                      ? 'bg-[#0F172A] text-white border-[#0F172A]'
+                      : 'border-gray-200 text-gray-600 hover:border-[#0F172A]'
+                  }`}
+                >
+                  {c.nombre}
+                </button>
+              ))}
+        </div>
+      </div>
+    </>
+  )
 
   useEffect(() => {
     fetchPisos(ciudad, fecha, tipoEstancia, comunidad, provincia)
@@ -54,7 +173,9 @@ export default function Properties() {
       orden === 'precio_asc' ? a.precio - b.precio : b.precio - a.precio
     )
 
-  const pisosConCoordenadas = pisosOrdenados.filter(p => p.lat && p.lng)
+  const pisosConCoordenadas = pisosOrdenados.filter(
+    (p): p is typeof p & { lat: number; lng: number } => Boolean(p.lat && p.lng),
+  )
 
   return (
     <PageLayout>
@@ -76,14 +197,14 @@ export default function Properties() {
           <div className="flex flex-col md:flex-row gap-2 items-end">
             <div className="flex-1">
               <label className="text-xs text-gray-400 font-medium mb-1 block">📍 Ciudad o provincia</label>
-              <input
-                type="text"
-                placeholder="Ej: Zaragoza, Sevilla, Huesca..."
-                value={ciudad}
-                onChange={e => setCiudad(e.target.value)}
-                onKeyDown={e => e.key === 'Enter' && handleBuscar()}
-                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm text-gray-700 focus:outline-none focus:border-[#0F172A] transition-colors"
-              />
+              <div className="border border-gray-200 rounded-xl px-3 py-2 focus-within:border-[#0F172A] transition-colors">
+                <CityAutocomplete
+                  value={ciudad}
+                  onChange={(c: City | null) => setCiudad(c?.nombre ?? '')}
+                  placeholder="Ej: Zaragoza, Sevilla, Huesca..."
+                  params={comunidad ? { comunidad } : undefined}
+                />
+              </div>
             </div>
             <div>
               <label className="text-xs text-gray-400 font-medium mb-1 block">📅 Desde</label>
@@ -91,7 +212,7 @@ export default function Properties() {
                 type="date"
                 value={fecha}
                 onChange={e => setFecha(e.target.value)}
-                className="border border-gray-200 rounded-xl px-3 py-2 text-sm text-gray-700 focus:outline-none focus:border-[#0F172A]"
+                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm text-gray-700 focus:outline-none focus:border-[#0F172A] [color-scheme:light]"
               />
             </div>
             <div>
@@ -114,8 +235,9 @@ export default function Properties() {
                 className="border border-gray-200 rounded-xl px-3 py-2 text-sm text-gray-700 focus:outline-none focus:border-[#0F172A]"
               >
                 <option value="">Cualquiera</option>
-                <option value="aragon">Aragón</option>
-                <option value="andalucia">Andalucía</option>
+                {(comunidades ?? []).map(c => (
+                  <option key={c.slug} value={c.slug}>{c.nombre}</option>
+                ))}
               </select>
             </div>
             <button
@@ -124,9 +246,54 @@ export default function Properties() {
             >
               🔍 Buscar
             </button>
+            <button
+              onClick={() => setFiltrosAbiertos(true)}
+              className="lg:hidden border border-gray-200 text-slate-700 px-4 py-2.5 rounded-xl font-bold text-sm transition-all hover:bg-slate-50"
+            >
+              ⚙️ Filtros
+            </button>
           </div>
         </div>
       </div>
+
+      {/* DRAWER FILTROS (móvil) */}
+      {filtrosAbiertos && (
+        <div className="lg:hidden fixed inset-0 z-50 flex">
+          <div
+            className="absolute inset-0 bg-[#0F172A]/50 backdrop-blur-sm"
+            onClick={() => setFiltrosAbiertos(false)}
+          />
+          <div className="relative ml-auto w-full max-w-sm h-full bg-white shadow-2xl flex flex-col">
+            <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+              <h3 className="font-bold text-gray-900 text-sm">Filtros</h3>
+              <button
+                onClick={() => setFiltrosAbiertos(false)}
+                className="text-gray-400 hover:text-gray-700 text-2xl leading-none"
+                aria-label="Cerrar"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto px-5 py-4">
+              {contenidoFiltros()}
+            </div>
+            <div className="px-5 py-4 border-t border-gray-100 flex flex-col gap-2">
+              <button
+                onClick={() => { handleBuscar(); setFiltrosAbiertos(false) }}
+                className="w-full bg-[#D4AF37] hover:bg-[#B8860B] text-[#0F172A] py-3 rounded-2xl font-bold text-sm transition-all"
+              >
+                Aplicar
+              </button>
+              <button
+                onClick={limpiarFiltros}
+                className="w-full text-center text-xs text-slate-400 hover:text-slate-600 transition-colors"
+              >
+                Limpiar filtros
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* LAYOUT PRINCIPAL */}
       <div className="max-w-7xl mx-auto px-6 py-6 flex gap-6">
@@ -136,94 +303,7 @@ export default function Properties() {
           <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-5 sticky top-[140px]">
             <h3 className="font-bold text-gray-900 mb-4 text-sm">Filtros</h3>
 
-            {/* Precio */}
-            <div className="mb-5">
-              <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2 block">
-                💶 Precio (€)
-              </label>
-              <div className="flex gap-2">
-                <input
-                  type="number"
-                  placeholder="Mín"
-                  value={precioMin}
-                  onChange={e => setPrecioMin(e.target.value)}
-                  className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-[#0F172A]"
-                />
-                <input
-                  type="number"
-                  placeholder="Máx"
-                  value={precioMax}
-                  onChange={e => setPrecioMax(e.target.value)}
-                  className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-[#0F172A]"
-                />
-              </div>
-            </div>
-
-            {/* Habitaciones */}
-            <div className="mb-5">
-              <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2 block">
-                🛏️ Habitaciones mínimas
-              </label>
-              <div className="flex gap-2 flex-wrap">
-                {['', '1', '2', '3', '4'].map(n => (
-                  <button
-                    key={n}
-                    onClick={() => setHabitaciones(n)}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-medium border transition-all ${
-                      habitaciones === n
-                        ? 'bg-[#0F172A] text-white border-[#0F172A]'
-                        : 'border-gray-200 text-gray-600 hover:border-[#0F172A]'
-                    }`}
-                  >
-                    {n === '' ? 'Todas' : `${n}+`}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Tipo estancia sidebar */}
-            <div className="mb-5">
-              <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2 block">
-                ⏱️ Tipo de estancia
-              </label>
-              <div className="flex flex-col gap-2">
-                {[['', 'Cualquiera'], ['corta', '⚡ Corta (días/semanas)'], ['larga', '📅 Larga (meses)']].map(([val, label]) => (
-                  <button
-                    key={val}
-                    onClick={() => setTipoEstancia(val)}
-                    className={`text-left px-3 py-2 rounded-xl text-sm font-medium border transition-all ${
-                      tipoEstancia === val
-                        ? 'bg-[#0F172A] text-white border-[#0F172A]'
-                        : 'border-gray-200 text-gray-600 hover:border-[#0F172A]'
-                    }`}
-                  >
-                    {label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Comunidad sidebar */}
-            <div className="mb-5">
-              <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2 block">
-                🏞️ Comunidad
-              </label>
-              <div className="flex flex-col gap-2">
-                {[['', 'Todas'], ['aragon', '🏔️ Aragón'], ['andalucia', '🌞 Andalucía']].map(([val, label]) => (
-                  <button
-                    key={val}
-                    onClick={() => setComunidad(val)}
-                    className={`text-left px-3 py-2 rounded-xl text-sm font-medium border transition-all ${
-                      comunidad === val
-                        ? 'bg-[#0F172A] text-white border-[#0F172A]'
-                        : 'border-gray-200 text-gray-600 hover:border-[#0F172A]'
-                    }`}
-                  >
-                    {label}
-                  </button>
-                ))}
-              </div>
-            </div>
+            {contenidoFiltros()}
 
             <button
               onClick={handleBuscar}
@@ -233,16 +313,7 @@ export default function Properties() {
             </button>
 
             <button
-              onClick={() => {
-                setPrecioMin('')
-                setPrecioMax('')
-                setHabitaciones('')
-                setTipoEstancia('')
-                setComunidad('')
-                setCiudad('')
-                setFecha('')
-                fetchPisos('', '', '', '', '')
-              }}
+              onClick={limpiarFiltros}
               className="w-full text-center text-xs text-slate-400 hover:text-slate-600 mt-3 transition-colors"
             >
               Limpiar filtros

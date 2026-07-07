@@ -1,6 +1,6 @@
 import adminRepository from '../../../infrastructure/repositories/admin.repository'
-import type { AuthResponse } from '../../../infrastructure/dto/auth.dto'
+import type { ImpersonateResponse } from '../../../infrastructure/dto/admin.dto'
 
-export const impersonateUserUseCase = async (userId: string): Promise<AuthResponse> => {
+export const impersonateUserUseCase = async (userId: string): Promise<ImpersonateResponse> => {
   return adminRepository.impersonate(userId)
 }

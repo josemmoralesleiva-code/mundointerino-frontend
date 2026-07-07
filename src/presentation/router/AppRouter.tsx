@@ -3,6 +3,8 @@ import PrivateRoute from './PrivateRoute'
 import Home from '../pages/Home'
 import Login from '../pages/Login'
 import Register from '../pages/Register'
+import VerifyEmailPending from '../pages/VerifyEmailPending'
+import VerifyEmail from '../pages/VerifyEmail'
 import Dashboard from '../pages/Dashboard'
 import NewProperty from '../pages/NewProperty'
 import Properties from '../pages/Properties'
@@ -29,6 +31,8 @@ export default function AppRouter() {
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
       <Route path="/registro" element={<Register />} />
+      <Route path="/verificar-email-pendiente" element={<VerifyEmailPending />} />
+      <Route path="/verificar-email" element={<VerifyEmail />} />
       <Route path="/pisos" element={<Properties />} />
       <Route
         path="/pisos/nuevo"
@@ -38,7 +42,7 @@ export default function AppRouter() {
           </PrivateRoute>
         }
       />
-      <Route path="/pisos/:id" element={<PropertyDetail />} />
+      <Route path="/pisos/:id" element={<PrivateRoute><PropertyDetail /></PrivateRoute>} />
       <Route
         path="/pisos/:id/editar"
         element={

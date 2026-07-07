@@ -1,4 +1,5 @@
 import type { User } from '../../domain/models'
+import type { AuthUser } from './auth.dto'
 
 export interface LastRegisteredUser {
   _id: string
@@ -32,4 +33,8 @@ export interface AdminUpdateUserRequest {
   rol?: string
   verificacionEstado?: string
   motivoRechazo?: string
+}
+
+export interface ImpersonateResponse {
+  usuario: AuthUser
 }

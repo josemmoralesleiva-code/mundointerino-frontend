@@ -1,24 +1,34 @@
 import { useState, useRef, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useAuthStore } from '../store/auth.store'
+import { useNavigate, Link } from 'react-router-dom'
+import { useAuth } from '../hooks/useAuth'
+import { getMenuItems } from '../../domain/constants/menu'
+import type { MenuContext } from '../../domain/constants/menu'
 
 export default function Navbar() {
   const navigate = useNavigate()
-  const { user, token, logout } = useAuthStore()
+  const { user, isAuthenticated, logout } = useAuth()
 
-  const [menuPropietarios, setMenuPropietarios] = useState(false)
   const [menuUsuario, setMenuUsuario] = useState(false)
-  const refProp = useRef<HTMLDivElement>(null)
+  const [menuAbierto, setMenuAbierto] = useState(false)
   const refUser = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
-      if (refProp.current && !refProp.current.contains(e.target as Node)) setMenuPropietarios(false)
       if (refUser.current && !refUser.current.contains(e.target as Node)) setMenuUsuario(false)
     }
     document.addEventListener('mousedown', handler)
     return () => document.removeEventListener('mousedown', handler)
   }, [])
+
+  const context: MenuContext = (user?.rol as MenuContext | undefined) ?? 'anon'
+  const isVerified = user?.verificacionEstado === 'verificado'
+  const items = getMenuItems(context, isVerified)
+
+  const goTo = (to: string) => {
+    setMenuAbierto(false)
+    setMenuUsuario(false)
+    navigate(to)
+  }
 
   return (
     <nav className="sticky top-0 z-50 bg-[#F8F5EF]/95 backdrop-blur-xl text-[#0F172A] border-b border-black/5 shadow-sm">
@@ -40,85 +50,48 @@ export default function Navbar() {
           </button>
 
           <div className="hidden md:flex items-center gap-2">
-            <button
-              onClick={() => navigate('/pisos')}
-              className="px-4 py-2 rounded-xl text-sm font-medium text-slate-700 hover:text-[#0F172A] hover:bg-black/5 transition-all"
-            >
-              Buscar piso
-            </button>
-
-            <button
-              onClick={() => navigate('/mundo')}
-              className="px-4 py-2 rounded-xl text-sm font-medium text-slate-700 hover:text-[#0F172A] hover:bg-black/5 transition-all"
-            >
-              Mundo
-            </button>
-
-            <div className="relative" ref={refProp}>
-              <button
-                onClick={() => {
-                  setMenuPropietarios(!menuPropietarios)
-                  setMenuUsuario(false)
-                }}
-                className={`flex items-center gap-1 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
-                  menuPropietarios
-                    ? 'bg-black/5 text-[#0F172A]'
-                    : 'text-slate-700 hover:text-[#0F172A] hover:bg-black/5'
-                }`}
-              >
-                Propietarios
-                <svg
-                  className={`w-4 h-4 transition-transform ${menuPropietarios ? 'rotate-180' : ''}`}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+            {items.map((item) => {
+              if (item.id === 'buscar-pisos') {
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => goTo(item.to)}
+                    className="px-4 py-2 rounded-xl text-sm font-semibold text-[#0F172A] bg-[#D4AF37]/15 hover:bg-[#D4AF37]/25 transition-all border border-[#D4AF37]/20"
+                  >
+                    {item.label}
+                  </button>
+                )
+              }
+              if (item.id === 'panel-admin') {
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => goTo(item.to)}
+                    className="flex items-center gap-1 bg-[#D4AF37]/15 text-[#8A6510] hover:bg-[#D4AF37]/20 px-3 py-2 rounded-xl text-sm font-semibold transition-colors border border-[#D4AF37]/20"
+                  >
+                    🛡️ {item.label}
+                  </button>
+                )
+              }
+              return (
+                <Link
+                  key={item.id}
+                  to={item.to}
+                  className="px-4 py-2 rounded-xl text-sm font-medium text-slate-700 hover:text-[#0F172A] hover:bg-black/5 transition-all"
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-
-              {menuPropietarios && (
-                <div className="absolute top-12 left-0 bg-white rounded-2xl shadow-2xl border border-slate-200 p-2 w-56 z-50 text-slate-900 overflow-hidden">
-                  <button
-                    onClick={() => {
-                      navigate('/pisos/nuevo')
-                      setMenuPropietarios(false)
-                    }}
-                    className="w-full text-left text-sm text-slate-700 hover:text-[#0F172A] py-3 px-3 rounded-xl hover:bg-slate-50 transition-colors"
-                  >
-                    Publicar mi piso
-                  </button>
-                  <button
-                    onClick={() => {
-                      navigate('/dashboard')
-                      setMenuPropietarios(false)
-                    }}
-                    className="w-full text-left text-sm text-slate-700 hover:text-[#0F172A] py-3 px-3 rounded-xl hover:bg-slate-50 transition-colors"
-                  >
-                    Gestionar anuncios
-                  </button>
-                </div>
-              )}
-            </div>
-
-            {user?.rol === 'admin' && (
-              <button
-                onClick={() => navigate('/admin')}
-                className="flex items-center gap-1 bg-[#D4AF37]/15 text-[#8A6510] hover:bg-[#D4AF37]/20 px-3 py-2 rounded-xl text-sm font-semibold transition-colors border border-[#D4AF37]/20"
-              >
-                🛡️ Admin
-              </button>
-            )}
+                  {item.label}
+                </Link>
+              )
+            })}
           </div>
         </div>
 
         <div className="flex items-center gap-3">
-          {token ? (
+          {isAuthenticated ? (
             <div className="relative" ref={refUser}>
               <button
                 onClick={() => {
                   setMenuUsuario(!menuUsuario)
-                  setMenuPropietarios(false)
                 }}
                 className="flex items-center gap-3 bg-white hover:bg-slate-50 border border-slate-200 px-3 py-2 rounded-2xl transition-all shadow-sm"
               >
@@ -141,38 +114,20 @@ export default function Navbar() {
               {menuUsuario && (
                 <div className="absolute right-0 top-12 bg-white rounded-2xl shadow-2xl border border-slate-200 p-2 w-56 z-50 text-slate-900 overflow-hidden">
                   <button
-                    onClick={() => {
-                      navigate('/dashboard')
-                      setMenuUsuario(false)
-                    }}
+                    onClick={() => goTo('/dashboard')}
                     className="w-full text-left text-sm text-slate-700 hover:text-[#0F172A] py-3 px-3 rounded-xl hover:bg-slate-50 transition-colors"
                   >
                     Mi panel
                   </button>
                   <button
-                    onClick={() => {
-                      navigate('/perfil')
-                      setMenuUsuario(false)
-                    }}
+                    onClick={() => goTo('/perfil')}
                     className="w-full text-left text-sm text-slate-700 hover:text-[#0F172A] py-3 px-3 rounded-xl hover:bg-slate-50 transition-colors"
                   >
                     Mi perfil
                   </button>
-                  <button
-                    onClick={() => {
-                      navigate('/mundo')
-                      setMenuUsuario(false)
-                    }}
-                    className="w-full text-left text-sm text-slate-700 hover:text-[#0F172A] py-3 px-3 rounded-xl hover:bg-slate-50 transition-colors"
-                  >
-                    Mundo
-                  </button>
                   {user?.rol === 'admin' && (
                     <button
-                      onClick={() => {
-                        navigate('/admin')
-                        setMenuUsuario(false)
-                      }}
+                      onClick={() => goTo('/admin')}
                       className="w-full text-left text-sm text-[#8A6510] hover:text-[#6B4E00] py-3 px-3 rounded-xl hover:bg-amber-50 transition-colors font-semibold"
                     >
                       🛡️ Panel admin
@@ -180,7 +135,7 @@ export default function Navbar() {
                   )}
                   <div className="my-1 border-t border-slate-100" />
                   <button
-                    onClick={() => { logout(); setMenuUsuario(false) }}
+                    onClick={() => { void logout() }}
                     className="w-full text-left text-sm text-rose-600 hover:text-rose-700 py-3 px-3 rounded-xl hover:bg-rose-50 transition-colors"
                   >
                     Cerrar sesión
@@ -189,7 +144,7 @@ export default function Navbar() {
               )}
             </div>
           ) : (
-            <>
+            <div className="hidden md:flex items-center gap-3">
               <button
                 onClick={() => navigate('/login')}
                 className="border border-slate-200 text-slate-700 px-4 py-2 rounded-xl hover:bg-slate-50 font-medium transition-all text-sm"
@@ -202,10 +157,81 @@ export default function Navbar() {
               >
                 Registrarse
               </button>
-            </>
+            </div>
           )}
+
+          <button
+            onClick={() => setMenuAbierto(!menuAbierto)}
+            className="md:hidden p-2 rounded-xl text-slate-700 hover:bg-black/5 transition-colors"
+            aria-label="Abrir menú"
+            aria-expanded={menuAbierto}
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              {menuAbierto ? (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              ) : (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              )}
+            </svg>
+          </button>
         </div>
       </div>
+
+      {menuAbierto && (
+        <div className="md:hidden bg-white border-t border-slate-200 shadow-lg">
+          <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col gap-1">
+            {items.map((item) => (
+              <Link
+                key={item.id}
+                to={item.to}
+                onClick={() => setMenuAbierto(false)}
+                className={`w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-colors ${
+                  item.id === 'buscar-pisos'
+                    ? 'bg-[#D4AF37]/15 text-[#0F172A] font-semibold'
+                    : 'text-slate-700 hover:bg-slate-50'
+                }`}
+              >
+                {item.id === 'panel-admin' ? `🛡️ ${item.label}` : item.label}
+              </Link>
+            ))}
+
+            <div className="my-2 border-t border-slate-100" />
+
+            {isAuthenticated ? (
+              <>
+                <Link
+                  to="/perfil"
+                  onClick={() => setMenuAbierto(false)}
+                  className="w-full text-left px-4 py-3 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+                >
+                  👤 Mi perfil
+                </Link>
+                <button
+                  onClick={() => { setMenuAbierto(false); void logout() }}
+                  className="w-full text-left px-4 py-3 rounded-xl text-sm font-semibold text-rose-600 hover:bg-rose-50 transition-colors"
+                >
+                  Cerrar sesión
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  onClick={() => { setMenuAbierto(false); navigate('/login') }}
+                  className="w-full text-left px-4 py-3 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors border border-slate-200"
+                >
+                  Iniciar sesión
+                </button>
+                <button
+                  onClick={() => { setMenuAbierto(false); navigate('/registro') }}
+                  className="w-full text-left px-4 py-3 rounded-xl text-sm font-semibold text-[#0F172A] bg-[#D4AF37] hover:bg-[#B8860B] transition-colors"
+                >
+                  Registrarse
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </nav>
   )
 }

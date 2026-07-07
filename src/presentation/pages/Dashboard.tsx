@@ -1,22 +1,23 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
+import CityAutocomplete from '../components/ui/CityAutocomplete'
 import PageLayout from '../components/layout/PageLayout'
-import { useAuthStore } from '../store/auth.store'
+import { useAuth } from '../hooks/useAuth'
 import { useProperties } from '../hooks/useProperties'
 import type { Property } from '../../domain/models'
+import type { City } from '../../domain/models/City'
 
 export default function Dashboard() {
   const navigate = useNavigate()
-  const { user, logout } = useAuthStore()
+  const { user, logout } = useAuth()
   const { properties, loading, fetchMyProperties, remove, toggleAvailability } = useProperties()
   const [tabActiva, setTabActiva] = useState('todos')
   const [ciudad, setCiudad] = useState('')
   const [tipo, setTipo] = useState('')
 
   const cerrarSesion = () => {
-    logout()
-    navigate('/login')
+    void logout()
   }
 
   useEffect(() => {
@@ -90,13 +91,10 @@ export default function Dashboard() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div className="flex flex-col items-start px-4 py-2 md:border-r md:border-gray-100">
                 <label className="text-xs text-gray-400 font-semibold mb-1">📍 Destino</label>
-                <input
-                  type="text"
-                  placeholder="Ciudad o provincia…"
+                <CityAutocomplete
                   value={ciudad}
-                  onChange={e => setCiudad(e.target.value)}
-                  onKeyDown={e => e.key === 'Enter' && handleBuscar()}
-                  className="w-full bg-transparent text-gray-900 font-medium focus:outline-none placeholder:text-gray-300 text-sm"
+                  onChange={(c: City | null) => setCiudad(c?.nombre ?? '')}
+                  placeholder="Ciudad o provincia…"
                 />
               </div>
               <div className="flex flex-col items-start px-4 py-2 md:border-r md:border-gray-100">
@@ -134,10 +132,9 @@ export default function Dashboard() {
         {esInquilino && (
           <>
             {/* Accesos rápidos */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
               {[
                 { icono: '🔍', titulo: 'Buscar pisos', desc: 'Encuentra alojamiento en toda España.', ruta: '/pisos' },
-                { icono: '🌍', titulo: 'Mundo', desc: 'Comunidad de interinos. Foros, chat y más.', ruta: '/mundo' },
                 { icono: '🗺️', titulo: 'Explorar zonas', desc: 'Busca por comunidad, provincia y ciudad.', ruta: '/zonas' },
                 { icono: '👤', titulo: 'Mi perfil', desc: 'Edita tus datos y preferencias.', ruta: '/perfil' },
               ].map(item => (
@@ -151,37 +148,6 @@ export default function Dashboard() {
                   <p className="text-gray-500 text-sm leading-relaxed">{item.desc}</p>
                 </button>
               ))}
-            </div>
-
-            {/* Mundo comunidad */}
-            <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 md:p-8 mb-8 hover:shadow-xl transition-all duration-300">
-              <div className="flex items-center justify-between mb-6">
-                <div>
-                  <h2 className="text-xl font-bold text-gray-900">🌍 MundoInterino — Comunidad</h2>
-                  <p className="text-gray-500 text-sm mt-0.5">Conecta con otros interinos de tu sector.</p>
-                </div>
-                <button onClick={() => navigate('/mundo')} className="text-[#0F172A] text-sm font-bold hover:underline">
-                  Ver todo →
-                </button>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {[
-                  { icono: '🎓', titulo: 'Educación', desc: 'Interinos, sustituciones y destinos.', ruta: '/mundo/educacion', color: 'from-[#0F172A] to-[#1E3A5F]' },
-                  { icono: '🩺', titulo: 'Sanidad', desc: 'Sanitarios, turnos y guardias.', ruta: '/mundo/sanidad', color: 'from-[#1E3A5F] to-[#0F172A]' },
-                  { icono: '⚖️', titulo: 'Justicia', desc: 'Juzgados y concursos de destino.', ruta: '/mundo/justicia', color: 'from-[#D4AF37] to-[#B8860B]' },
-                  { icono: '🧩', titulo: 'Otros', desc: 'Otras administraciones públicas.', ruta: '/mundointerino', color: 'from-[#334155] to-[#0F172A]' },
-                ].map(item => (
-                  <button
-                    key={item.titulo}
-                    onClick={() => navigate(item.ruta)}
-                    className={`bg-gradient-to-br ${item.color} rounded-2xl p-5 text-white text-left hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300`}
-                  >
-                    <div className="text-3xl mb-2">{item.icono}</div>
-                    <h3 className="font-bold text-sm mb-1">{item.titulo}</h3>
-                    <p className="text-white/80 text-xs leading-relaxed">{item.desc}</p>
-                  </button>
-                ))}
-              </div>
             </div>
 
             {/* Zonas destacadas */}

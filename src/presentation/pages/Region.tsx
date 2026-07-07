@@ -1,49 +1,14 @@
 import { useNavigate, useParams } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import PageLayout from '../components/layout/PageLayout'
-
-const DATA: Record<string, {
-  nombre: string
-  emoji: string
-  descripcion: string
-  color: string
-  provincias: { slug: string; nombre: string; emoji: string; ciudades: string[] }[]
-}> = {
-  aragon: {
-    nombre: 'Aragón',
-    emoji: '🏔️',
-    descripcion: 'Provincias y ciudades donde hay más movimiento de pisos para interinos.',
-    color: 'from-[#0F172A] to-[#1E3A5F]',
-    provincias: [
-      { slug: 'zaragoza', nombre: 'Zaragoza', emoji: '🏛️', ciudades: ['Zaragoza', 'Calatayud', 'Ejea de los Caballeros', 'Tarazona'] },
-      { slug: 'huesca', nombre: 'Huesca', emoji: '🏔️', ciudades: ['Huesca', 'Jaca', 'Fraga', 'Monzón'] },
-      { slug: 'teruel', nombre: 'Teruel', emoji: '🌟', ciudades: ['Teruel', 'Alcañiz', 'Andorra', 'Bajo Aragón'] },
-    ],
-  },
-  andalucia: {
-    nombre: 'Andalucía',
-    emoji: '🌞',
-    descripcion: 'Gran volumen de demanda en capitales y pueblos de destino interino.',
-    color: 'from-[#D4AF37] to-[#B8860B]',
-    provincias: [
-      { slug: 'sevilla', nombre: 'Sevilla', emoji: '🌇', ciudades: ['Sevilla', 'Écija', 'Utrera', 'Carmona'] },
-      { slug: 'malaga', nombre: 'Málaga', emoji: '🏖️', ciudades: ['Málaga', 'Marbella', 'Vélez-Málaga', 'Antequera'] },
-      { slug: 'granada', nombre: 'Granada', emoji: '⛰️', ciudades: ['Granada', 'Motril', 'Baza', 'Guadix'] },
-      { slug: 'cordoba', nombre: 'Córdoba', emoji: '🕌', ciudades: ['Córdoba', 'Lucena', 'Puente Genil', 'Priego de Córdoba'] },
-      { slug: 'cadiz', nombre: 'Cádiz', emoji: '⚓', ciudades: ['Cádiz', 'Jerez de la Frontera', 'Algeciras', 'San Fernando'] },
-      { slug: 'huelva', nombre: 'Huelva', emoji: '🌊', ciudades: ['Huelva', 'Lepe', 'Moguer', 'Isla Cristina'] },
-      { slug: 'jaen', nombre: 'Jaén', emoji: '🫒', ciudades: ['Jaén', 'Linares', 'Úbeda', 'Andújar'] },
-      { slug: 'almeria', nombre: 'Almería', emoji: '☀️', ciudades: ['Almería', 'El Ejido', 'Roquetas de Mar', 'Níjar'] },
-    ],
-  },
-}
+import { useProvincias } from '../hooks/useCities'
 
 export default function Region() {
   const navigate = useNavigate()
   const { comunidad } = useParams()
-  const info = DATA[comunidad as string]
+  const { provincias, loading, error } = useProvincias(comunidad as string)
 
-  if (!info) {
+  if (error && !loading && provincias.length === 0) {
     return (
       <PageLayout>
         <Navbar />
@@ -83,18 +48,19 @@ export default function Region() {
             ← Volver a zonas
           </button>
           <div className="flex items-center gap-4">
-            <span className="text-5xl">{info.emoji}</span>
+            <span className="text-5xl">📍</span>
             <div>
-              <h1 className="text-3xl md:text-4xl font-bold leading-tight drop-shadow-lg">
-                {info.nombre}
+              <h1 className="text-3xl md:text-4xl font-bold leading-tight drop-shadow-lg capitalize">
+                {comunidad}
               </h1>
-              <p className="text-slate-300 text-sm mt-1 max-w-xl">{info.descripcion}</p>
+              <p className="text-slate-300 text-sm mt-1 max-w-xl">
+                Provincias y ciudades donde hay movimiento de pisos para interinos.
+              </p>
             </div>
           </div>
 
           <div className="flex flex-wrap gap-6 mt-6 text-xs md:text-sm text-slate-100">
-            <span>🏛️ {info.provincias.length} provincias</span>
-            <span>📍 {info.provincias.reduce((acc, p) => acc + p.ciudades.length, 0)} ciudades</span>
+            <span>🏛️ {provincias.length} provincias</span>
             <span>💶 Sin comisiones</span>
           </div>
         </div>
@@ -110,46 +76,33 @@ export default function Region() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {info.provincias.map(provincia => (
-            <button
-              key={provincia.slug}
-              onClick={() => navigate(`/zonas/${comunidad}/${provincia.slug}`)}
-              className="bg-white rounded-3xl border border-gray-100 p-6 text-left hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 group shadow-sm"
-            >
-              <div className="flex items-start justify-between mb-3">
-                <div className="flex items-center gap-3">
-                  <span className="text-3xl">{provincia.emoji}</span>
-                  <h2 className="text-xl font-bold text-gray-900 group-hover:text-[#0F172A] transition-colors">
-                    {provincia.nombre}
-                  </h2>
-                </div>
-                <span className="text-xs bg-[#F8F5EF] text-slate-500 px-3 py-1 rounded-full border border-gray-100 shrink-0">
-                  {provincia.ciudades.length} zonas
-                </span>
-              </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {loading
+            ? Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="h-40 rounded-3xl bg-gray-100 animate-pulse" />
+              ))
+            : provincias.map(provincia => (
+                <button
+                  key={provincia.slug}
+                  onClick={() => navigate(`/zonas/${comunidad}/${provincia.slug}`)}
+                  className="bg-white rounded-3xl border border-gray-100 p-6 text-left hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 group shadow-sm"
+                >
+                  <div className="flex items-start justify-between mb-3">
+                    <h2 className="text-xl font-bold text-gray-900 group-hover:text-[#0F172A] transition-colors">
+                      {provincia.nombre}
+                    </h2>
+                  </div>
 
-              <div className="flex flex-wrap gap-2 mb-5">
-                {provincia.ciudades.slice(0, 4).map(c => (
-                  <span
-                    key={c}
-                    className="bg-[#F8F5EF] text-slate-600 text-xs px-3 py-1 rounded-full border border-gray-100"
-                  >
-                    {c}
-                  </span>
-                ))}
-              </div>
-
-              <div className="flex items-center justify-between">
-                <span className="text-[#0F172A] text-sm font-bold group-hover:underline transition-all">
-                  Ver pisos en {provincia.nombre} →
-                </span>
-                <span className="text-xs bg-[#D4AF37]/10 text-[#0F172A] px-2 py-1 rounded-full font-medium border border-[#D4AF37]/20">
-                  🏠 Disponibles
-                </span>
-              </div>
-            </button>
-          ))}
+                  <div className="flex items-center justify-between">
+                    <span className="text-[#0F172A] text-sm font-bold group-hover:underline transition-all">
+                      Ver pisos en {provincia.nombre} →
+                    </span>
+                    <span className="text-xs bg-[#D4AF37]/10 text-[#0F172A] px-2 py-1 rounded-full font-medium border border-[#D4AF37]/20">
+                      🏠 Disponibles
+                    </span>
+                  </div>
+                </button>
+              ))}
         </div>
       </section>
     </PageLayout>
