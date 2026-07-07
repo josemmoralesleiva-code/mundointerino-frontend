@@ -9,6 +9,7 @@ interface AuthState {
 
   login: (user: AuthUser) => void
   logout: () => void
+  clearCache: () => void
   setUser: (user: AuthUser) => void
   updateUser: (user: AuthUser) => void
   setBootstrapping: (value: boolean) => void
@@ -27,8 +28,11 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
 
   logout: () => {
-    storage.clearUser()
     set({ user: null, isAuthenticated: false })
+  },
+
+  clearCache: () => {
+    storage.clearUser()
   },
 
   setUser: (user) => {

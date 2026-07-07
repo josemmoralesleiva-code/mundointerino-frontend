@@ -73,6 +73,7 @@ export function useAuth() {
       // best-effort: limpiamos estado local aunque falle la llamada al servidor
     }
     storeLogout()
+    storage.clearUser()
     clearAdminSession()
     navigate('/')
   }, [navigate, storeLogout])
@@ -90,13 +91,10 @@ export function useAuth() {
     try {
       const usuario = await meUseCase()
       storeLogin(usuario)
-    } catch (err: any) {
-      const status = err?.response?.status
-      if (status === 401) {
-        storeLogout()
-      }
-      // Para otros errores (backend caído, timeout, 5xx)
-      // conservamos el usuario cacheado para no perder la UI.
+    } catch {
+      // Si /me falla (sesión expirada, backend caído, timeout, etc.)
+      // conservamos el usuario cacheado. El interceptor de axios
+      // se encargará del refresh si es necesario en la siguiente llamada real.
     } finally {
       setBootstrapping(false)
     }
