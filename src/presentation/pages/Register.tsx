@@ -72,7 +72,6 @@ export default function Register() {
         password: form.password,
         rol: form.rol,
         telefono: form.telefono,
-        verificacionEstado: 'pendiente',
       })
     } catch (err: any) {
       setError(err.response?.data?.error || 'Error al registrarse')

@@ -31,7 +31,6 @@ export interface RegisterRequest {
   password: string
   rol: string
   telefono: string
-  verificacionEstado: string
 }
 
 export interface RegisterResponse {
