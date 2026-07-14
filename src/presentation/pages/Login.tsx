@@ -62,7 +62,7 @@ export default function Login() {
                 Tu espacio en la administración pública
               </h2>
               <p className="text-gray-500 text-sm leading-relaxed">
-                Entra con tu cuenta y accederemos automáticamente a tu perfil: interino, propietario o administrador.
+                Entra con tu cuenta y accederemos automáticamente a tu perfil: interino o propietario.
               </p>
             </div>
 
@@ -70,7 +70,6 @@ export default function Login() {
               {[
                 { icon: '🧑‍🏫', titulo: 'Interinos', texto: 'Busca y guarda pisos cerca de tu destino.' },
                 { icon: '🏠', titulo: 'Propietarios', texto: 'Gestiona tus anuncios y contacta inquilinos.' },
-                { icon: '🛡️', titulo: 'Admins', texto: 'Accede al panel de control completo.' },
               ].map(v => (
                 <div
                   key={v.titulo}
