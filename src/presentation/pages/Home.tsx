@@ -216,7 +216,6 @@ export default function Home() {
               </button>
             ))}
           </div>
-
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-6">
             {destacar.length > 0 ? destacar.map(z => (
               <button
