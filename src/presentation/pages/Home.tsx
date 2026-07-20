@@ -84,7 +84,7 @@ export default function Home() {
             Educación, sanidad, justicia y más. Encuentra piso cerca de tu destino con una experiencia clara, elegante y sin comisiones ocultas.
           </p>
 
-          <div className="bg-white/96 backdrop-blur-xl rounded-3xl p-3 md:p-4 max-w-5xl mx-auto shadow-2xl border border-white/40">
+          <div className="bg-white/95 backdrop-blur-xl rounded-3xl p-3 md:p-4 max-w-5xl mx-auto shadow-2xl border border-white/40">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
               <div className="flex flex-col items-start px-4 py-2 md:border-r md:border-gray-100">
                 <label className="text-xs text-gray-400 font-semibold mb-1">📍 Destino</label>
@@ -216,7 +216,7 @@ export default function Home() {
               </button>
             ))}
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-6">
             {destacar.length > 0 ? destacar.map(z => (
               <button
                 key={z.slug}
@@ -249,7 +249,7 @@ export default function Home() {
         {pisosDestacados.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {pisosDestacados.map(piso => (
-              <PropertyCard key={piso._id} property={piso} />
+              <PropertyCard key={piso.id} property={piso} />
             ))}
           </div>
         ) : (

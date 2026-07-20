@@ -300,7 +300,7 @@ export default function Dashboard() {
                 <div className="flex flex-col gap-3">
                   {pisosFiltrados.map(piso => (
                     <div
-                      key={piso._id}
+                      key={piso.id}
                       className="bg-[#F8F5EF] rounded-2xl border border-gray-100 p-5 flex flex-col md:flex-row md:items-center md:justify-between gap-4 hover:shadow-md transition-all"
                     >
                       <div className="flex-1 min-w-0">
@@ -322,7 +322,7 @@ export default function Dashboard() {
                       </div>
                       <div className="flex flex-wrap gap-2 shrink-0">
                         <button
-                          onClick={() => toggleDisponibilidad(piso._id)}
+                          onClick={() => toggleDisponibilidad(piso.id)}
                           className={`text-xs px-3 py-2 rounded-xl font-bold transition-all hover:scale-[1.02] ${
                             piso.disponible
                               ? 'bg-gray-200 text-gray-700 hover:bg-gray-300'
@@ -332,19 +332,19 @@ export default function Dashboard() {
                           {piso.disponible ? '⏸ Pausar' : '▶ Activar'}
                         </button>
                         <button
-                          onClick={() => navigate(`/pisos/${piso._id}/editar`)}
+                          onClick={() => navigate(`/pisos/${piso.id}/editar`)}
                           className="text-xs bg-[#0F172A] text-white hover:bg-[#1E3A5F] px-3 py-2 rounded-xl font-bold transition-all hover:scale-[1.02]"
                         >
                           ✏️ Editar
                         </button>
                         <button
-                          onClick={() => navigate(`/pisos/${piso._id}`)}
+                          onClick={() => navigate(`/pisos/${piso.id}`)}
                           className="text-xs bg-white text-gray-600 hover:bg-gray-50 border border-gray-200 px-3 py-2 rounded-xl font-bold transition-all"
                         >
                           👁 Ver
                         </button>
                         <button
-                          onClick={() => eliminarPiso(piso._id)}
+                          onClick={() => eliminarPiso(piso.id)}
                           className="text-xs bg-red-50 text-red-500 hover:bg-red-100 px-3 py-2 rounded-xl font-bold transition-all"
                         >
                           🗑 Eliminar

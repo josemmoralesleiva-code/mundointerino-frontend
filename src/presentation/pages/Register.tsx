@@ -13,7 +13,7 @@ export default function Register() {
     nombre: '',
     email: '',
     password: '',
-    rol: 'docente',
+    rol: '',
     telefono: '',
   })
   const [error, setError] = useState('')
@@ -63,6 +63,11 @@ export default function Register() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    if (!form.rol) {
+      setError('Selecciona si eres interino o propietario.')
+      setCargando(false)
+      return
+    }
     setCargando(true)
     setError('')
     try {
@@ -169,29 +174,35 @@ export default function Register() {
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
 
               {/* SELECTOR ROL */}
-              <div className="grid grid-cols-2 gap-3">
-                <button
-                  type="button"
-                  onClick={() => handleRol('docente')}
-                  className={`py-3 rounded-2xl border-2 font-bold text-sm transition-all hover:scale-[1.02] ${
-                    form.rol === 'docente'
-                      ? 'border-[#0F172A] bg-[#F8F5EF] text-[#0F172A]'
-                      : 'border-gray-200 text-gray-400 hover:border-gray-300'
-                  }`}
-                >
-                  🧑‍💼 Soy interino
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleRol('propietario')}
-                  className={`py-3 rounded-2xl border-2 font-bold text-sm transition-all hover:scale-[1.02] ${
-                    form.rol === 'propietario'
-                      ? 'border-[#D4AF37] bg-[#D4AF37]/10 text-[#0F172A]'
-                      : 'border-gray-200 text-gray-400 hover:border-gray-300'
-                  }`}
-                >
-                  🏠 Soy propietario
-                </button>
+              <div>
+                <label className="text-xs text-gray-400 font-semibold mb-1 block">¿Quién eres? *</label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <button
+                    type="button"
+                    onClick={() => handleRol('docente')}
+                    className={`py-3 rounded-2xl border-2 font-bold text-sm transition-all hover:scale-[1.02] ${
+                      form.rol === 'docente'
+                        ? 'border-[#0F172A] bg-[#F8F5EF] text-[#0F172A]'
+                        : 'border-gray-200 text-gray-500 hover:border-gray-300'
+                    }`}
+                  >
+                    🧑‍💼 Soy interino
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleRol('propietario')}
+                    className={`py-3 rounded-2xl border-2 font-bold text-sm transition-all hover:scale-[1.02] ${
+                      form.rol === 'propietario'
+                        ? 'border-[#D4AF37] bg-[#D4AF37]/10 text-[#0F172A]'
+                        : 'border-gray-200 text-gray-500 hover:border-gray-300'
+                    }`}
+                  >
+                    🏠 Soy propietario
+                  </button>
+                </div>
+                {!form.rol && (
+                  <p className="text-xs text-gray-400 mt-1">Selecciona una opción para continuar.</p>
+                )}
               </div>
 
               {/* NOMBRE */}
@@ -274,7 +285,13 @@ export default function Register() {
 
               {/* AVISO VERIFICACIÓN */}
               <div className="bg-[#F8F5EF] border border-gray-200 text-gray-600 rounded-2xl px-4 py-3 text-xs leading-relaxed">
-                🕐 Tu cuenta quedará en estado <strong className="text-[#0F172A]">pendiente de verificación</strong> hasta que revisemos tu perfil. Te avisaremos pronto.
+                {form.rol === 'docente' ? (
+                  <>🧑‍💼 Tu cuenta de interino quedará <strong className="text-[#0F172A]">pendiente de verificación</strong> hasta que subas tu documentación docente y nuestro sistema la valide.</>
+                ) : form.rol === 'propietario' ? (
+                  <>🏠 Tu cuenta de propietario quedará <strong className="text-[#0F172A]">pendiente de revisión manual</strong> por nuestro equipo. Mientras tanto, ya puedes explorar la plataforma.</>
+                ) : (
+                  <>🕐 Selecciona un rol para ver los requisitos de verificación.</>
+                )}
               </div>
 
               {/* BOTÓN */}
@@ -299,7 +316,7 @@ export default function Register() {
               </p>
             </div>
 
-            <div className="mt-6 grid grid-cols-3 gap-3 text-center text-xs text-gray-500">
+            <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-3 text-center text-xs text-gray-500">
               {[
                 { icon: '🧑‍🏫', texto: 'Interinos' },
                 { icon: '🏠', texto: 'Propietarios' },

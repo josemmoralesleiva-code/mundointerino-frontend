@@ -7,7 +7,7 @@ export type Administration = 'educacion' | 'sanidad' | 'justicia' | 'otros'
 export type DocumentType = 'nomina' | 'nombramiento' | 'credencial' | 'contrato' | 'certificado_servicios' | 'resolucion'
 
 export interface User {
-  _id: string
+  id: string
   nombre: string
   email: string
   rol: Role

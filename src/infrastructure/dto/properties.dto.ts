@@ -17,8 +17,11 @@ export interface PropertyFilters {
   ciudad?: string
   tipo?: string
   fecha?: string
+  precioMin?: string
   precioMax?: string
   habitaciones?: string
+  banos?: string
+  metrosMin?: string
   pagina?: string
   limite?: string
 }

@@ -52,18 +52,37 @@ export default function NewProperty() {
 
   const handleImagenesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const archivos = Array.from(e.target.files || [])
-    if (archivos.length > 8) {
-      setError('Máximo 8 fotos permitidas.')
+    if (!archivos.length) return
+    if (imagenes.length + archivos.length > 8) {
+      setError(`Máximo 8 fotos. Ya tienes ${imagenes.length} seleccionadas.`)
       return
     }
-    setImagenes(archivos)
-    setPreviews(archivos.map(f => URL.createObjectURL(f)))
+    // Concatenar en vez de pisar: conserva las fotos ya seleccionadas.
+    setImagenes(prev => [...prev, ...archivos])
+    setPreviews(prev => [...prev, ...archivos.map(f => URL.createObjectURL(f))])
     setError('')
+    e.target.value = ''
   }
 
   const eliminarImagen = (i: number) => {
     setImagenes(prev => prev.filter((_, idx) => idx !== i))
     setPreviews(prev => prev.filter((_, idx) => idx !== i))
+  }
+
+  const marcarPrincipal = (i: number) => {
+    if (i === 0) return
+    setImagenes(prev => {
+      const copia = [...prev]
+      const [elegida] = copia.splice(i, 1)
+      copia.unshift(elegida)
+      return copia
+    })
+    setPreviews(prev => {
+      const copia = [...prev]
+      const [elegida] = copia.splice(i, 1)
+      copia.unshift(elegida)
+      return copia
+    })
   }
 
   const validarPaso = () => {
@@ -144,7 +163,7 @@ export default function NewProperty() {
       </section>
 
       {/* BARRA DE PROGRESO */}
-      <div className="bg-white border-b border-gray-100 px-6 py-4 sticky top-16 z-40">
+      <div className="bg-white border-b border-gray-100 px-6 py-4 sticky top-[88px] z-40">
         <div className="max-w-3xl mx-auto">
           <div className="flex items-center justify-between mb-3">
             {PASOS.map((p, i) => (
@@ -238,7 +257,7 @@ export default function NewProperty() {
               </div>
               <div>
                 <label className="text-sm font-medium text-gray-700 mb-1 block">Tipo de estancia *</label>
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   {[['larga','📅 Larga'],['corta','🌙 Corta'],['ambas','✅ Ambas']].map(([val, label]) => (
                     <button key={val} type="button"
                       onClick={() => setForm(prev => ({ ...prev, tipoEstancia: val }))}
@@ -326,11 +345,20 @@ export default function NewProperty() {
                       {previews.map((url, i) => (
                         <div key={i} className="relative group">
                           <img src={url} alt={`preview-${i}`}
-                            className="w-full h-28 object-cover rounded-xl border border-gray-200" />
+                            className={`w-full h-28 object-cover rounded-xl ${i === 0 ? 'border-2 border-primary-700' : 'border border-gray-200'}`} />
                           {i === 0 && (
                             <span className="absolute top-1 left-1 bg-primary-700 text-white text-xs px-2 py-0.5 rounded-full font-medium">
                               Principal
                             </span>
+                          )}
+                          {i > 0 && (
+                            <button
+                              type="button"
+                              onClick={() => marcarPrincipal(i)}
+                              className="absolute bottom-1 left-1 bg-white/90 text-primary-700 text-xs px-2 py-0.5 rounded-full font-medium opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1"
+                            >
+                              ⭐ Marcar principal
+                            </button>
                           )}
                           <button
                             type="button"

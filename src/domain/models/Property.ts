@@ -1,14 +1,14 @@
 export type StayType = 'corta' | 'larga' | 'ambas'
 
 export interface OwnerSummary {
-  _id: string
+  id: string
   nombre: string
   telefono?: string
   email?: string
 }
 
 export interface Property {
-  _id: string
+  id: string
   titulo: string
   descripcion?: string
   ciudad: string

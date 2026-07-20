@@ -68,13 +68,18 @@ export default function EditProperty() {
 
   const handleImagenesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const archivos = Array.from(e.target.files || [])
-    if (archivos.length > 8) {
-      setError('Máximo 8 fotos permitidas.')
+    if (!archivos.length) return
+    const totales = (form?.fotosActuales?.length || 0) + imagenesNuevas.length + archivos.length
+    if (totales > 8) {
+      setError(`Máximo 8 fotos en total. Tienes ${form?.fotosActuales?.length || 0} actuales + ${imagenesNuevas.length} nuevas.`)
       return
     }
-    setImagenesNuevas(archivos)
-    setPreviews(archivos.map(f => URL.createObjectURL(f)))
+    // Concatenar en vez de pisar: conserva las fotos ya seleccionadas.
+    setImagenesNuevas(prev => [...prev, ...archivos])
+    setPreviews(prev => [...prev, ...archivos.map(f => URL.createObjectURL(f))])
     setError('')
+    // Reset del input para permitir re-seleccionar el mismo archivo
+    e.target.value = ''
   }
 
   const eliminarPreview = (i: number) => {
@@ -87,6 +92,33 @@ export default function EditProperty() {
       ...prev,
       fotosActuales: Array.isArray(prev.fotosActuales) ? prev.fotosActuales.filter((_: string, idx: number) => idx !== i) : []
     }) : prev)
+  }
+
+  const marcarPrincipalFotoActual = (i: number) => {
+    if (i === 0) return
+    setForm(prev => {
+      if (!prev || !Array.isArray(prev.fotosActuales)) return prev
+      const copia = [...prev.fotosActuales]
+      const [elegida] = copia.splice(i, 1)
+      copia.unshift(elegida)
+      return { ...prev, fotosActuales: copia }
+    })
+  }
+
+  const marcarPrincipalPreview = (i: number) => {
+    if (i === 0) return
+    setImagenesNuevas(prev => {
+      const copia = [...prev]
+      const [elegida] = copia.splice(i, 1)
+      copia.unshift(elegida)
+      return copia
+    })
+    setPreviews(prev => {
+      const copia = [...prev]
+      const [elegida] = copia.splice(i, 1)
+      copia.unshift(elegida)
+      return copia
+    })
   }
 
   const validarPaso = () => {
@@ -166,24 +198,30 @@ export default function EditProperty() {
   }
 
   if (cargando) return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-      <div className="text-center">
-        <div className="text-4xl animate-pulse mb-3">🏠</div>
-        <p className="text-gray-400">Cargando datos del piso...</p>
+    <PageLayout showCTA={false} showFooter={false}>
+      <Navbar />
+      <div className="min-h-screen bg-[#F8F5EF] flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-4xl animate-pulse mb-3">🏠</div>
+          <p className="text-gray-400">Cargando datos del piso...</p>
+        </div>
       </div>
-    </div>
+    </PageLayout>
   )
 
   if (error && !form) return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-      <div className="text-center">
-        <div className="text-4xl mb-3">⚠️</div>
-        <p className="text-red-500 font-medium mb-4">{error}</p>
-        <button onClick={() => navigate('/dashboard')} className="text-primary-700 hover:underline text-sm">
-          ← Volver al panel
-        </button>
+    <PageLayout showCTA={false} showFooter={false}>
+      <Navbar />
+      <div className="min-h-screen bg-[#F8F5EF] flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-4xl mb-3">⚠️</div>
+          <p className="text-red-500 font-medium mb-4">{error}</p>
+          <button onClick={() => navigate('/dashboard')} className="text-primary-700 hover:underline text-sm">
+            ← Volver al panel
+          </button>
+        </div>
       </div>
-    </div>
+    </PageLayout>
   )
 
   if (!form) return null
@@ -209,7 +247,7 @@ export default function EditProperty() {
       </section>
 
       {/* BARRA DE PROGRESO */}
-      <div className="bg-white border-b border-gray-100 px-6 py-4 sticky top-16 z-40">
+      <div className="bg-white border-b border-gray-100 px-6 py-4 sticky top-[88px] z-40">
         <div className="max-w-3xl mx-auto">
           <div className="flex items-center justify-between mb-3">
             {PASOS.map((p, i) => (
@@ -319,7 +357,7 @@ export default function EditProperty() {
               </div>
               <div>
                 <label className="text-sm font-medium text-gray-700 mb-2 block">Tipo de estancia *</label>
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   {[['larga','📅 Larga'],['corta','🌙 Corta'],['ambas','✅ Ambas']].map(([val, label]) => (
                     <button key={val} type="button"
                       onClick={() => setForm(prev => prev ? ({ ...prev, tipoEstancia: val }) : prev)}
@@ -413,11 +451,17 @@ export default function EditProperty() {
                     {form.fotosActuales.map((url: string, i: number) => (
                       <div key={i} className="relative group">
                         <img src={url} alt={`foto-${i}`}
-                          className="w-full h-28 object-cover rounded-xl border border-gray-200" />
+                          className={`w-full h-28 object-cover rounded-xl ${i === 0 ? 'border-2 border-primary-700' : 'border border-gray-200'}`} />
                         {i === 0 && (
                           <span className="absolute top-1 left-1 bg-primary-700 text-white text-xs px-2 py-0.5 rounded-full font-medium">
                             Principal
                           </span>
+                        )}
+                        {i > 0 && (
+                          <button type="button" onClick={() => marcarPrincipalFotoActual(i)}
+                            className="absolute bottom-1 left-1 bg-white/90 text-primary-700 text-xs px-2 py-0.5 rounded-full font-medium opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                            ⭐ Marcar principal
+                          </button>
                         )}
                         <button type="button" onClick={() => eliminarFotoActual(i)}
                           className="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full text-xs opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
@@ -457,19 +501,36 @@ export default function EditProperty() {
                       {previews.length} foto{previews.length > 1 ? 's' : ''} nueva{previews.length > 1 ? 's' : ''} seleccionada{previews.length > 1 ? 's' : ''}
                     </p>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                      {previews.map((url, i) => (
-                        <div key={i} className="relative group">
-                          <img src={url} alt={`nueva-${i}`}
-                            className="w-full h-28 object-cover rounded-xl border-2 border-primary-200" />
-                          <span className="absolute top-1 left-1 bg-accent-500 text-white text-xs px-2 py-0.5 rounded-full font-medium">
-                            Nueva
-                          </span>
-                          <button type="button" onClick={() => eliminarPreview(i)}
-                            className="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full text-xs opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                            ✕
-                          </button>
-                        </div>
-                      ))}
+                      {previews.map((url, i) => {
+                        const esPrincipalPreview = i === 0 && !(form.fotosActuales?.length > 0)
+                        return (
+                          <div key={i} className="relative group">
+                            <img src={url} alt={`nueva-${i}`}
+                              className={`w-full h-28 object-cover rounded-xl border-2 ${
+                                esPrincipalPreview ? 'border-primary-700' : 'border-primary-200'
+                              }`} />
+                            {esPrincipalPreview ? (
+                              <span className="absolute top-1 left-1 bg-primary-700 text-white text-xs px-2 py-0.5 rounded-full font-medium">
+                                Principal
+                              </span>
+                            ) : (
+                              <span className="absolute top-1 left-1 bg-accent-500 text-white text-xs px-2 py-0.5 rounded-full font-medium">
+                                Nueva
+                              </span>
+                            )}
+                            {!esPrincipalPreview && (
+                              <button type="button" onClick={() => marcarPrincipalPreview(i)}
+                                className="absolute bottom-1 left-1 bg-white/90 text-primary-700 text-xs px-2 py-0.5 rounded-full font-medium opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                                ⭐ Marcar principal
+                              </button>
+                            )}
+                            <button type="button" onClick={() => eliminarPreview(i)}
+                              className="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full text-xs opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                              ✕
+                            </button>
+                          </div>
+                        )
+                      })}
                     </div>
                   </div>
                 )}

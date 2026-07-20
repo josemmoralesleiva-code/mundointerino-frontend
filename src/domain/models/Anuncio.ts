@@ -1,5 +1,5 @@
 export interface Anuncio {
-  _id: string
+  id: string
   titulo: string
   descripcion: string
   administracion: string

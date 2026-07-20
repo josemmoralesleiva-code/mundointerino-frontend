@@ -48,8 +48,8 @@ export default function ZoneDetail() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {pisos.map(piso => (
               <div
-                key={piso._id}
-                onClick={() => navigate(`/pisos/${piso._id}`)}
+                key={piso.id}
+                onClick={() => navigate(`/pisos/${piso.id}`)}
                 className="bg-white rounded-3xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-xl cursor-pointer transition-all"
               >
                 <div className="h-48 bg-gray-100">

@@ -89,13 +89,13 @@ export function useUsers() {
 
   const verifyUser = useCallback(async (id: string, data: VerifyUserRequest) => {
     const updated = await verifyUserUseCase(id, data)
-    setUsers((prev) => prev.map((u) => (u._id === id ? updated : u)))
+    setUsers((prev) => prev.map((u) => (u.id === id ? updated : u)))
     return updated
   }, [])
 
   const reVerifyUser = useCallback(async (id: string) => {
     const updated = await reVerifyUserUseCase(id)
-    setUsers((prev) => prev.map((u) => (u._id === id ? updated : u)))
+    setUsers((prev) => prev.map((u) => (u.id === id ? updated : u)))
     return updated
   }, [])
 

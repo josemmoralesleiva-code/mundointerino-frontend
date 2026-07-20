@@ -8,7 +8,6 @@ import PropertyCard from '../components/PropertyCard'
 import CityAutocomplete from '../components/ui/CityAutocomplete'
 import PageLayout from '../components/layout/PageLayout'
 import { useProperties } from '../hooks/useProperties'
-import { useComunidades } from '../hooks/useCities'
 import type { City } from '../../domain/models/City'
 
 delete (L.Icon.Default.prototype as any)._getIconUrl
@@ -28,27 +27,50 @@ export default function Properties() {
   const [ciudad, setCiudad] = useState(searchParams.get('ciudad') || '')
   const [fecha, setFecha] = useState(searchParams.get('fecha') || '')
   const [tipoEstancia, setTipoEstancia] = useState(searchParams.get('tipo') || '')
-  const [comunidad, setComunidad] = useState(searchParams.get('comunidad') || '')
   const [provincia, setProvincia] = useState(searchParams.get('provincia') || '')
   const [precioMin, setPrecioMin] = useState('')
   const [precioMax, setPrecioMax] = useState('')
   const [habitaciones, setHabitaciones] = useState('')
+  const [banos, setBanos] = useState('')
+  const [metrosMin, setMetrosMin] = useState('')
+  const [serviciosRequeridos, setServiciosRequeridos] = useState<string[]>([])
   const [filtrosAbiertos, setFiltrosAbiertos] = useState(false)
-  const { comunidades, loading: cargandoComunidades } = useComunidades()
 
-  const fetchPisos = (c: string, f: string, t: string, co: string, pro: string) => {
-    fetchAll({ ciudad: c, fecha: f, tipo: t, comunidad: co, provincia: pro })
+  const SERVICIOS_FILTRO = ['WiFi', 'Aire acondicionado', 'Calefacción', 'Parking', 'Ascensor', 'Terraza', 'Amueblado', 'Mascotas permitidas']
+
+  const fetchPisos = (overrides: {
+    c?: string; f?: string; t?: string; pro?: string;
+    pmin?: string; pmax?: string; hab?: string; ban?: string; m?: string;
+  } = {}) => {
+    fetchAll({
+      ciudad: overrides.c ?? ciudad,
+      fecha: overrides.f ?? fecha,
+      tipo: overrides.t ?? tipoEstancia,
+      provincia: overrides.pro ?? provincia,
+      precioMin: (overrides.pmin !== undefined ? overrides.pmin : precioMin) || undefined,
+      precioMax: (overrides.pmax !== undefined ? overrides.pmax : precioMax) || undefined,
+      habitaciones: (overrides.hab !== undefined ? overrides.hab : habitaciones) || undefined,
+      banos: (overrides.ban !== undefined ? overrides.ban : banos) || undefined,
+      metrosMin: (overrides.m !== undefined ? overrides.m : metrosMin) || undefined,
+    })
   }
 
   const limpiarFiltros = () => {
     setPrecioMin('')
     setPrecioMax('')
     setHabitaciones('')
+    setBanos('')
+    setMetrosMin('')
+    setServiciosRequeridos([])
     setTipoEstancia('')
-    setComunidad('')
     setCiudad('')
     setFecha('')
-    fetchPisos('', '', '', '', '')
+    setProvincia('')
+    fetchAll({})
+  }
+
+  const toggleServicioRequerido = (s: string) => {
+    setServiciosRequeridos(prev => prev.includes(s) ? prev.filter(x => x !== s) : [...prev, s])
   }
 
   const contenidoFiltros = () => (
@@ -98,6 +120,48 @@ export default function Properties() {
 
       <div className="mb-5">
         <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2 block">
+          🚿 Baños mínimos
+        </label>
+        <div className="flex gap-2 flex-wrap">
+          {['', '1', '2'].map(n => (
+            <button
+              key={n}
+              onClick={() => setBanos(n)}
+              className={`px-3 py-1.5 rounded-xl text-xs font-medium border transition-all ${
+                banos === n
+                  ? 'bg-[#0F172A] text-white border-[#0F172A]'
+                  : 'border-gray-200 text-gray-600 hover:border-[#0F172A]'
+              }`}
+            >
+              {n === '' ? 'Todos' : `${n}+`}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="mb-5">
+        <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2 block">
+          📐 Superficie mínima (m²)
+        </label>
+        <div className="flex gap-2 flex-wrap">
+          {['', '40', '60', '80', '100'].map(n => (
+            <button
+              key={n}
+              onClick={() => setMetrosMin(n)}
+              className={`px-3 py-1.5 rounded-xl text-xs font-medium border transition-all ${
+                metrosMin === n
+                  ? 'bg-[#0F172A] text-white border-[#0F172A]'
+                  : 'border-gray-200 text-gray-600 hover:border-[#0F172A]'
+              }`}
+            >
+              {n === '' ? 'Todos' : `${n}+ m²`}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="mb-5">
+        <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2 block">
           ⏱️ Tipo de estancia
         </label>
         <div className="flex flex-col gap-2">
@@ -119,54 +183,43 @@ export default function Properties() {
 
       <div className="mb-5">
         <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2 block">
-          🏞️ Comunidad
+          🛎️ Servicios incluidos
         </label>
-        <div className="flex flex-col gap-2">
-          <button
-            onClick={() => setComunidad('')}
-            className={`text-left px-3 py-2 rounded-xl text-sm font-medium border transition-all ${
-              comunidad === ''
-                ? 'bg-[#0F172A] text-white border-[#0F172A]'
-                : 'border-gray-200 text-gray-600 hover:border-[#0F172A]'
-            }`}
-          >
-            Todas
-          </button>
-          {cargandoComunidades
-            ? Array.from({ length: 3 }).map((_, i) => (
-                <div key={i} className="h-9 rounded-xl bg-gray-100 animate-pulse" />
-              ))
-            : (comunidades ?? []).map(c => (
-                <button
-                  key={c.slug}
-                  onClick={() => setComunidad(c.slug)}
-                  className={`text-left px-3 py-2 rounded-xl text-sm font-medium border transition-all ${
-                    comunidad === c.slug
-                      ? 'bg-[#0F172A] text-white border-[#0F172A]'
-                      : 'border-gray-200 text-gray-600 hover:border-[#0F172A]'
-                  }`}
-                >
-                  {c.nombre}
-                </button>
-              ))}
+        <div className="flex flex-wrap gap-2">
+          {SERVICIOS_FILTRO.map(s => (
+            <button
+              key={s}
+              onClick={() => toggleServicioRequerido(s)}
+              className={`px-3 py-1.5 rounded-xl text-xs font-medium border transition-all ${
+                serviciosRequeridos.includes(s)
+                  ? 'bg-[#0F172A] text-white border-[#0F172A]'
+                  : 'border-gray-200 text-gray-600 hover:border-[#0F172A]'
+              }`}
+            >
+              {s}
+            </button>
+          ))}
         </div>
       </div>
     </>
   )
 
   useEffect(() => {
-    fetchPisos(ciudad, fecha, tipoEstancia, comunidad, provincia)
+    fetchPisos()
   }, [])
 
   const handleBuscar = () => {
-    fetchPisos(ciudad, fecha, tipoEstancia, comunidad, provincia)
+    fetchPisos()
   }
 
   const pisosOrdenados = [...pisos]
     .filter(p => {
-      if (precioMin && p.precio < Number(precioMin)) return false
-      if (precioMax && p.precio > Number(precioMax)) return false
-      if (habitaciones && p.habitaciones < Number(habitaciones)) return false
+      // Filtros de servicios: client-side (servicios es simple-array en BD)
+      if (serviciosRequeridos.length > 0) {
+        const srv = p.servicios || []
+        const tieneTodos = serviciosRequeridos.every(s => srv.includes(s))
+        if (!tieneTodos) return false
+      }
       return true
     })
     .sort((a, b) =>
@@ -186,13 +239,13 @@ export default function Properties() {
         <div className="max-w-7xl mx-auto">
           <h1 className="text-2xl font-bold mb-1">Encuentra tu piso ideal</h1>
           <p className="text-slate-300 text-sm">
-            Filtra por comunidad, provincia, ciudad y tipo de estancia para interinos de la administración.
+            Filtra por provincia, ciudad y tipo de estancia para interinos de la administración.
           </p>
         </div>
       </section>
 
       {/* BARRA DE BÚSQUEDA */}
-      <div className="bg-white border-b border-gray-100 shadow-sm sticky top-[72px] z-40">
+      <div className="bg-white border-b border-gray-100 shadow-sm sticky top-[88px] z-40">
         <div className="max-w-7xl mx-auto px-6 py-3">
           <div className="flex flex-col md:flex-row gap-2 items-end">
             <div className="flex-1">
@@ -202,11 +255,10 @@ export default function Properties() {
                   value={ciudad}
                   onChange={(c: City | null) => setCiudad(c?.nombre ?? '')}
                   placeholder="Ej: Zaragoza, Sevilla, Huesca..."
-                  params={comunidad ? { comunidad } : undefined}
                 />
               </div>
             </div>
-            <div>
+            <div className="md:w-40">
               <label className="text-xs text-gray-400 font-medium mb-1 block">📅 Desde</label>
               <input
                 type="date"
@@ -215,29 +267,16 @@ export default function Properties() {
                 className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm text-gray-700 focus:outline-none focus:border-[#0F172A] [color-scheme:light]"
               />
             </div>
-            <div>
+            <div className="md:w-44">
               <label className="text-xs text-gray-400 font-medium mb-1 block">⏱️ Estancia</label>
               <select
                 value={tipoEstancia}
                 onChange={e => setTipoEstancia(e.target.value)}
-                className="border border-gray-200 rounded-xl px-3 py-2 text-sm text-gray-700 focus:outline-none focus:border-[#0F172A]"
+                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm text-gray-700 focus:outline-none focus:border-[#0F172A]"
               >
                 <option value="">Cualquiera</option>
                 <option value="corta">Corta (días/semanas)</option>
                 <option value="larga">Larga (meses)</option>
-              </select>
-            </div>
-            <div>
-              <label className="text-xs text-gray-400 font-medium mb-1 block">🏞️ Comunidad</label>
-              <select
-                value={comunidad}
-                onChange={e => setComunidad(e.target.value)}
-                className="border border-gray-200 rounded-xl px-3 py-2 text-sm text-gray-700 focus:outline-none focus:border-[#0F172A]"
-              >
-                <option value="">Cualquiera</option>
-                {(comunidades ?? []).map(c => (
-                  <option key={c.slug} value={c.slug}>{c.nombre}</option>
-                ))}
               </select>
             </div>
             <button
@@ -300,7 +339,7 @@ export default function Properties() {
 
         {/* SIDEBAR FILTROS */}
         <aside className="hidden lg:block w-72 shrink-0">
-          <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-5 sticky top-[140px]">
+          <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-5 sticky top-[152px]">
             <h3 className="font-bold text-gray-900 mb-4 text-sm">Filtros</h3>
 
             {contenidoFiltros()}
@@ -373,14 +412,14 @@ export default function Properties() {
                   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
                 {pisosConCoordenadas.map(piso => (
-                  <Marker key={piso._id} position={[piso.lat, piso.lng]}>
+                  <Marker key={piso.id} position={[piso.lat, piso.lng]}>
                     <Popup>
                       <div className="text-sm">
                         <p className="font-semibold">{piso.titulo}</p>
                         <p className="text-gray-500">{piso.ciudad}</p>
                         <p className="font-bold text-[#0F172A]">{piso.precio}€</p>
                         <button
-                          onClick={() => navigate(`/pisos/${piso._id}`)}
+                          onClick={() => navigate(`/pisos/${piso.id}`)}
                           className="mt-1 text-[#2F5DAA] text-xs underline"
                         >
                           Ver piso →
@@ -420,11 +459,11 @@ export default function Properties() {
           {!cargando && pisosOrdenados.length > 0 && (
             <div className={vistaLista
               ? 'flex flex-col gap-4'
-              : 'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5'
+              : 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5'
             }>
               {pisosOrdenados.map(piso => (
                 <PropertyCard
-                  key={piso._id}
+                  key={piso.id}
                   property={piso}
                   variant={vistaLista ? 'list' : 'grid'}
                 />

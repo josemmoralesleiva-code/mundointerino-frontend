@@ -12,7 +12,7 @@ export default function PropertyCard({ property, variant = 'grid' }: PropertyCar
   if (variant === 'list') {
     return (
       <div
-        onClick={() => navigate(`/pisos/${property._id}`)}
+        onClick={() => navigate(`/pisos/${property.id}`)}
         className="bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl cursor-pointer transition-all duration-300 hover:-translate-y-0.5 overflow-hidden flex group"
       >
         <div className="w-56 shrink-0 relative overflow-hidden">
@@ -62,7 +62,7 @@ export default function PropertyCard({ property, variant = 'grid' }: PropertyCar
 
   return (
     <div
-      onClick={() => navigate(`/pisos/${property._id}`)}
+      onClick={() => navigate(`/pisos/${property.id}`)}
       className="bg-white rounded-3xl shadow-sm hover:shadow-2xl cursor-pointer border border-gray-100 overflow-hidden transition-all duration-300 hover:-translate-y-1 group"
     >
       <div className="h-52 overflow-hidden relative">

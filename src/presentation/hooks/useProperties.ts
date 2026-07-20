@@ -88,12 +88,12 @@ export function useProperties() {
 
   const remove = useCallback(async (id: string) => {
     await deletePropertyUseCase(id)
-    setProperties((prev) => prev.filter((p) => p._id !== id))
+    setProperties((prev) => prev.filter((p) => p.id !== id))
   }, [])
 
   const toggleAvailability = useCallback(async (id: string) => {
     const updated = await toggleAvailabilityUseCase(id)
-    setProperties((prev) => prev.map((p) => (p._id === id ? updated : p)))
+    setProperties((prev) => prev.map((p) => (p.id === id ? updated : p)))
     return updated
   }, [])
 

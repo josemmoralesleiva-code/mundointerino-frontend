@@ -2,7 +2,7 @@ import type { User } from '../../domain/models'
 import type { AuthUser } from './auth.dto'
 
 export interface LastRegisteredUser {
-  _id: string
+  id: string
   nombre: string
   email: string
   rol: string

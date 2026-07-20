@@ -18,7 +18,9 @@ export default function PrivateRoute({ children, administracion, roles }: Privat
     return <Navigate to="/" />
   }
 
-  if (administracion) {
+  // El gate de 'administracion' aplica solo a docentes (interinos).
+  // Los propietarios y admins no necesitan verificación de interino.
+  if (administracion && user.rol === 'docente') {
     if (user.verificacionEstado !== 'verificado') {
       return <Navigate to="/verificacion-docente" />
     }

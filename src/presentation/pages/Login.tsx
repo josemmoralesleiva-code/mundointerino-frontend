@@ -159,7 +159,7 @@ export default function Login() {
               </p>
             </div>
 
-            <div className="mt-6 grid grid-cols-3 gap-3 text-center text-xs text-gray-500">
+            <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-3 text-center text-xs text-gray-500">
               {[
                 { icon: '✅', texto: 'Verificación' },
                 { icon: '🔒', texto: 'Acceso seguro' },

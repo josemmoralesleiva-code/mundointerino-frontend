@@ -102,7 +102,7 @@ export default function Admin() {
   const verificar = async (id: string, estado: string, motivo = '') => {
     try {
       const updated = await verifyUser(id, { estado, motivoRechazo: motivo })
-      if (usuarioDetalle?._id === id) setUsuarioDetalle(updated)
+      if (usuarioDetalle?.id === id) setUsuarioDetalle(updated)
       setRechazandoId(null)
       setMotivoRechazo('')
       fetchUsuarios({ pagina, limite: 10, filtro, search: busqueda || undefined })
@@ -114,7 +114,7 @@ export default function Admin() {
   const reVerificar = async (id: string) => {
     try {
       const updated = await reVerifyUser(id)
-      if (usuarioDetalle?._id === id) setUsuarioDetalle(updated)
+      if (usuarioDetalle?.id === id) setUsuarioDetalle(updated)
       fetchUsuarios({ pagina, limite: 10, filtro, search: busqueda || undefined })
     } catch (err: any) {
       alert(err.response?.data?.error || 'Error al re-verificar')
@@ -127,7 +127,7 @@ export default function Admin() {
       if (currentUser) {
         saveAdminSession(currentUser)
       }
-      const res = await impersonate(u._id)
+      const res = await impersonate(u.id)
       useAuthStore.getState().login(res.usuario)
       navigate('/dashboard')
     } catch (err: any) {
@@ -143,7 +143,7 @@ export default function Admin() {
   const guardarEdicion = async () => {
     if (!usuarioEditando) return
     try {
-      const updated = await updateUsuario(usuarioEditando._id, editForm)
+      const updated = await updateUsuario(usuarioEditando.id, editForm)
       setUsuarioEditando(null)
       fetchUsuarios({ pagina, limite: 10, filtro, search: busqueda || undefined })
     } catch (err: any) {
@@ -164,7 +164,7 @@ export default function Admin() {
   }
 
   const abrirEditarAnuncio = (a: Anuncio) => {
-    setEditandoAnuncioId(a._id)
+    setEditandoAnuncioId(a.id)
     setAnuncioForm({
       titulo: a.titulo,
       descripcion: a.descripcion,
@@ -201,7 +201,7 @@ export default function Admin() {
   const confirmarEliminarAnuncio = async () => {
     if (!anuncioAEliminar) return
     try {
-      await deleteAnuncio(anuncioAEliminar._id)
+      await deleteAnuncio(anuncioAEliminar.id)
       setAnuncioAEliminar(null)
       fetchAnuncios({ administracion: filtroAdmin || undefined, tipo: filtroTipoAnuncio || undefined, pagina: paginaAnuncios, limite: 10 })
     } catch (err: any) {
@@ -374,7 +374,7 @@ export default function Admin() {
               ) : (
                 <div className="flex flex-col gap-3">
                   {(stats?.ultimosRegistrados || []).map((u: LastRegisteredUser) => (
-                    <div key={u._id} className="bg-[#F8F5EF] rounded-2xl border border-gray-100 p-4 flex items-center justify-between">
+                    <div key={u.id} className="bg-[#F8F5EF] rounded-2xl border border-gray-100 p-4 flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-gradient-to-br from-[#0F172A] to-[#1E3A5F] rounded-xl flex items-center justify-center text-sm font-bold text-[#D4AF37] shrink-0">
                           {u.nombre.charAt(0).toUpperCase()}
@@ -472,7 +472,7 @@ export default function Admin() {
                 <>
                   <div className="flex flex-col gap-3">
                     {usuariosList.map(u => (
-                      <div key={u._id} className="bg-[#F8F5EF] rounded-3xl border border-gray-100 p-5 hover:shadow-md transition-all duration-200">
+                      <div key={u.id} className="bg-[#F8F5EF] rounded-3xl border border-gray-100 p-5 hover:shadow-md transition-all duration-200">
                         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                           <div className="flex items-center gap-4">
                             <div className="w-12 h-12 bg-gradient-to-br from-[#0F172A] to-[#1E3A5F] rounded-2xl flex items-center justify-center text-lg font-bold text-[#D4AF37] shrink-0">
@@ -525,7 +525,7 @@ export default function Admin() {
                             >
                               ✏️ Editar
                             </button>
-                            {u._id !== user?.id && (
+                            {u.id !== user?.id && (
                               <button
                                 onClick={() => suplantar(u)}
                                 className="bg-amber-500 text-amber-900 hover:bg-amber-600 px-4 py-2 rounded-2xl text-sm font-bold transition-all"
@@ -536,13 +536,13 @@ export default function Admin() {
                             {u.verificacionEstado === 'pendiente' && (
                               <>
                                 <button
-                                  onClick={() => verificar(u._id, 'verificado')}
+                                  onClick={() => verificar(u.id, 'verificado')}
                                   className="bg-emerald-50 text-emerald-700 hover:bg-emerald-100 px-4 py-2 rounded-2xl text-sm font-bold transition-all"
                                 >
                                   ✅ Verificar
                                 </button>
                                 <button
-                                  onClick={() => setRechazandoId(u._id)}
+                                  onClick={() => setRechazandoId(u.id)}
                                   className="bg-rose-50 text-rose-600 hover:bg-rose-100 px-4 py-2 rounded-2xl text-sm font-bold transition-all"
                                 >
                                   ❌ Rechazar
@@ -551,7 +551,7 @@ export default function Admin() {
                             )}
                             {u.verificacionEstado === 'verificado' && (
                               <button
-                                onClick={() => verificar(u._id, 'rechazado')}
+                                onClick={() => verificar(u.id, 'rechazado')}
                                 className="bg-gray-100 text-gray-600 hover:bg-gray-200 px-4 py-2 rounded-2xl text-sm font-bold transition-all"
                               >
                                 Revocar
@@ -559,7 +559,7 @@ export default function Admin() {
                             )}
                             {u.verificacionEstado === 'rechazado' && (
                               <button
-                                onClick={() => verificar(u._id, 'verificado')}
+                                onClick={() => verificar(u.id, 'verificado')}
                                 className="bg-emerald-50 text-emerald-700 hover:bg-emerald-100 px-4 py-2 rounded-2xl text-sm font-bold transition-all"
                               >
                                 ✅ Verificar igualmente
@@ -568,7 +568,7 @@ export default function Admin() {
                           </div>
                         </div>
 
-                        {rechazandoId === u._id && (
+                        {rechazandoId === u.id && (
                           <div className="mt-4 bg-rose-50 border border-rose-200 rounded-2xl p-4">
                             <p className="text-sm font-bold text-rose-700 mb-2">Motivo del rechazo (opcional)</p>
                             <textarea
@@ -580,7 +580,7 @@ export default function Admin() {
                             />
                             <div className="flex gap-2">
                               <button
-                                onClick={() => verificar(u._id, 'rechazado', motivoRechazo)}
+                                onClick={() => verificar(u.id, 'rechazado', motivoRechazo)}
                                 className="bg-[#0F172A] text-white px-4 py-2 rounded-2xl text-sm font-bold hover:bg-[#1E3A5F] transition-all"
                               >
                                 Confirmar rechazo
@@ -675,7 +675,7 @@ export default function Admin() {
                 <>
                   <div className="flex flex-col gap-3">
                     {anunciosList.map(a => (
-                      <div key={a._id} className="bg-[#F8F5EF] rounded-3xl border border-gray-100 p-5 hover:shadow-md transition-all duration-200">
+                      <div key={a.id} className="bg-[#F8F5EF] rounded-3xl border border-gray-100 p-5 hover:shadow-md transition-all duration-200">
                         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                           <div>
                             <div className="flex items-center gap-2 flex-wrap mb-1">
@@ -787,7 +787,7 @@ export default function Admin() {
                     { label: 'Email',    valor: usuarioDetalle.email },
                     { label: 'Teléfono', valor: usuarioDetalle.telefono || '—' },
                     { label: 'Rol',      valor: usuarioDetalle.rol === 'docente' ? '🧑‍🏫 Interino' : '🏠 Propietario' },
-                    { label: 'ID',       valor: usuarioDetalle._id },
+                    { label: 'ID',       valor: usuarioDetalle.id },
                     {
                       label: 'Alta',
                       valor: new Date(usuarioDetalle.createdAt!).toLocaleDateString('es-ES', {
@@ -937,13 +937,13 @@ export default function Admin() {
                   <div className="space-y-3">
                     <div className="flex gap-3">
                       <button
-                        onClick={() => verificar(usuarioDetalle._id, 'verificado')}
+                        onClick={() => verificar(usuarioDetalle.id, 'verificado')}
                         className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-2xl font-bold text-sm transition-all hover:scale-[1.01]"
                       >
                         ✅ Verificar usuario
                       </button>
                       <button
-                        onClick={() => setRechazandoId(usuarioDetalle._id === rechazandoId ? null : usuarioDetalle._id)}
+                        onClick={() => setRechazandoId(usuarioDetalle.id === rechazandoId ? null : usuarioDetalle.id)}
                         className="flex-1 bg-rose-50 text-rose-600 hover:bg-rose-100 py-3 rounded-2xl font-bold text-sm border border-rose-200 transition-all"
                       >
                         ❌ Rechazar
@@ -951,13 +951,13 @@ export default function Admin() {
                     </div>
                     {usuarioDetalle.administracion && (
                       <button
-                        onClick={() => reVerificar(usuarioDetalle._id)}
+                        onClick={() => reVerificar(usuarioDetalle.id)}
                         className="w-full bg-[#0F172A] hover:bg-[#1E3A5F] text-white py-3 rounded-2xl font-bold text-sm transition-all"
                       >
                         🔄 Re-verificar automáticamente
                       </button>
                     )}
-                    {rechazandoId === usuarioDetalle._id && (
+                    {rechazandoId === usuarioDetalle.id && (
                       <div className="bg-rose-50 border border-rose-200 rounded-2xl p-4">
                         <textarea
                           value={motivoRechazo}
@@ -967,7 +967,7 @@ export default function Admin() {
                           className="w-full border border-rose-200 rounded-xl px-3 py-2 text-sm focus:outline-none resize-none mb-3"
                         />
                         <button
-                          onClick={() => verificar(usuarioDetalle._id, 'rechazado', motivoRechazo)}
+                          onClick={() => verificar(usuarioDetalle.id, 'rechazado', motivoRechazo)}
                           className="bg-[#0F172A] text-white px-5 py-2.5 rounded-2xl font-bold text-sm hover:bg-[#1E3A5F] transition-all w-full"
                         >
                           Confirmar rechazo
@@ -979,13 +979,13 @@ export default function Admin() {
                 {usuarioDetalle.verificacionEstado === 'verificado' && (
                   <div className="space-y-3">
                     <button
-                      onClick={() => verificar(usuarioDetalle._id, 'rechazado')}
+                      onClick={() => verificar(usuarioDetalle.id, 'rechazado')}
                       className="w-full bg-gray-100 text-gray-600 hover:bg-gray-200 py-3 rounded-2xl font-bold text-sm transition-all"
                     >
                       Revocar verificación
                     </button>
                     <button
-                      onClick={() => reVerificar(usuarioDetalle._id)}
+                      onClick={() => reVerificar(usuarioDetalle.id)}
                       className="w-full bg-[#0F172A] hover:bg-[#1E3A5F] text-white py-3 rounded-2xl font-bold text-sm transition-all"
                     >
                       🔄 Re-verificar automáticamente
@@ -995,13 +995,13 @@ export default function Admin() {
                 {usuarioDetalle.verificacionEstado === 'rechazado' && (
                   <div className="space-y-3">
                     <button
-                      onClick={() => verificar(usuarioDetalle._id, 'verificado')}
+                      onClick={() => verificar(usuarioDetalle.id, 'verificado')}
                       className="w-full bg-emerald-600 text-white hover:bg-emerald-700 py-3 rounded-2xl font-bold text-sm transition-all"
                     >
                       ✅ Verificar igualmente
                     </button>
                     <button
-                      onClick={() => reVerificar(usuarioDetalle._id)}
+                      onClick={() => reVerificar(usuarioDetalle.id)}
                       className="w-full bg-[#0F172A] hover:bg-[#1E3A5F] text-white py-3 rounded-2xl font-bold text-sm transition-all"
                     >
                       🔄 Re-verificar automáticamente

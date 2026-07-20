@@ -42,7 +42,7 @@ export default function PropertyDetail() {
         <Navbar />
         <div className="min-h-screen bg-gray-50 flex items-center justify-center">
           <div className="flex flex-col items-center gap-3">
-            <div className="w-10 h-10 border-3 border-primary-200 border-t-primary-700 rounded-full animate-spin" />
+            <div className="w-10 h-10 border-4 border-primary-200 border-t-primary-700 rounded-full animate-spin" />
             <p className="text-sm text-gray-400">Cargando piso...</p>
           </div>
         </div>
@@ -146,7 +146,7 @@ export default function PropertyDetail() {
             )}
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* COLUMNA PRINCIPAL */}
             <div className="lg:col-span-2 space-y-6">
               <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
@@ -290,7 +290,7 @@ export default function PropertyDetail() {
 
             {/* SIDEBAR */}
             <div className="lg:col-span-1">
-              <div className="sticky top-24 space-y-4">
+              <div className="sticky top-[152px] space-y-4">
                 <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
                   <div className="mb-4">
                     <div className="flex items-baseline gap-1">
