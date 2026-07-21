@@ -34,8 +34,8 @@ const authRepository = {
   },
 
   async me(): Promise<AuthUser> {
-    const res = await api.get<AuthUser>('/auth/me')
-    return res.data
+    const res = await api.get<AuthResponse>('/auth/me')
+    return res.data.usuario
   },
 
   async refresh(): Promise<void> {
