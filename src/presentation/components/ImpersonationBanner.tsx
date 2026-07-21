@@ -28,13 +28,16 @@ export async function exitImpersonation(
     return
   }
   try {
-    // TODO(Bloque F / BACKEND-2): backend debe restaurar la cookie de admin via
-    // POST /admin/end-impersonation o similar. Si no existe aún, fallback local.
-    await adminRepository.endImpersonation()
+    const { usuario } = await adminRepository.endImpersonation()
+    // Backend restauró las cookies httpOnly con el JWT del admin. Usamos el
+    // usuario fresco que devuelve (puede tener verificacionEstado actualizado,
+    // emailVerificado, etc.).
+    adminUser = usuario
   } catch {
-    // El endpoint aún no existe o falló: restauramos localmente asumiendo que la
-    // cookie de admin sigue válida. Si no lo estuviera, el interceptor de 401
-    // forzará logout real.
+    // El endpoint falló (cookie caducada, sesión perdida, etc.): restauramos
+    // localmente con el admin cacheado. Las cookies httpOnly receptoras no se
+    // pueden leer; el navegador usará las que ya estén (probablemente todavía
+    // válidas para admins). Si no lo son, el interceptor de 401 forzará logout.
   }
   authStore.login(adminUser)
   sessionStorage.removeItem(ADMIN_SESSION_KEY)

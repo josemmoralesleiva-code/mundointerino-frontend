@@ -44,3 +44,7 @@ export interface AdminUpdateUserRequest {
 export interface ImpersonateResponse {
   usuario: AuthUser
 }
+
+export interface EndImpersonationResponse {
+  usuario: AuthUser
+}
