@@ -17,6 +17,7 @@ export interface AdminStats {
     pendientes: number
     verificados: number
     rechazados: number
+    pendientesRevisionManual: number
     nuevosUltimoMes: number
   }
   ultimosRegistrados: LastRegisteredUser[]
@@ -31,7 +32,12 @@ export interface AdminUsuariosResponse {
 
 export interface AdminUpdateUserRequest {
   rol?: string
-  verificacionEstado?: string
+  verificacionEstado?:
+    | 'pendiente'
+    | 'procesando'
+    | 'verificado'
+    | 'rechazado'
+    | 'pendiente-revision-manual'
   motivoRechazo?: string
 }
 

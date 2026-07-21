@@ -1,6 +1,11 @@
 export type Role = 'docente' | 'propietario' | 'admin'
 
-export type VerificationStatus = 'pendiente' | 'verificado' | 'rechazado'
+export type VerificationStatus =
+  | 'pendiente'
+  | 'procesando'
+  | 'verificado'
+  | 'rechazado'
+  | 'pendiente-revision-manual'
 
 export type Administration = 'educacion' | 'sanidad' | 'justicia' | 'otros'
 
@@ -22,6 +27,9 @@ export interface User {
   verificationNotes?: string
   verificationDate?: string
   verificationType?: string
+  verificationProvider?: string
+  verificationAttempts?: number
+  verificationLastError?: string
   createdAt?: string
   updatedAt?: string
 }

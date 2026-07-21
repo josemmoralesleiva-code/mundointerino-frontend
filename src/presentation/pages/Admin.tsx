@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuthStore } from '../store/auth.store'
 import { useAuth } from '../hooks/useAuth'
 import { useUsers } from '../hooks/useUsers'
@@ -33,6 +33,17 @@ const TIPOS_ANUNCIO: Record<string, { label: string; icono: string }> = {
   otro:             { label: 'Otro',             icono: '📌' },
 }
 
+const ESTADO_VERIFICACION: Record<string, { label: string; color: string }> = {
+  pendiente:                   { label: '⏳ Pendiente',      color: 'bg-amber-100 text-amber-700' },
+  procesando:                  { label: '⚙️ Procesando',     color: 'bg-blue-100 text-blue-700' },
+  verificado:                  { label: '✅ Verificado',     color: 'bg-emerald-100 text-emerald-700' },
+  rechazado:                   { label: '❌ Rechazado',      color: 'bg-rose-100 text-rose-600' },
+  'pendiente-revision-manual': { label: '🔔 Revisión manual', color: 'bg-orange-100 text-orange-700' },
+}
+
+const estadoBadge = (estado: string) =>
+  ESTADO_VERIFICACION[estado] || { label: estado, color: 'bg-gray-100 text-gray-600' }
+
 const EMPTY_ANUNCIO_FORM = {
   titulo: '',
   descripcion: '',
@@ -46,6 +57,7 @@ const EMPTY_ANUNCIO_FORM = {
 
 export default function Admin() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const { user, logout } = useAuth()
   const { users, loading: usersLoading, setUsers, fetchAll, verifyUser, reVerifyUser } = useUsers()
   const { stats, usuariosPage, loading: adminLoading, error: adminError, fetchStats, fetchUsuarios, updateUsuario, impersonate } = useAdmin()
@@ -77,6 +89,15 @@ export default function Admin() {
   useEffect(() => {
     if (user?.rol !== 'admin') { navigate('/'); return }
   }, [])
+
+  // Deep link desde email: /admin?usuario=<id>&estado=<filtro>
+  useEffect(() => {
+    const estado = searchParams.get('estado')
+    if (estado) {
+      setFiltro(estado)
+      setTab('usuarios')
+    }
+  }, [searchParams])
 
   // Fetch stats on mount
   useEffect(() => { fetchStats() }, [])
@@ -297,6 +318,14 @@ export default function Admin() {
             <div className="flex flex-wrap gap-6 mt-4 text-xs text-slate-300">
               <span>👥 {stats.usuarios.total} usuarios registrados</span>
               <span>⏳ {stats.usuarios.pendientes} pendientes de revisión</span>
+              {(stats.usuarios.pendientesRevisionManual ?? 0) > 0 && (
+                <button
+                  onClick={() => { setTab('usuarios'); setFiltro('pendiente-revision-manual') }}
+                  className="text-orange-300 hover:text-orange-200 underline transition-colors"
+                >
+                  🔔 {stats.usuarios.pendientesRevisionManual} esperando revisión manual
+                </button>
+              )}
               <span>✅ {stats.usuarios.verificados} verificados</span>
               <span>❌ {stats.usuarios.rechazados} rechazados</span>
             </div>
@@ -346,21 +375,27 @@ export default function Admin() {
         {tab === 'dashboard' && (
           <>
             {/* STATS CARDS */}
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
               {[
                 { label: 'Total usuarios', valor: stats?.usuarios.total || 0, icono: '👥', color: 'bg-[#F8F5EF] text-[#0F172A] border-gray-200' },
                 { label: 'Docentes', valor: stats?.usuarios.porRol?.docente || 0, icono: '🧑‍🏫', color: 'bg-blue-50 text-blue-700 border-blue-100' },
                 { label: 'Propietarios', valor: stats?.usuarios.porRol?.propietario || 0, icono: '🏠', color: 'bg-purple-50 text-purple-700 border-purple-100' },
                 { label: 'Pendientes', valor: stats?.usuarios.pendientes || 0, icono: '⏳', color: 'bg-amber-50 text-amber-700 border-amber-100' },
+                { label: 'Revisión manual', valor: stats?.usuarios.pendientesRevisionManual || 0, icono: '🔔', color: 'bg-orange-50 text-orange-700 border-orange-100', onClick: () => { setTab('usuarios'); setFiltro('pendiente-revision-manual') } },
                 { label: 'Nuevos este mes', valor: stats?.usuarios.nuevosUltimoMes || 0, icono: '✨', color: 'bg-emerald-50 text-emerald-700 border-emerald-100' },
               ].map(s => (
-                <div key={s.label} className="bg-white rounded-3xl border border-gray-100 shadow-sm p-5 text-center hover:shadow-md transition-all">
+                <button
+                  key={s.label}
+                  onClick={s.onClick}
+                  disabled={!s.onClick}
+                  className={`bg-white rounded-3xl border border-gray-100 shadow-sm p-5 text-center hover:shadow-md transition-all ${s.onClick ? 'hover:scale-[1.02] cursor-pointer' : 'cursor-default'}`}
+                >
                   <div className={`inline-flex items-center justify-center w-10 h-10 rounded-xl text-xl mb-2 border ${s.color}`}>
                     {s.icono}
                   </div>
                   <p className="text-2xl font-bold text-gray-900">{s.valor}</p>
                   <p className="text-gray-500 text-xs">{s.label}</p>
-                </div>
+                </button>
               ))}
             </div>
 
@@ -439,6 +474,7 @@ export default function Admin() {
                   <div className="flex gap-1 bg-[#F8F5EF] rounded-2xl p-1 border border-gray-100">
                     {[
                       ['pendiente', '⏳ Pendientes'],
+                      ['pendiente-revision-manual', '🔔 Revisión manual'],
                       ['verificado', '✅ Verificados'],
                       ['rechazado', '❌ Rechazados'],
                       ['todos', '👥 Todos'],
@@ -486,13 +522,8 @@ export default function Admin() {
                                 }`}>
                                   {u.rol === 'docente' ? '🧑‍🏫 Interino' : '🏠 Propietario'}
                                 </span>
-                                <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                                  u.verificacionEstado === 'pendiente'  ? 'bg-amber-100 text-amber-700'    :
-                                  u.verificacionEstado === 'verificado' ? 'bg-emerald-100 text-emerald-700' :
-                                  'bg-rose-100 text-rose-600'
-                                }`}>
-                                  {u.verificacionEstado === 'pendiente'  ? '⏳ Pendiente'  :
-                                   u.verificacionEstado === 'verificado' ? '✅ Verificado' : '❌ Rechazado'}
+                                <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${estadoBadge(u.verificacionEstado).color}`}>
+                                  {estadoBadge(u.verificacionEstado).label}
                                 </span>
                                 {u.administracion && (
                                   <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-[#0F172A]/10 text-[#0F172A]">
@@ -533,7 +564,7 @@ export default function Admin() {
                                 🎭 Suplantar
                               </button>
                             )}
-                            {u.verificacionEstado === 'pendiente' && (
+                            {(u.verificacionEstado === 'pendiente' || u.verificacionEstado === 'pendiente-revision-manual') && (
                               <>
                                 <button
                                   onClick={() => verificar(u.id, 'verificado')}
@@ -809,13 +840,8 @@ export default function Admin() {
                 <div className="grid grid-cols-2 gap-3">
                   <div className="bg-[#F8F5EF] rounded-2xl p-4 border border-gray-100">
                     <p className="text-xs text-gray-400 font-semibold mb-1">Estado</p>
-                    <span className={`inline-flex items-center text-sm font-bold px-3 py-1 rounded-full ${
-                      usuarioDetalle.verificacionEstado === 'verificado' ? 'bg-emerald-100 text-emerald-700' :
-                      usuarioDetalle.verificacionEstado === 'rechazado'  ? 'bg-rose-100 text-rose-600'       :
-                      'bg-amber-100 text-amber-700'
-                    }`}>
-                      {usuarioDetalle.verificacionEstado === 'verificado' ? '✅ Verificado' :
-                       usuarioDetalle.verificacionEstado === 'rechazado'  ? '❌ Rechazado'  : '⏳ Pendiente'}
+                    <span className={`inline-flex items-center text-sm font-bold px-3 py-1 rounded-full ${estadoBadge(usuarioDetalle.verificacionEstado).color}`}>
+                      {estadoBadge(usuarioDetalle.verificacionEstado).label}
                     </span>
                   </div>
                   <div className="bg-[#F8F5EF] rounded-2xl p-4 border border-gray-100">
@@ -864,6 +890,24 @@ export default function Admin() {
                     <div className="bg-[#F8F5EF] rounded-2xl p-4 border border-gray-100">
                       <p className="text-xs text-gray-400 font-semibold mb-1">Tipo verificación</p>
                       <p className="font-bold text-gray-900 text-sm capitalize">{usuarioDetalle.verificationType}</p>
+                    </div>
+                  )}
+                  {usuarioDetalle.verificationProvider && (
+                    <div className="bg-[#F8F5EF] rounded-2xl p-4 border border-gray-100">
+                      <p className="text-xs text-gray-400 font-semibold mb-1">Proveedor OCR</p>
+                      <p className="font-bold text-gray-900 text-sm">{usuarioDetalle.verificationProvider}</p>
+                    </div>
+                  )}
+                  {usuarioDetalle.verificationAttempts != null && (
+                    <div className="bg-[#F8F5EF] rounded-2xl p-4 border border-gray-100">
+                      <p className="text-xs text-gray-400 font-semibold mb-1">Intentos OCR</p>
+                      <p className="font-bold text-gray-900 text-sm">{usuarioDetalle.verificationAttempts}</p>
+                    </div>
+                  )}
+                  {usuarioDetalle.verificationLastError && (
+                    <div className="bg-rose-50 rounded-2xl p-4 border border-rose-100 col-span-2">
+                      <p className="text-xs text-rose-400 font-semibold mb-1">Último error OCR</p>
+                      <p className="text-rose-700 text-sm font-medium">{usuarioDetalle.verificationLastError}</p>
                     </div>
                   )}
                 </div>
@@ -933,7 +977,28 @@ export default function Admin() {
               {/* Acciones en modal */}
               <div className="border-t border-gray-100 pt-6">
                 <h4 className="text-xs text-gray-400 font-semibold uppercase tracking-wide mb-3">Acción de verificación</h4>
-                {usuarioDetalle.verificacionEstado === 'pendiente' && (
+                {usuarioDetalle.verificacionEstado === 'procesando' && (
+                  <div className="space-y-3">
+                    <div className="bg-blue-50 border border-blue-100 rounded-2xl p-4 text-blue-700 text-sm">
+                      ⚙️ El documento está siendo procesado por OCR (Tesseract). Aguardá…
+                    </div>
+                    <button
+                      onClick={() => verificar(usuarioDetalle.id, 'pendiente-revision-manual')}
+                      className="w-full bg-orange-50 text-orange-700 hover:bg-orange-100 py-3 rounded-2xl font-bold text-sm border border-orange-200 transition-all"
+                    >
+                      🔔 Marcar para revisión manual
+                    </button>
+                    {usuarioDetalle.administracion && (
+                      <button
+                        onClick={() => reVerificar(usuarioDetalle.id)}
+                        className="w-full bg-[#0F172A] hover:bg-[#1E3A5F] text-white py-3 rounded-2xl font-bold text-sm transition-all"
+                      >
+                        🔄 Re-verificar automáticamente
+                      </button>
+                    )}
+                  </div>
+                )}
+                {(usuarioDetalle.verificacionEstado === 'pendiente' || usuarioDetalle.verificacionEstado === 'pendiente-revision-manual') && (
                   <div className="space-y-3">
                     <div className="flex gap-3">
                       <button
@@ -949,6 +1014,14 @@ export default function Admin() {
                         ❌ Rechazar
                       </button>
                     </div>
+                    {usuarioDetalle.verificacionEstado !== 'pendiente-revision-manual' && (
+                      <button
+                        onClick={() => verificar(usuarioDetalle.id, 'pendiente-revision-manual')}
+                        className="w-full bg-orange-50 text-orange-700 hover:bg-orange-100 py-3 rounded-2xl font-bold text-sm border border-orange-200 transition-all"
+                      >
+                        🔔 Marcar para revisión manual
+                      </button>
+                    )}
                     {usuarioDetalle.administracion && (
                       <button
                         onClick={() => reVerificar(usuarioDetalle.id)}
@@ -1001,6 +1074,12 @@ export default function Admin() {
                       ✅ Verificar igualmente
                     </button>
                     <button
+                      onClick={() => verificar(usuarioDetalle.id, 'pendiente-revision-manual')}
+                      className="w-full bg-orange-50 text-orange-700 hover:bg-orange-100 py-3 rounded-2xl font-bold text-sm border border-orange-200 transition-all"
+                    >
+                      🔔 Marcar para revisión manual
+                    </button>
+                    <button
                       onClick={() => reVerificar(usuarioDetalle.id)}
                       className="w-full bg-[#0F172A] hover:bg-[#1E3A5F] text-white py-3 rounded-2xl font-bold text-sm transition-all"
                     >
@@ -1050,8 +1129,10 @@ export default function Admin() {
                   className="w-full border border-gray-200 rounded-2xl px-3 py-2 text-sm focus:outline-none focus:border-[#0F172A]"
                 >
                   <option value="pendiente">⏳ Pendiente</option>
+                  <option value="procesando">⚙️ Procesando</option>
                   <option value="verificado">✅ Verificado</option>
                   <option value="rechazado">❌ Rechazado</option>
+                  <option value="pendiente-revision-manual">🔔 Revisión manual</option>
                 </select>
               </div>
               <button

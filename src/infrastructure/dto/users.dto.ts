@@ -14,6 +14,6 @@ export interface ChangePasswordRequest {
 }
 
 export interface VerifyUserRequest {
-  estado: string
+  estado: 'pendiente' | 'procesando' | 'verificado' | 'rechazado' | 'pendiente-revision-manual'
   motivoRechazo?: string
 }
