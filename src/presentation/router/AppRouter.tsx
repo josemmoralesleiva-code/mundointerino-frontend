@@ -20,6 +20,10 @@ import Province from '../pages/Province'
 import ZoneDetail from '../pages/ZoneDetail'
 import Contact from '../pages/Contact'
 import AboutUs from '../pages/AboutUs'
+import AvisoLegal from '../pages/AvisoLegal'
+import PoliticaPrivacidad from '../pages/PoliticaPrivacidad'
+import PoliticaCookies from '../pages/PoliticaCookies'
+import TerminosCondiciones from '../pages/TerminosCondiciones'
 import Community from '../pages/Community'
 import Education from '../pages/Education'
 import Health from '../pages/Health'
@@ -83,6 +87,10 @@ export default function AppRouter() {
       <Route path="/zonas/:comunidad/:provincia/:ciudad" element={<ZoneDetail />} />
       <Route path="/sobre-nosotros" element={<AboutUs />} />
       <Route path="/contacto" element={<Contact />} />
+      <Route path="/aviso-legal" element={<AvisoLegal />} />
+      <Route path="/privacidad" element={<PoliticaPrivacidad />} />
+      <Route path="/cookies" element={<PoliticaCookies />} />
+      <Route path="/terminos" element={<TerminosCondiciones />} />
 
       <Route
         path="/mundo"

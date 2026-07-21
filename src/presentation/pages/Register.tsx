@@ -18,6 +18,7 @@ export default function Register() {
   })
   const [error, setError] = useState('')
   const [cargando, setCargando] = useState(false)
+  const [aceptaTerminos, setAceptaTerminos] = useState(false)
 
   const [passwordRules, setPasswordRules] = useState<Record<string, PasswordRule>>({
     minLength: { regex: '.{8,}', label: 'Al menos 8 caracteres' },
@@ -65,6 +66,11 @@ export default function Register() {
     e.preventDefault()
     if (!form.rol) {
       setError('Selecciona si eres interino o propietario.')
+      setCargando(false)
+      return
+    }
+    if (!aceptaTerminos) {
+      setError('Debes aceptar los Términos y Condiciones y la Política de Privacidad para continuar.')
       setCargando(false)
       return
     }
@@ -293,6 +299,28 @@ export default function Register() {
                   <>🕐 Selecciona un rol para ver los requisitos de verificación.</>
                 )}
               </div>
+
+              {/* ACEPTACIÓN TÉRMINOS Y PRIVACIDAD */}
+              <label className="flex items-start gap-3 text-xs text-gray-600 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={aceptaTerminos}
+                  onChange={(e) => setAceptaTerminos(e.target.checked)}
+                  className="mt-0.5 w-4 h-4 rounded accent-[#0F172A] shrink-0"
+                  required
+                />
+                <span>
+                  He leído y acepto los{' '}
+                  <Link to="/terminos" className="text-[#2F5DAA] underline" target="_blank" rel="noopener noreferrer">
+                    Términos y Condiciones
+                  </Link>{' '}
+                  y la{' '}
+                  <Link to="/privacidad" className="text-[#2F5DAA] underline" target="_blank" rel="noopener noreferrer">
+                    Política de Privacidad
+                  </Link>
+                  .
+                </span>
+              </label>
 
               {/* BOTÓN */}
               <button

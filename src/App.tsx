@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { BrowserRouter, useNavigate } from 'react-router-dom'
 import AppRouter from './presentation/router/AppRouter'
 import ScrollToTop from './presentation/components/ScrollToTop'
+import CookieBanner from './presentation/components/layout/CookieBanner'
 import { useAuth } from './presentation/hooks/useAuth'
 import { useAuthStore } from './presentation/store/auth.store'
 
@@ -35,6 +36,7 @@ function AppShell() {
     <>
       <ScrollToTop />
       <AppRouter />
+      <CookieBanner />
     </>
   )
 }
