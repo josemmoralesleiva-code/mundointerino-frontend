@@ -106,7 +106,7 @@ export default function CityAutocomplete({
         <div
           id={listboxId}
           role="listbox"
-          className="absolute z-50 mt-1 left-0 bg-white rounded-2xl shadow-xl border border-gray-100 max-h-72 overflow-y-auto min-w-[18rem] w-[max(100%,18rem)] sm:w-[24rem]"
+          className="absolute z-50 mt-1 left-0 bg-white rounded-2xl shadow-xl border border-gray-100 max-h-72 overflow-y-auto w-72 sm:w-96"
         >
           {error && (
             <div className="px-4 py-3 text-xs text-red-500">{error}</div>

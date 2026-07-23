@@ -135,11 +135,11 @@ export default function Profile() {
   }
 
   const badgeEstado = (estado: string) => {
-    if (estado === 'verificado') return 'bg-[#D4AF37]/20 text-[#0F172A]'
+    if (estado === 'verificado') return 'bg-accent-400/20 text-primary-900'
     if (estado === 'rechazado') return 'bg-red-100 text-red-700'
     if (estado === 'pendiente-revision-manual') return 'bg-orange-100 text-orange-700'
     if (estado === 'procesando') return 'bg-blue-100 text-blue-700'
-    return 'bg-[#F8F5EF] text-gray-700 border border-gray-200'
+    return 'bg-primary-50 text-gray-700 border border-gray-200'
   }
 
   const textoEstado = (estado: string) => {
@@ -180,7 +180,7 @@ export default function Profile() {
           backgroundPosition: 'center',
         }}
       >
-        <div className="absolute inset-0 bg-[#111827]/90" />
+        <div className="absolute inset-0 bg-primary-900/90" />
         <div className="relative max-w-6xl mx-auto">
           <button
             onClick={() => navigate('/dashboard')}
@@ -189,7 +189,7 @@ export default function Profile() {
             ← Volver al panel
           </button>
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-[#D4AF37] text-[#0F172A] flex items-center justify-center text-2xl font-bold shadow-lg shrink-0">
+            <div className="w-14 h-14 rounded-2xl bg-accent-400 text-primary-900 flex items-center justify-center text-2xl font-bold shadow-lg shrink-0">
               {usuarioMostrado?.nombre?.charAt(0)?.toUpperCase() || 'U'}
             </div>
             <div>
@@ -219,7 +219,7 @@ export default function Profile() {
           </div>
         )}
         {mensaje && (
-          <div className="bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#0F172A] rounded-2xl px-4 py-3 mb-6 text-sm font-medium">
+          <div className="bg-accent-400/10 border border-accent-400/30 text-primary-900 rounded-2xl px-4 py-3 mb-6 text-sm font-medium">
             ✅ {mensaje}
           </div>
         )}
@@ -241,7 +241,7 @@ export default function Profile() {
                   className={`px-4 py-2 rounded-2xl border text-sm font-bold transition-all hover:scale-[1.02] ${
                     editando
                       ? 'border-gray-300 text-gray-600 hover:bg-gray-50'
-                      : 'border-[#0F172A] text-[#0F172A] hover:bg-[#F8F5EF]'
+                      : 'border-primary-900 text-primary-900 hover:bg-primary-50'
                   }`}
                 >
                   {editando ? 'Cancelar edición' : '✏️ Editar perfil'}
@@ -257,7 +257,7 @@ export default function Profile() {
                     value={form.nombre}
                     onChange={handleChange}
                     disabled={!editando}
-                    className="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm text-gray-900 disabled:bg-[#F8F5EF] disabled:text-gray-500 focus:outline-none focus:border-[#0F172A] transition-colors"
+                    className="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm text-gray-900 disabled:bg-primary-50 disabled:text-gray-500 focus:outline-none focus:border-primary-900 transition-colors"
                   />
                 </div>
                 <div>
@@ -268,7 +268,7 @@ export default function Profile() {
                     value={form.email}
                     onChange={handleChange}
                     disabled={!editando}
-                    className="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm text-gray-900 disabled:bg-[#F8F5EF] disabled:text-gray-500 focus:outline-none focus:border-[#0F172A] transition-colors"
+                    className="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm text-gray-900 disabled:bg-primary-50 disabled:text-gray-500 focus:outline-none focus:border-primary-900 transition-colors"
                   />
                 </div>
                 <div>
@@ -279,7 +279,7 @@ export default function Profile() {
                     value={form.telefono}
                     onChange={handleChange}
                     disabled={!editando}
-                    className="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm text-gray-900 disabled:bg-[#F8F5EF] disabled:text-gray-500 focus:outline-none focus:border-[#0F172A] transition-colors"
+                    className="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm text-gray-900 disabled:bg-primary-50 disabled:text-gray-500 focus:outline-none focus:border-primary-900 transition-colors"
                   />
                 </div>
                 <div>
@@ -288,21 +288,21 @@ export default function Profile() {
                     type="text"
                     value={usuarioMostrado?.rol || ''}
                     disabled
-                    className="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm bg-[#F8F5EF] text-gray-500"
+                    className="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm bg-primary-50 text-gray-500"
                   />
                 </div>
                 <div className="md:col-span-2 flex gap-3 pt-2">
                   <button
                     type="submit"
                     disabled={!editando || guardando}
-                    className="bg-[#0F172A] hover:bg-[#1E3A5F] text-white px-5 py-3 rounded-2xl font-bold text-sm disabled:opacity-50 transition-all hover:scale-[1.02] shadow-md"
+                    className="bg-primary-900 hover:bg-primary-800 text-white px-5 py-3 rounded-2xl font-bold text-sm disabled:opacity-50 transition-all hover:scale-[1.02] shadow-md"
                   >
                     {guardando ? 'Guardando...' : 'Guardar cambios →'}
                   </button>
                   <button
                     type="button"
                     onClick={() => navigate('/dashboard')}
-                    className="border border-gray-200 px-5 py-3 rounded-2xl font-bold text-sm text-gray-700 hover:bg-[#F8F5EF] transition-all"
+                    className="border border-gray-200 px-5 py-3 rounded-2xl font-bold text-sm text-gray-700 hover:bg-primary-50 transition-all"
                   >
                     Ir al panel
                   </button>
@@ -322,7 +322,7 @@ export default function Profile() {
                   className={`px-4 py-2 rounded-2xl border text-sm font-bold transition-all hover:scale-[1.02] ${
                     editandoPassword
                       ? 'border-gray-300 text-gray-600 hover:bg-gray-50'
-                      : 'border-[#0F172A] text-[#0F172A] hover:bg-[#F8F5EF]'
+                      : 'border-primary-900 text-primary-900 hover:bg-primary-50'
                   }`}
                 >
                   {editandoPassword ? 'Cancelar' : '🔑 Cambiar contraseña'}
@@ -330,7 +330,7 @@ export default function Profile() {
               </div>
 
               {!editandoPassword ? (
-                <div className="bg-[#F8F5EF] rounded-2xl p-4 border border-gray-100 text-sm text-gray-500">
+                <div className="bg-primary-50 rounded-2xl p-4 border border-gray-100 text-sm text-gray-500">
                   🔒 Tu contraseña está protegida. Haz clic en "Cambiar contraseña" para modificarla.
                 </div>
               ) : (
@@ -341,7 +341,7 @@ export default function Profile() {
                     </div>
                   )}
                   {mensajePassword && (
-                    <div className="bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#0F172A] rounded-2xl px-4 py-3 text-sm font-medium">
+                    <div className="bg-accent-400/10 border border-accent-400/30 text-primary-900 rounded-2xl px-4 py-3 text-sm font-medium">
                       ✅ {mensajePassword}
                     </div>
                   )}
@@ -354,7 +354,7 @@ export default function Profile() {
                       onChange={handleChangePassword}
                       required
                       placeholder="••••••••"
-                      className="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-[#0F172A] transition-colors"
+                      className="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-primary-900 transition-colors"
                     />
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -367,7 +367,7 @@ export default function Profile() {
                         onChange={handleChangePassword}
                         required
                         placeholder="Mínimo 6 caracteres"
-                        className="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-[#0F172A] transition-colors"
+                        className="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-primary-900 transition-colors"
                       />
                     </div>
                     <div>
@@ -379,14 +379,14 @@ export default function Profile() {
                         onChange={handleChangePassword}
                         required
                         placeholder="Repite la nueva contraseña"
-                        className="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-[#0F172A] transition-colors"
+                        className="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-primary-900 transition-colors"
                       />
                     </div>
                   </div>
                   <button
                     type="submit"
                     disabled={guardandoPassword}
-                    className="bg-[#0F172A] hover:bg-[#1E3A5F] text-white px-5 py-3 rounded-2xl font-bold text-sm disabled:opacity-50 transition-all hover:scale-[1.02] shadow-md"
+                    className="bg-primary-900 hover:bg-primary-800 text-white px-5 py-3 rounded-2xl font-bold text-sm disabled:opacity-50 transition-all hover:scale-[1.02] shadow-md"
                   >
                     {guardandoPassword ? 'Guardando...' : 'Actualizar contraseña →'}
                   </button>
@@ -395,6 +395,7 @@ export default function Profile() {
             </div>
 
             {/* ── VERIFICACIÓN Y DOCUMENTOS ────────────────────────────── */}
+            {usuarioMostrado?.rol === 'docente' && (
             <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 md:p-8 hover:shadow-xl transition-all duration-300">
               <h2 className="text-xl font-bold text-gray-900 mb-4">Verificación de identidad</h2>
 
@@ -404,7 +405,7 @@ export default function Profile() {
 
               {/* Info de administración */}
               {usuarioMostrado?.administracion && (
-                <div className="bg-[#F8F5EF] rounded-2xl p-4 border border-gray-100 mb-5 flex items-center gap-3">
+                <div className="bg-primary-50 rounded-2xl p-4 border border-gray-100 mb-5 flex items-center gap-3">
                   <span className="text-2xl">
                     {usuarioMostrado.administracion === 'educacion' ? '🎓'
                       : usuarioMostrado.administracion === 'sanidad' ? '🩺'
@@ -427,13 +428,13 @@ export default function Profile() {
                   </div>
                 )}
                 {mensajeDoc && (
-                  <div className="bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#0F172A] rounded-2xl px-4 py-3 text-sm font-medium">
+                  <div className="bg-accent-400/10 border border-accent-400/30 text-primary-900 rounded-2xl px-4 py-3 text-sm font-medium">
                     ✅ {mensajeDoc}
                   </div>
                 )}
 
                 {usuarioMostrado?.tipoDocumento ? (
-                  <div className="flex items-center justify-between bg-[#F8F5EF] rounded-2xl p-4 border border-gray-100">
+                  <div className="flex items-center justify-between bg-primary-50 rounded-2xl p-4 border border-gray-100">
                     <div className="flex items-center gap-3">
                       <span className="text-2xl">📄</span>
                       <div>
@@ -455,7 +456,7 @@ export default function Profile() {
                           href={usuarioMostrado.urlDocumento}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="bg-[#0F172A] text-white px-4 py-2 rounded-2xl text-xs font-bold hover:bg-[#1E3A5F] transition-all"
+                          className="bg-primary-900 text-white px-4 py-2 rounded-2xl text-xs font-bold hover:bg-primary-800 transition-all"
                         >
                           Ver documento
                         </a>
@@ -474,7 +475,7 @@ export default function Profile() {
                     </div>
                   </div>
                 ) : (
-                  <div className="bg-[#F8F5EF] rounded-2xl p-4 border border-gray-100 text-sm text-gray-500">
+                  <div className="bg-primary-50 rounded-2xl p-4 border border-gray-100 text-sm text-gray-500">
                     📭 No has subido ningún documento todavía.
                   </div>
                 )}
@@ -482,7 +483,7 @@ export default function Profile() {
                 {!usuarioMostrado?.tipoDocumento && (
                   <button
                     onClick={() => navigate('/verificacion-docente')}
-                    className="w-full bg-[#0F172A] hover:bg-[#1E3A5F] text-white py-3 rounded-2xl font-bold text-sm transition-all"
+                    className="w-full bg-primary-900 hover:bg-primary-800 text-white py-3 rounded-2xl font-bold text-sm transition-all"
                   >
                     📎 Subir documento de verificación
                   </button>
@@ -501,7 +502,7 @@ export default function Profile() {
                 </div>
               )}
               {usuarioMostrado?.verificacionEstado === 'pendiente' && (
-                <div className="bg-[#F8F5EF] border border-gray-200 rounded-2xl p-4 text-gray-700 text-sm">
+                <div className="bg-primary-50 border border-gray-200 rounded-2xl p-4 text-gray-700 text-sm">
                   🕐 Tu perfil está <strong>pendiente de revisión</strong>. Recibirás una notificación cuando sea revisado.
                   {(usuarioMostrado?.verificationConfidence != null) && (
                     <div className="mt-3 pt-3 border-t border-gray-200 space-y-1.5">
@@ -515,10 +516,10 @@ export default function Profile() {
                 </div>
               )}
               {usuarioMostrado?.verificacionEstado === 'verificado' && (
-                <div className="bg-[#D4AF37]/10 border border-[#D4AF37]/30 rounded-2xl p-4 text-[#0F172A] text-sm">
+                <div className="bg-accent-400/10 border border-accent-400/30 rounded-2xl p-4 text-primary-900 text-sm">
                   <p>✅ Tu cuenta está <strong>verificada</strong>. Ya puedes acceder a todas las funciones de la plataforma.</p>
                   {usuarioMostrado?.verificationDate && (
-                    <p className="text-xs text-[#0F172A]/70 mt-2">
+                    <p className="text-xs text-primary-900/70 mt-2">
                       Verificado el {new Date(usuarioMostrado.verificationDate).toLocaleDateString('es-ES')}
                     </p>
                   )}
@@ -579,7 +580,7 @@ export default function Profile() {
                     <button
                       onClick={() => navigate('/verificacion-docente')}
                       disabled={eliminandoDoc}
-                      className="bg-[#0F172A] text-white px-4 py-2 rounded-2xl font-bold text-sm hover:bg-[#1E3A5F] transition-all disabled:opacity-50"
+                      className="bg-primary-900 text-white px-4 py-2 rounded-2xl font-bold text-sm hover:bg-primary-800 transition-all disabled:opacity-50"
                     >
                       Volver a verificarme
                     </button>
@@ -587,6 +588,7 @@ export default function Profile() {
                 </div>
               )}
             </div>
+            )}
 
             {/* ── MÁS INFORMACIÓN ──────────────────────────────────────── */}
             <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 md:p-8 hover:shadow-xl transition-all duration-300">
@@ -607,7 +609,7 @@ export default function Profile() {
                   },
                   { label: 'Nombre visible', valor: usuarioMostrado?.nombre || '—' },
                 ].map(item => (
-                  <div key={item.label} className="bg-[#F8F5EF] rounded-2xl p-4 border border-gray-100">
+                  <div key={item.label} className="bg-primary-50 rounded-2xl p-4 border border-gray-100">
                     <p className="text-gray-400 text-xs font-semibold mb-1">{item.label}</p>
                     <p className="font-bold text-gray-900 truncate">{item.valor}</p>
                   </div>
@@ -622,16 +624,16 @@ export default function Profile() {
 
             {/* Avatar card */}
             <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 text-center hover:shadow-xl transition-all duration-300">
-              <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#0F172A] to-[#1E3A5F] text-[#D4AF37] flex items-center justify-center mx-auto mb-4 text-3xl font-bold shadow-lg">
+              <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary-900 to-primary-800 text-accent-400 flex items-center justify-center mx-auto mb-4 text-3xl font-bold shadow-lg">
                 {usuarioMostrado?.nombre?.charAt(0)?.toUpperCase() || 'U'}
               </div>
               <h2 className="text-lg font-bold text-gray-900">{usuarioMostrado?.nombre}</h2>
               <p className="text-gray-500 text-sm mt-1">{usuarioMostrado?.email}</p>
-              <div className="mt-3 inline-flex items-center px-3 py-1.5 rounded-2xl bg-[#F8F5EF] border border-gray-100 text-gray-700 text-sm font-bold">
+              <div className="mt-3 inline-flex items-center px-3 py-1.5 rounded-2xl bg-primary-50 border border-gray-100 text-gray-700 text-sm font-bold">
                 {usuarioMostrado?.rol === 'propietario' ? '🏠 Propietario' : '🧑‍🏫 Interino'}
               </div>
               {usuarioMostrado?.administracion && (
-                <div className="mt-2 inline-flex items-center px-3 py-1.5 rounded-2xl bg-[#0F172A] text-[#D4AF37] text-xs font-bold">
+                <div className="mt-2 inline-flex items-center px-3 py-1.5 rounded-2xl bg-primary-900 text-accent-400 text-xs font-bold">
                   {usuarioMostrado.administracion === 'educacion' ? '🎓'
                     : usuarioMostrado.administracion === 'sanidad' ? '🩺'
                     : usuarioMostrado.administracion === 'justicia' ? '⚖️' : '🏛️'
@@ -671,20 +673,20 @@ export default function Profile() {
               <div className="flex flex-col gap-3">
                 <button
                   onClick={() => navigate('/dashboard')}
-                  className="w-full bg-[#0F172A] hover:bg-[#1E3A5F] text-white py-3 rounded-2xl font-bold text-sm transition-all hover:scale-[1.02] shadow-md"
+                  className="w-full bg-primary-900 hover:bg-primary-800 text-white py-3 rounded-2xl font-bold text-sm transition-all hover:scale-[1.02] shadow-md"
                 >
                   📊 Ir a mi panel
                 </button>
                 <button
                   onClick={() => navigate('/pisos')}
-                  className="w-full border border-gray-200 text-gray-700 py-3 rounded-2xl font-bold text-sm hover:bg-[#F8F5EF] transition-all"
+                  className="w-full border border-gray-200 text-gray-700 py-3 rounded-2xl font-bold text-sm hover:bg-primary-50 transition-all"
                 >
                   🔍 Buscar pisos
                 </button>
                 {usuarioMostrado?.rol === 'propietario' && (
                   <button
                     onClick={() => navigate('/pisos/nuevo')}
-                    className="w-full bg-[#D4AF37] hover:bg-[#B8860B] text-[#0F172A] py-3 rounded-2xl font-bold text-sm transition-all hover:scale-[1.02] shadow-md"
+                    className="w-full bg-accent-400 hover:bg-accent-600 text-primary-900 py-3 rounded-2xl font-bold text-sm transition-all hover:scale-[1.02] shadow-md"
                   >
                     🏠 Publicar piso
                   </button>
@@ -699,7 +701,7 @@ export default function Profile() {
             </div>
 
             {/* Info card */}
-            <div className="bg-gradient-to-br from-[#0F172A] to-[#1E3A5F] rounded-3xl p-6 text-white">
+            <div className="bg-gradient-to-br from-primary-900 to-primary-800 rounded-3xl p-6 text-white">
               <div className="text-3xl mb-3">💶</div>
               <h3 className="font-bold mb-1">Sin comisiones</h3>
               <p className="text-white/80 text-sm leading-relaxed">

@@ -1,9 +1,19 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
+import 'leaflet/dist/leaflet.css'
+import L from 'leaflet'
 import Navbar from '../components/Navbar'
 import PageLayout from '../components/layout/PageLayout'
 import { useProperties } from '../hooks/useProperties'
 import type { Property, OwnerSummary } from '../../domain/models'
+
+delete (L.Icon.Default.prototype as any)._getIconUrl
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+})
 
 export default function PropertyDetail() {
   const { id } = useParams()
@@ -243,22 +253,52 @@ export default function PropertyDetail() {
                 <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
                   🗺️ <span>Ubicación</span>
                 </h2>
+                {piso.lat && piso.lng ? (
+                  <div className="rounded-2xl overflow-hidden border border-gray-100 h-64 mb-4">
+                    <MapContainer
+                      center={[piso.lat, piso.lng]}
+                      zoom={15}
+                      style={{ width: '100%', height: '100%' }}
+                      scrollWheelZoom={false}
+                    >
+                      <TileLayer
+                        attribution='&copy; <a href="https://www.openstreetmap.org">OpenStreetMap</a>'
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                      />
+                      <Marker position={[piso.lat, piso.lng]}>
+                        <Popup>
+                          <div className="text-sm">
+                            <p className="font-semibold">{piso.titulo}</p>
+                            <p className="text-gray-500">{piso.ciudad}{piso.barrio ? `, ${piso.barrio}` : ''}</p>
+                          </div>
+                        </Popup>
+                      </Marker>
+                    </MapContainer>
+                  </div>
+                ) : (
+                  <div className="rounded-2xl overflow-hidden border border-gray-100 h-64 mb-4 bg-gray-50 flex items-center justify-center">
+                    <div className="text-center text-gray-400">
+                      <div className="text-4xl mb-2">🗺️</div>
+                      <p className="text-sm">Ubicación aproximada</p>
+                    </div>
+                  </div>
+                )}
                 <a
                   href={mapsUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group flex items-center justify-between bg-gradient-to-r from-primary-50 to-blue-50 hover:from-primary-100 hover:to-blue-100 border border-primary-100 rounded-2xl p-5 transition-all"
+                  className="group flex items-center justify-between bg-gradient-to-r from-primary-50 to-blue-50 hover:from-primary-100 hover:to-blue-100 border border-primary-100 rounded-2xl p-4 transition-all"
                 >
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm text-2xl">
-                      🗺️
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm text-xl">
+                      📍
                     </div>
                     <div>
-                      <p className="font-semibold text-gray-900">{piso.ciudad}{piso.barrio ? ` · ${piso.barrio}` : ''}</p>
+                      <p className="font-semibold text-gray-900 text-sm">{piso.ciudad}{piso.barrio ? ` · ${piso.barrio}` : ''}</p>
                       <p className="text-gray-500 text-xs mt-0.5">Abrir en Google Maps</p>
                     </div>
                   </div>
-                  <span className="text-primary-700 font-bold text-lg group-hover:translate-x-1 transition-transform">→</span>
+                  <span className="text-primary-700 font-bold group-hover:translate-x-1 transition-transform">→</span>
                 </a>
               </div>
 

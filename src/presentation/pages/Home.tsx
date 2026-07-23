@@ -14,21 +14,21 @@ const ZONAS = [
     slug: 'aragon',
     emoji: '🏔️',
     desc: 'Tu zona principal: Zaragoza, Huesca y Teruel',
-    color: 'from-[#0F172A] to-[#1E3A5F]',
+    color: 'from-primary-700 to-primary-900',
   },
   {
     nombre: 'Andalucía',
     slug: 'andalucia',
     emoji: '🌞',
     desc: 'Sevilla, Málaga, Granada y más provincias',
-    color: 'from-[#D4AF37] to-[#B8860B]',
+    color: 'from-accent-400 to-accent-600',
   },
   {
     nombre: 'Más comunidades',
     slug: 'zonas',
     emoji: '🗺️',
     desc: 'Explora todas las zonas disponibles',
-    color: 'from-[#334155] to-[#0F172A]',
+    color: 'from-gray-600 to-primary-800',
   },
 ]
 
@@ -71,13 +71,13 @@ export default function Home() {
           backgroundPosition: 'center',
         }}
       >
-        <div className="absolute inset-0 bg-[#111827]/90"></div>
+        <div className="absolute inset-0 bg-primary-900/90"></div>
 
         <div className="relative max-w-5xl mx-auto">
           <h1 className="text-3xl md:text-4xl font-bold mb-3 leading-tight drop-shadow-lg">
             El portal de alquiler
             <br />
-            <span className="text-[#D4AF37]">para interinos de la administración</span>
+            <span className="text-accent-400">para interinos de la administración</span>
           </h1>
 
           <p className="text-slate-100 text-sm md:text-base mb-5 max-w-2xl mx-auto leading-relaxed">
@@ -120,7 +120,7 @@ export default function Home() {
 
               <button
                 onClick={handleBuscar}
-                className="bg-[#D4AF37] hover:bg-[#B8860B] text-[#0F172A] px-5 py-3 rounded-2xl font-bold transition-all hover:scale-[1.02] shadow-md text-sm"
+                className="bg-accent-500 hover:bg-accent-600 text-primary-900 px-5 py-3 rounded-2xl font-bold transition-all hover:scale-[1.02] shadow-md text-sm"
               >
                 🔍 Buscar
               </button>
@@ -130,7 +130,7 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row gap-3 justify-center mt-4">
             <button
               onClick={() => navigate('/pisos')}
-              className="bg-white hover:bg-slate-50 text-[#0F172A] font-bold px-5 py-2.5 rounded-2xl transition-all shadow-lg border border-white/40 text-sm"
+              className="bg-white hover:bg-slate-50 text-primary-900 font-bold px-5 py-2.5 rounded-2xl transition-all shadow-lg border border-white/40 text-sm"
             >
               🔍 Buscar piso
             </button>
@@ -196,7 +196,7 @@ export default function Home() {
             </div>
             <button
               onClick={() => navigate('/zonas')}
-              className="text-[#0F172A] font-semibold hover:underline text-sm"
+              className="text-primary-900 font-semibold hover:underline text-sm"
             >
               Ver todas las zonas →
             </button>
@@ -220,15 +220,15 @@ export default function Home() {
             {destacar.length > 0 ? destacar.map(z => (
               <button
                 key={z.slug}
-                onClick={() => navigate(`/pisos?comunidad=${encodeURIComponent(z.slug)}`)}
-                className="bg-[#F8F5EF] hover:bg-gray-100 rounded-2xl p-4 text-left border border-gray-100 transition-all shadow-sm"
+                onClick={() => navigate(`/pisos?ciudad=${encodeURIComponent(z.nombre)}`)}
+                className="bg-primary-50 hover:bg-primary-100 rounded-2xl p-4 text-left border border-primary-100 transition-all shadow-sm"
               >
                 <div className="text-2xl mb-2">{z.emoji}</div>
                 <div className="font-semibold text-gray-900">{z.nombre}</div>
                 <div className="text-xs text-gray-500 mt-1">Ver pisos en esta comunidad</div>
               </button>
             )) : Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="bg-[#F8F5EF] rounded-2xl p-4 border border-gray-100 animate-pulse h-24" />
+              <div key={i} className="bg-primary-50 rounded-2xl p-4 border border-primary-100 animate-pulse h-24" />
             ))}
           </div>
         </div>
@@ -241,7 +241,7 @@ export default function Home() {
             <h2 className="text-2xl font-bold text-gray-900">Pisos disponibles ahora</h2>
             <p className="text-gray-500 text-sm mt-1">Los más recientes</p>
           </div>
-          <button onClick={() => navigate('/pisos')} className="text-[#0F172A] font-semibold hover:underline text-sm">
+          <button onClick={() => navigate('/pisos')} className="text-primary-900 font-semibold hover:underline text-sm">
             Ver todos →
           </button>
         </div>
@@ -262,7 +262,7 @@ export default function Home() {
         <div className="text-center mt-10">
           <button
             onClick={() => navigate('/pisos')}
-            className="bg-[#0F172A] text-white px-10 py-4 rounded-2xl font-bold hover:bg-[#1E3A5F] text-lg transition-all hover:scale-[1.02] shadow-lg"
+            className="bg-primary-900 text-white px-10 py-4 rounded-2xl font-bold hover:bg-primary-800 text-lg transition-all hover:scale-[1.02] shadow-lg"
           >
             Ver todos los pisos
           </button>

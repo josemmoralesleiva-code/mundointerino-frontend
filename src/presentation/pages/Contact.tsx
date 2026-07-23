@@ -50,11 +50,7 @@ export default function Contact() {
               <div className="space-y-4 text-sm">
                 <div>
                   <p className="text-gray-400 mb-1">Email</p>
-                  <p className="font-medium text-gray-800">hola@mundointerino.es</p>
-                </div>
-                <div>
-                  <p className="text-gray-400 mb-1">Teléfono</p>
-                  <p className="font-medium text-gray-800">+34 600 000 000</p>
+                  <p className="font-medium text-gray-800">hola@mundointerino.com</p>
                 </div>
                 <div>
                   <p className="text-gray-400 mb-1">Horario</p>

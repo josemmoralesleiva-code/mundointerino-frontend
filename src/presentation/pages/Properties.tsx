@@ -33,6 +33,7 @@ export default function Properties() {
   const [habitaciones, setHabitaciones] = useState('')
   const [banos, setBanos] = useState('')
   const [metrosMin, setMetrosMin] = useState('')
+  const [superficieMax, setSuperficieMax] = useState('')
   const [serviciosRequeridos, setServiciosRequeridos] = useState<string[]>([])
   const [filtrosAbiertos, setFiltrosAbiertos] = useState(false)
 
@@ -40,7 +41,7 @@ export default function Properties() {
 
   const fetchPisos = (overrides: {
     c?: string; f?: string; t?: string; pro?: string;
-    pmin?: string; pmax?: string; hab?: string; ban?: string; m?: string;
+    pmin?: string; pmax?: string; hab?: string; ban?: string; m?: string; smax?: string;
   } = {}) => {
     fetchAll({
       ciudad: overrides.c ?? ciudad,
@@ -52,6 +53,7 @@ export default function Properties() {
       habitaciones: (overrides.hab !== undefined ? overrides.hab : habitaciones) || undefined,
       banos: (overrides.ban !== undefined ? overrides.ban : banos) || undefined,
       metrosMin: (overrides.m !== undefined ? overrides.m : metrosMin) || undefined,
+      superficieMax: (overrides.smax !== undefined ? overrides.smax : superficieMax) || undefined,
     })
   }
 
@@ -61,6 +63,7 @@ export default function Properties() {
     setHabitaciones('')
     setBanos('')
     setMetrosMin('')
+    setSuperficieMax('')
     setServiciosRequeridos([])
     setTipoEstancia('')
     setCiudad('')
@@ -85,14 +88,14 @@ export default function Properties() {
             placeholder="Mín"
             value={precioMin}
             onChange={e => setPrecioMin(e.target.value)}
-            className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-[#0F172A]"
+            className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-primary-900"
           />
           <input
             type="number"
             placeholder="Máx"
             value={precioMax}
             onChange={e => setPrecioMax(e.target.value)}
-            className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-[#0F172A]"
+            className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-primary-900"
           />
         </div>
       </div>
@@ -108,8 +111,8 @@ export default function Properties() {
               onClick={() => setHabitaciones(n)}
               className={`px-3 py-1.5 rounded-xl text-xs font-medium border transition-all ${
                 habitaciones === n
-                  ? 'bg-[#0F172A] text-white border-[#0F172A]'
-                  : 'border-gray-200 text-gray-600 hover:border-[#0F172A]'
+                  ? 'bg-primary-900 text-white border-primary-900'
+                  : 'border-gray-200 text-gray-600 hover:border-primary-900'
               }`}
             >
               {n === '' ? 'Todas' : `${n}+`}
@@ -129,8 +132,8 @@ export default function Properties() {
               onClick={() => setBanos(n)}
               className={`px-3 py-1.5 rounded-xl text-xs font-medium border transition-all ${
                 banos === n
-                  ? 'bg-[#0F172A] text-white border-[#0F172A]'
-                  : 'border-gray-200 text-gray-600 hover:border-[#0F172A]'
+                  ? 'bg-primary-900 text-white border-primary-900'
+                  : 'border-gray-200 text-gray-600 hover:border-primary-900'
               }`}
             >
               {n === '' ? 'Todos' : `${n}+`}
@@ -150,11 +153,32 @@ export default function Properties() {
               onClick={() => setMetrosMin(n)}
               className={`px-3 py-1.5 rounded-xl text-xs font-medium border transition-all ${
                 metrosMin === n
-                  ? 'bg-[#0F172A] text-white border-[#0F172A]'
-                  : 'border-gray-200 text-gray-600 hover:border-[#0F172A]'
+                  ? 'bg-primary-900 text-white border-primary-900'
+                  : 'border-gray-200 text-gray-600 hover:border-primary-900'
               }`}
             >
               {n === '' ? 'Todos' : `${n}+ m²`}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="mb-5">
+        <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2 block">
+          📐 Superficie máxima (m²)
+        </label>
+        <div className="flex gap-2 flex-wrap">
+          {['', '60', '80', '100', '150'].map(n => (
+            <button
+              key={n}
+              onClick={() => setSuperficieMax(n)}
+              className={`px-3 py-1.5 rounded-xl text-xs font-medium border transition-all ${
+                superficieMax === n
+                  ? 'bg-primary-900 text-white border-primary-900'
+                  : 'border-gray-200 text-gray-600 hover:border-primary-900'
+              }`}
+            >
+              {n === '' ? 'Todas' : `≤ ${n} m²`}
             </button>
           ))}
         </div>
@@ -171,8 +195,8 @@ export default function Properties() {
               onClick={() => setTipoEstancia(val)}
               className={`text-left px-3 py-2 rounded-xl text-sm font-medium border transition-all ${
                 tipoEstancia === val
-                  ? 'bg-[#0F172A] text-white border-[#0F172A]'
-                  : 'border-gray-200 text-gray-600 hover:border-[#0F172A]'
+                  ? 'bg-primary-900 text-white border-primary-900'
+                  : 'border-gray-200 text-gray-600 hover:border-primary-900'
               }`}
             >
               {label}
@@ -192,8 +216,8 @@ export default function Properties() {
               onClick={() => toggleServicioRequerido(s)}
               className={`px-3 py-1.5 rounded-xl text-xs font-medium border transition-all ${
                 serviciosRequeridos.includes(s)
-                  ? 'bg-[#0F172A] text-white border-[#0F172A]'
-                  : 'border-gray-200 text-gray-600 hover:border-[#0F172A]'
+                  ? 'bg-primary-900 text-white border-primary-900'
+                  : 'border-gray-200 text-gray-600 hover:border-primary-900'
               }`}
             >
               {s}
@@ -235,7 +259,7 @@ export default function Properties() {
       <Navbar />
 
       {/* HERO COMPACTO */}
-      <section className="bg-[#0F172A] text-white py-8 px-6">
+      <section className="bg-primary-900 text-white py-8 px-6">
         <div className="max-w-7xl mx-auto">
           <h1 className="text-2xl font-bold mb-1">Encuentra tu piso ideal</h1>
           <p className="text-slate-300 text-sm">
@@ -250,7 +274,7 @@ export default function Properties() {
           <div className="flex flex-col md:flex-row gap-2 items-end">
             <div className="flex-1">
               <label className="text-xs text-gray-400 font-medium mb-1 block">📍 Ciudad o provincia</label>
-              <div className="border border-gray-200 rounded-xl px-3 py-2 focus-within:border-[#0F172A] transition-colors">
+              <div className="border border-gray-200 rounded-xl px-3 py-2 focus-within:border-primary-900 transition-colors">
                 <CityAutocomplete
                   value={ciudad}
                   onChange={(c: City | null) => setCiudad(c?.nombre ?? '')}
@@ -264,7 +288,7 @@ export default function Properties() {
                 type="date"
                 value={fecha}
                 onChange={e => setFecha(e.target.value)}
-                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm text-gray-700 focus:outline-none focus:border-[#0F172A] [color-scheme:light]"
+                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm text-gray-700 focus:outline-none focus:border-primary-900 [color-scheme:light]"
               />
             </div>
             <div className="md:w-44">
@@ -272,7 +296,7 @@ export default function Properties() {
               <select
                 value={tipoEstancia}
                 onChange={e => setTipoEstancia(e.target.value)}
-                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm text-gray-700 focus:outline-none focus:border-[#0F172A]"
+                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm text-gray-700 focus:outline-none focus:border-primary-900"
               >
                 <option value="">Cualquiera</option>
                 <option value="corta">Corta (días/semanas)</option>
@@ -281,7 +305,7 @@ export default function Properties() {
             </div>
             <button
               onClick={handleBuscar}
-              className="bg-[#D4AF37] hover:bg-[#B8860B] text-[#0F172A] px-6 py-2.5 rounded-xl font-bold text-sm transition-all shadow-md"
+              className="bg-accent-500 hover:bg-accent-600 text-primary-900 px-6 py-2.5 rounded-xl font-bold text-sm transition-all shadow-md"
             >
               🔍 Buscar
             </button>
@@ -299,7 +323,7 @@ export default function Properties() {
       {filtrosAbiertos && (
         <div className="lg:hidden fixed inset-0 z-50 flex">
           <div
-            className="absolute inset-0 bg-[#0F172A]/50 backdrop-blur-sm"
+            className="absolute inset-0 bg-primary-900/50 backdrop-blur-sm"
             onClick={() => setFiltrosAbiertos(false)}
           />
           <div className="relative ml-auto w-full max-w-sm h-full bg-white shadow-2xl flex flex-col">
@@ -319,7 +343,7 @@ export default function Properties() {
             <div className="px-5 py-4 border-t border-gray-100 flex flex-col gap-2">
               <button
                 onClick={() => { handleBuscar(); setFiltrosAbiertos(false) }}
-                className="w-full bg-[#D4AF37] hover:bg-[#B8860B] text-[#0F172A] py-3 rounded-2xl font-bold text-sm transition-all"
+                className="w-full bg-accent-500 hover:bg-accent-600 text-primary-900 py-3 rounded-2xl font-bold text-sm transition-all"
               >
                 Aplicar
               </button>
@@ -346,7 +370,7 @@ export default function Properties() {
 
             <button
               onClick={handleBuscar}
-              className="w-full bg-[#D4AF37] hover:bg-[#B8860B] text-[#0F172A] py-3 rounded-2xl font-bold text-sm transition-all mt-2"
+              className="w-full bg-accent-500 hover:bg-accent-600 text-primary-900 py-3 rounded-2xl font-bold text-sm transition-all mt-2"
             >
               Aplicar filtros
             </button>
@@ -375,7 +399,7 @@ export default function Properties() {
                 <select
                   value={orden}
                   onChange={e => setOrden(e.target.value)}
-                  className="border border-gray-200 rounded-xl px-3 py-2 text-gray-700 text-sm focus:outline-none focus:border-[#0F172A]"
+                  className="border border-gray-200 rounded-xl px-3 py-2 text-gray-700 text-sm focus:outline-none focus:border-primary-900"
                 >
                   <option value="precio_asc">💶 Precio: menor a mayor</option>
                   <option value="precio_desc">💶 Precio: mayor a menor</option>
@@ -383,13 +407,13 @@ export default function Properties() {
                 <div className="flex bg-white border border-gray-200 rounded-xl overflow-hidden">
                   <button
                     onClick={() => setVistaLista(true)}
-                    className={`px-3 py-2 text-sm transition-colors ${vistaLista ? 'bg-[#0F172A] text-white' : 'text-gray-500 hover:bg-gray-50'}`}
+                    className={`px-3 py-2 text-sm transition-colors ${vistaLista ? 'bg-primary-900 text-white' : 'text-gray-500 hover:bg-gray-50'}`}
                   >
                     ☰
                   </button>
                   <button
                     onClick={() => setVistaLista(false)}
-                    className={`px-3 py-2 text-sm transition-colors ${!vistaLista ? 'bg-[#0F172A] text-white' : 'text-gray-500 hover:bg-gray-50'}`}
+                    className={`px-3 py-2 text-sm transition-colors ${!vistaLista ? 'bg-primary-900 text-white' : 'text-gray-500 hover:bg-gray-50'}`}
                   >
                     ⊞
                   </button>
@@ -417,7 +441,7 @@ export default function Properties() {
                       <div className="text-sm">
                         <p className="font-semibold">{piso.titulo}</p>
                         <p className="text-gray-500">{piso.ciudad}</p>
-                        <p className="font-bold text-[#0F172A]">{piso.precio}€</p>
+                        <p className="font-bold text-primary-900">{piso.precio}€</p>
                         <button
                           onClick={() => navigate(`/pisos/${piso.id}`)}
                           className="mt-1 text-[#2F5DAA] text-xs underline"
@@ -448,7 +472,7 @@ export default function Properties() {
               <p className="text-gray-400 mb-6">Prueba con otra localidad o cambia el tipo de estancia.</p>
               <button
                 onClick={() => navigate('/pisos/nuevo')}
-                className="bg-[#0F172A] text-white px-6 py-3 rounded-2xl hover:bg-[#1E3A5F] font-medium transition-all"
+                className="bg-primary-900 text-white px-6 py-3 rounded-2xl hover:bg-primary-800 font-medium transition-all"
               >
                 Publicar piso
               </button>

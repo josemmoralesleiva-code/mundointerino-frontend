@@ -12,7 +12,6 @@ export interface MessageResponse {
 }
 
 export interface PropertyFilters {
-  comunidad?: string
   provincia?: string
   ciudad?: string
   tipo?: string
@@ -22,6 +21,7 @@ export interface PropertyFilters {
   habitaciones?: string
   banos?: string
   metrosMin?: string
+  superficieMax?: string
   pagina?: string
   limite?: string
 }
