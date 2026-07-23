@@ -42,6 +42,11 @@ const usersRepository = {
   async deleteDocument(): Promise<void> {
     await api.delete('/usuarios/documento')
   },
+
+  async solicitarRevisionManual(): Promise<{ mensaje: string; usuario: User }> {
+    const res = await api.post<{ mensaje: string; usuario: User }>('/usuarios/solicitar-revision-manual')
+    return res.data
+  },
 }
 
 export default usersRepository

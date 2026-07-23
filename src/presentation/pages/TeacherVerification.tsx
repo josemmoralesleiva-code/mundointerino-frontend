@@ -23,15 +23,33 @@ const TIPOS_DOC = [
 export default function TeacherVerification() {
   const navigate = useNavigate()
   const { user } = useAuthStore()
-  const { verifyTeacher, loading, error, setError } = useUsers()
+  const { verifyTeacher, solicitarRevisionManual, loading, error, setError } = useUsers()
 
   const [paso, setPaso] = useState(1)
   const [administracion, setAdministracion] = useState('')
   const [tipoDoc, setTipoDoc] = useState('')
   const [archivo, setArchivo] = useState<File | null>(null)
   const [preview, setPreview] = useState<string | null>(null)
+  const [solicitandoRevision, setSolicitandoRevision] = useState(false)
+  const [errorSolicitud, setErrorSolicitud] = useState('')
 
   const rechazado = user?.verificacionEstado === 'rechazado'
+  const revisionManualSolicitada = !!user?.manualReviewRequestedAt
+  const pendienteRevisionManual = user?.verificacionEstado === 'pendiente-revision-manual'
+  const procesando = user?.verificacionEstado === 'procesando'
+  const mostrarFormulario = (!rechazado || revisionManualSolicitada) && !pendienteRevisionManual && !procesando
+
+  const handleSolicitarRevision = async () => {
+    setSolicitandoRevision(true)
+    setErrorSolicitud('')
+    try {
+      await solicitarRevisionManual()
+    } catch (err: any) {
+      setErrorSolicitud(err.response?.data?.error || 'Error al solicitar revisión manual')
+    } finally {
+      setSolicitandoRevision(false)
+    }
+  }
   const traducirMotivo = () => {
     const m = user?.motivoRechazo
     if (!m) return 'No se ha indicado un motivo.'
@@ -96,7 +114,7 @@ export default function TeacherVerification() {
           </p>
 
           {/* STEPPER */}
-          {paso < 3 && (
+          {mostrarFormulario && paso < 3 && (
             <div className="flex items-center justify-center gap-2 mt-5">
               {['Tu administración', 'Tu documento', 'Listo'].map((label, i) => {
                 const num = i + 1
@@ -124,8 +142,8 @@ export default function TeacherVerification() {
       {/* CONTENIDO */}
       <section className="max-w-2xl mx-auto px-6 py-12">
 
-        {/* ── RECHAZADO ── */}
-        {rechazado && (
+        {/* ── RECHAZADO (auto) ── */}
+        {rechazado && !revisionManualSolicitada && (
           <div className="bg-red-50 border border-red-200 rounded-3xl p-6 text-sm mb-8">
             <div className="flex items-start gap-3">
               <span className="text-2xl">❌</span>
@@ -133,7 +151,65 @@ export default function TeacherVerification() {
                 <p className="font-bold text-red-800 text-base">Tu verificación anterior fue rechazada</p>
                 <p className="text-red-700">{traducirMotivo()}</p>
                 <p className="text-xs text-red-500 leading-relaxed">
-                  Puedes corregir el problema y volver a enviar tu documentación. Si crees que es un error, contacta con soporte.
+                  Si crees que es un error, solicita una revisión manual y un administrador revisará tu documento personalmente.
+                </p>
+                {errorSolicitud && (
+                  <div className="bg-red-100 border border-red-300 text-red-600 rounded-2xl px-4 py-2 text-sm">
+                    ⚠️ {errorSolicitud}
+                  </div>
+                )}
+                <button
+                  onClick={handleSolicitarRevision}
+                  disabled={solicitandoRevision}
+                  className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-2xl font-bold text-sm transition-all disabled:opacity-50"
+                >
+                  {solicitandoRevision ? 'Solicitando...' : '🔔 Solicitar revisión manual'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ── RECHAZADO (manual) ── */}
+        {rechazado && revisionManualSolicitada && (
+          <div className="bg-red-50 border border-red-200 rounded-3xl p-6 text-sm mb-8">
+            <div className="flex items-start gap-3">
+              <span className="text-2xl">❌</span>
+              <div className="space-y-3 flex-1">
+                <p className="font-bold text-red-800 text-base">La revisión manual ha rechazado tu verificación</p>
+                <p className="text-red-700">{traducirMotivo()}</p>
+                <p className="text-xs text-red-500 leading-relaxed">
+                  Puedes eliminar el documento actual y subir uno nuevo para volver a intentarlo.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ── PENDIENTE REVISIÓN MANUAL ── */}
+        {pendienteRevisionManual && (
+          <div className="bg-orange-50 border border-orange-200 rounded-3xl p-6 text-sm mb-8">
+            <div className="flex items-start gap-3">
+              <span className="text-2xl">🔔</span>
+              <div className="space-y-3 flex-1">
+                <p className="font-bold text-orange-800 text-base">Tu documento está en revisión manual</p>
+                <p className="text-orange-700">
+                  Un administrador revisará tu documentación. Recibirás una notificación cuando se complete la revisión.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ── PROCESANDO ── */}
+        {procesando && (
+          <div className="bg-blue-50 border border-blue-200 rounded-3xl p-6 text-sm mb-8">
+            <div className="flex items-start gap-3">
+              <span className="text-2xl">⚙️</span>
+              <div className="space-y-3 flex-1">
+                <p className="font-bold text-blue-800 text-base">Verificando tu documento</p>
+                <p className="text-blue-700">
+                  Tu documento está siendo procesado. Esto puede tardar unos segundos.
                 </p>
               </div>
             </div>
@@ -141,7 +217,7 @@ export default function TeacherVerification() {
         )}
 
         {/* ── PASO 1: ADMINISTRACIÓN ── */}
-        {paso === 1 && (
+        {mostrarFormulario && paso === 1 && (
           <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-8 hover:shadow-xl transition-all duration-300">
             <div className="text-center mb-8">
               <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-[#F8F5EF] mb-4 text-2xl">
@@ -198,7 +274,7 @@ export default function TeacherVerification() {
         )}
 
         {/* ── PASO 2: DOCUMENTO ── */}
-        {paso === 2 && (
+        {mostrarFormulario && paso === 2 && (
           <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-8 hover:shadow-xl transition-all duration-300">
             <div className="text-center mb-8">
               <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-[#F8F5EF] mb-4 text-2xl">
@@ -311,7 +387,7 @@ export default function TeacherVerification() {
         )}
 
         {/* ── PASO 3: CONFIRMACIÓN ── */}
-        {paso === 3 && (
+        {mostrarFormulario && paso === 3 && (
           <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-8 text-center hover:shadow-xl transition-all duration-300">
             <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#0F172A] to-[#1E3A5F] text-[#D4AF37] flex items-center justify-center mx-auto mb-6 text-4xl shadow-lg">
               ✅
@@ -365,7 +441,7 @@ export default function TeacherVerification() {
         )}
 
         {/* INFO CARDS abajo */}
-        {paso < 3 && (
+        {mostrarFormulario && paso < 3 && (
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
             {[
               { icon: '🔒', texto: 'Documento confidencial' },

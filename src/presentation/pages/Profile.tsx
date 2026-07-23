@@ -24,7 +24,7 @@ function traducirMotivo(motivo?: string): string {
 export default function Profile() {
   const navigate = useNavigate()
   const { user, logout, updateUser } = useAuth()
-  const { profile, loading, error, fetchProfile, updateProfile, changePassword, setError, deleteDocument } = useUsers()
+  const { profile, loading, error, fetchProfile, updateProfile, changePassword, setError, deleteDocument, solicitarRevisionManual } = useUsers()
 
   const [form, setForm] = useState({ nombre: '', email: '', telefono: '' })
   const [formPassword, setFormPassword] = useState({ passwordActual: '', passwordNueva: '', passwordConfirm: '' })
@@ -38,6 +38,7 @@ export default function Profile() {
   const [eliminandoDoc, setEliminandoDoc] = useState(false)
   const [errorDoc, setErrorDoc] = useState('')
   const [mensajeDoc, setMensajeDoc] = useState('')
+  const [solicitandoRevision, setSolicitandoRevision] = useState(false)
 
   useEffect(() => {
     fetchProfile()
@@ -118,15 +119,34 @@ export default function Profile() {
     }
   }
 
+  const handleSolicitarRevision = async () => {
+    setSolicitandoRevision(true)
+    setErrorDoc('')
+    setMensajeDoc('')
+    try {
+      await solicitarRevisionManual()
+      setMensajeDoc('Revisión manual solicitada. Un administrador revisará tu documento.')
+      fetchProfile()
+    } catch (err: any) {
+      setErrorDoc(err.response?.data?.error || 'Error al solicitar revisión manual')
+    } finally {
+      setSolicitandoRevision(false)
+    }
+  }
+
   const badgeEstado = (estado: string) => {
     if (estado === 'verificado') return 'bg-[#D4AF37]/20 text-[#0F172A]'
     if (estado === 'rechazado') return 'bg-red-100 text-red-700'
+    if (estado === 'pendiente-revision-manual') return 'bg-orange-100 text-orange-700'
+    if (estado === 'procesando') return 'bg-blue-100 text-blue-700'
     return 'bg-[#F8F5EF] text-gray-700 border border-gray-200'
   }
 
   const textoEstado = (estado: string) => {
     if (estado === 'verificado') return '✅ Verificado'
     if (estado === 'rechazado') return '❌ Rechazado'
+    if (estado === 'pendiente-revision-manual') return '🔔 Revisión manual'
+    if (estado === 'procesando') return '⚙️ Procesando'
     return '🕐 Pendiente'
   }
 
@@ -442,13 +462,15 @@ export default function Profile() {
                       ) : (
                         <span className="text-xs text-gray-400 bg-gray-100 px-3 py-1.5 rounded-xl">Sin URL</span>
                       )}
-                      <button
-                        onClick={handleEliminarDocumento}
-                        disabled={eliminandoDoc}
-                        className="border border-red-200 text-red-500 px-4 py-2 rounded-2xl text-xs font-bold hover:bg-red-50 transition-all disabled:opacity-50"
-                      >
-                        {eliminandoDoc ? 'Eliminando...' : '🗑 Eliminar'}
-                      </button>
+                      {(usuarioMostrado?.verificacionEstado !== 'rechazado' || usuarioMostrado?.manualReviewRequestedAt) && (
+                        <button
+                          onClick={handleEliminarDocumento}
+                          disabled={eliminandoDoc}
+                          className="border border-red-200 text-red-500 px-4 py-2 rounded-2xl text-xs font-bold hover:bg-red-50 transition-all disabled:opacity-50"
+                        >
+                          {eliminandoDoc ? 'Eliminando...' : '🗑 Eliminar'}
+                        </button>
+                      )}
                     </div>
                   </div>
                 ) : (
@@ -473,6 +495,11 @@ export default function Profile() {
               </div>
 
               {/* Mensajes de estado */}
+              {usuarioMostrado?.verificacionEstado === 'procesando' && (
+                <div className="bg-blue-50 border border-blue-200 rounded-2xl p-4 text-blue-700 text-sm">
+                  ⚙️ Tu documento está siendo <strong>procesado</strong>. Esto puede tardar unos segundos. Recibirás una notificación cuando se complete la verificación.
+                </div>
+              )}
               {usuarioMostrado?.verificacionEstado === 'pendiente' && (
                 <div className="bg-[#F8F5EF] border border-gray-200 rounded-2xl p-4 text-gray-700 text-sm">
                   🕐 Tu perfil está <strong>pendiente de revisión</strong>. Recibirás una notificación cuando sea revisado.
@@ -497,7 +524,12 @@ export default function Profile() {
                   )}
                 </div>
               )}
-              {usuarioMostrado?.verificacionEstado === 'rechazado' && (
+              {usuarioMostrado?.verificacionEstado === 'pendiente-revision-manual' && (
+                <div className="bg-orange-50 border border-orange-200 rounded-2xl p-4 text-orange-700 text-sm">
+                  🔔 Tu documento está en <strong>revisión manual</strong>. Un administrador revisará tu documentación. Recibirás una notificación cuando se complete.
+                </div>
+              )}
+              {usuarioMostrado?.verificacionEstado === 'rechazado' && !usuarioMostrado?.manualReviewRequestedAt && (
                 <div className="bg-red-50 border border-red-200 rounded-2xl p-5 text-sm space-y-4">
                   <div>
                     <p className="font-bold text-red-800">Tu verificación ha sido rechazada</p>
@@ -514,12 +546,40 @@ export default function Profile() {
                     </div>
                   )}
                   <p className="text-xs text-red-500 leading-relaxed">
-                    Puedes corregir el problema y volver a enviar tu documentación. Si crees que es un error, contacta con soporte.
+                    Si crees que es un error, puedes solicitar una revisión manual. Un administrador revisará tu documento personalmente.
                   </p>
                   <div className="flex flex-wrap gap-3 pt-1">
                     <button
+                      onClick={handleSolicitarRevision}
+                      disabled={solicitandoRevision}
+                      className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-2xl font-bold text-sm transition-all disabled:opacity-50"
+                    >
+                      {solicitandoRevision ? 'Solicitando...' : '🔔 Solicitar revisión manual'}
+                    </button>
+                  </div>
+                </div>
+              )}
+              {usuarioMostrado?.verificacionEstado === 'rechazado' && usuarioMostrado?.manualReviewRequestedAt && (
+                <div className="bg-red-50 border border-red-200 rounded-2xl p-5 text-sm space-y-4">
+                  <div>
+                    <p className="font-bold text-red-800">Tu verificación ha sido rechazada</p>
+                    <p className="text-red-700 mt-1">{traducirMotivo(usuarioMostrado?.motivoRechazo)}</p>
+                  </div>
+                  <p className="text-xs text-red-500 leading-relaxed">
+                    La revisión manual de tu documento ha sido rechazada. Puedes eliminar el documento actual y volver a intentarlo con uno nuevo.
+                  </p>
+                  <div className="flex flex-wrap gap-3 pt-1">
+                    <button
+                      onClick={handleEliminarDocumento}
+                      disabled={eliminandoDoc}
+                      className="border border-red-200 text-red-500 px-4 py-2 rounded-2xl font-bold text-sm hover:bg-red-50 transition-all disabled:opacity-50"
+                    >
+                      {eliminandoDoc ? 'Eliminando...' : '🗑 Eliminar documento'}
+                    </button>
+                    <button
                       onClick={() => navigate('/verificacion-docente')}
-                      className="bg-[#0F172A] text-white px-4 py-2 rounded-2xl font-bold text-sm hover:bg-[#1E3A5F] transition-all"
+                      disabled={eliminandoDoc}
+                      className="bg-[#0F172A] text-white px-4 py-2 rounded-2xl font-bold text-sm hover:bg-[#1E3A5F] transition-all disabled:opacity-50"
                     >
                       Volver a verificarme
                     </button>

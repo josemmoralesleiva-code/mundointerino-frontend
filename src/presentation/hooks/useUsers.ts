@@ -8,6 +8,7 @@ import {
   verifyUserUseCase,
   reVerifyUserUseCase,
   deleteDocumentUseCase,
+  solicitarRevisionManualUseCase,
 } from '../../application/useCases/users'
 import type { User } from '../../domain/models'
 import type { UpdateProfileRequest, ChangePasswordRequest, VerifyUserRequest } from '../../infrastructure/dto/users.dto'
@@ -103,6 +104,12 @@ export function useUsers() {
     await deleteDocumentUseCase()
   }, [])
 
+  const solicitarRevisionManual = useCallback(async () => {
+    const result = await solicitarRevisionManualUseCase()
+    setProfile(result.usuario)
+    return result
+  }, [])
+
   return {
     users,
     profile,
@@ -119,5 +126,6 @@ export function useUsers() {
     verifyUser,
     reVerifyUser,
     deleteDocument,
+    solicitarRevisionManual,
   }
 }

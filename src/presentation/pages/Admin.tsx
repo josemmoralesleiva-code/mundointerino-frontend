@@ -44,6 +44,15 @@ const ESTADO_VERIFICACION: Record<string, { label: string; color: string }> = {
 const estadoBadge = (estado: string) =>
   ESTADO_VERIFICACION[estado] || { label: estado, color: 'bg-gray-100 text-gray-600' }
 
+const ROLES: Record<string, { label: string; className: string }> = {
+  admin:       { label: '🛡️ Admin',       className: 'bg-[#0F172A] text-[#D4AF37]' },
+  docente:     { label: '🧑‍🏫 Interino',    className: 'bg-blue-100 text-blue-700' },
+  propietario: { label: '🏠 Propietario',  className: 'bg-purple-100 text-purple-700' },
+}
+
+const rolBadge = (rol: string) =>
+  ROLES[rol] || { label: rol, className: 'bg-gray-100 text-gray-600' }
+
 const EMPTY_ANUNCIO_FORM = {
   titulo: '',
   descripcion: '',
@@ -420,10 +429,8 @@ export default function Admin() {
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
-                        <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                          u.rol === 'docente' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700'
-                        }`}>
-                          {u.rol === 'docente' ? '🧑‍🏫 Interino' : '🏠 Propietario'}
+                        <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${rolBadge(u.rol).className}`}>
+                          {rolBadge(u.rol).label}
                         </span>
                         <span className="text-gray-400 text-xs">{new Date(u.createdAt).toLocaleDateString('es-ES')}</span>
                       </div>
@@ -517,10 +524,8 @@ export default function Admin() {
                             <div>
                               <div className="flex items-center gap-2 flex-wrap">
                                 <p className="font-bold text-gray-900">{u.nombre}</p>
-                                <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                                  u.rol === 'docente' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700'
-                                }`}>
-                                  {u.rol === 'docente' ? '🧑‍🏫 Interino' : '🏠 Propietario'}
+                                <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${rolBadge(u.rol).className}`}>
+                                  {rolBadge(u.rol).label}
                                 </span>
                                 <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${estadoBadge(u.verificacionEstado).color}`}>
                                   {estadoBadge(u.verificacionEstado).label}
@@ -817,7 +822,7 @@ export default function Admin() {
                     { label: 'Nombre',   valor: usuarioDetalle.nombre },
                     { label: 'Email',    valor: usuarioDetalle.email },
                     { label: 'Teléfono', valor: usuarioDetalle.telefono || '—' },
-                    { label: 'Rol',      valor: usuarioDetalle.rol === 'docente' ? '🧑‍🏫 Interino' : '🏠 Propietario' },
+                    { label: 'Rol',      valor: rolBadge(usuarioDetalle.rol).label },
                     { label: 'ID',       valor: usuarioDetalle.id },
                     {
                       label: 'Alta',

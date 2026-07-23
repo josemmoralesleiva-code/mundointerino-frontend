@@ -30,6 +30,7 @@ export interface User {
   verificationProvider?: string
   verificationAttempts?: number
   verificationLastError?: string
+  manualReviewRequestedAt?: string | null
   createdAt?: string
   updatedAt?: string
 }
