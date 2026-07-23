@@ -270,8 +270,32 @@ export default function Properties() {
 
       {/* BARRA DE BÚSQUEDA */}
       <div className="bg-white border-b border-gray-100 shadow-sm sticky top-[88px] z-40">
-        <div className="max-w-7xl mx-auto px-6 py-3">
-          <div className="flex flex-col md:flex-row gap-2 items-end">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 py-3">
+          {/* MÓVIL: ciudad + buscar + filtros */}
+          <div className="flex md:hidden gap-2 items-center">
+            <div className="flex-1 min-w-0">
+              <CityAutocomplete
+                value={ciudad}
+                onChange={(c: City | null) => setCiudad(c?.nombre ?? '')}
+                placeholder="Ciudad o provincia…"
+              />
+            </div>
+            <button
+              onClick={handleBuscar}
+              className="shrink-0 bg-accent-500 hover:bg-accent-600 text-primary-900 px-4 py-2.5 rounded-xl font-bold text-sm transition-all shadow-md"
+            >
+              🔍
+            </button>
+            <button
+              onClick={() => setFiltrosAbiertos(true)}
+              className="shrink-0 border border-gray-200 text-slate-700 px-4 py-2.5 rounded-xl font-bold text-sm transition-all hover:bg-slate-50"
+            >
+              ⚙️
+            </button>
+          </div>
+
+          {/* DESKTOP: ciudad + date + estancia + buscar + filtros */}
+          <div className="hidden md:flex gap-2 items-end">
             <div className="flex-1">
               <label className="text-xs text-gray-400 font-medium mb-1 block">📍 Ciudad o provincia</label>
               <div className="border border-gray-200 rounded-xl px-3 py-2 focus-within:border-primary-900 transition-colors">
@@ -282,7 +306,7 @@ export default function Properties() {
                 />
               </div>
             </div>
-            <div className="md:w-40">
+            <div className="w-40">
               <label className="text-xs text-gray-400 font-medium mb-1 block">📅 Desde</label>
               <input
                 type="date"
@@ -291,7 +315,7 @@ export default function Properties() {
                 className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm text-gray-700 focus:outline-none focus:border-primary-900 [color-scheme:light]"
               />
             </div>
-            <div className="md:w-44">
+            <div className="w-44">
               <label className="text-xs text-gray-400 font-medium mb-1 block">⏱️ Estancia</label>
               <select
                 value={tipoEstancia}
@@ -311,7 +335,7 @@ export default function Properties() {
             </button>
             <button
               onClick={() => setFiltrosAbiertos(true)}
-              className="lg:hidden border border-gray-200 text-slate-700 px-4 py-2.5 rounded-xl font-bold text-sm transition-all hover:bg-slate-50"
+              className="border border-gray-200 text-slate-700 px-4 py-2.5 rounded-xl font-bold text-sm transition-all hover:bg-slate-50"
             >
               ⚙️ Filtros
             </button>
